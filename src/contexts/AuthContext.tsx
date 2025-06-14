@@ -74,13 +74,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       
-      // Get the current origin for redirect
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const redirectUrl = `${origin}/auth/confirm`;
+      // Use the current domain for redirect URL
+      const baseUrl = window.location.origin;
+      const redirectUrl = `${baseUrl}/auth/confirm`;
       
-      console.log('Sign up with redirect URL:', redirectUrl);
+      console.log('Signing up with redirect URL:', redirectUrl);
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -93,9 +93,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (error) {
         console.error('Sign up error:', error);
+        return { error };
       }
       
-      return { error };
+      console.log('Sign up successful:', data);
+      return { error: null };
     } catch (error) {
       console.error('Error in signUp:', error);
       return { error };

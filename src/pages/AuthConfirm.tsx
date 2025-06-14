@@ -18,14 +18,17 @@ const AuthConfirm = () => {
       try {
         setLoading(true);
         
-        // Get URL parameters
+        // Get URL parameters for email confirmation
         const tokenHash = searchParams.get('token_hash');
         const type = searchParams.get('type');
+        const accessToken = searchParams.get('access_token');
+        const refreshToken = searchParams.get('refresh_token');
         
-        console.log('Confirmation params:', { tokenHash, type });
+        console.log('URL parameters:', { tokenHash, type, accessToken, refreshToken });
 
+        // If we have token_hash and type, verify the email
         if (tokenHash && type) {
-          console.log('Verifying OTP with token_hash:', tokenHash, 'type:', type);
+          console.log('Verifying email with token_hash');
           
           const { data, error } = await supabase.auth.verifyOtp({
             token_hash: tokenHash,
@@ -33,28 +36,42 @@ const AuthConfirm = () => {
           });
 
           if (error) {
-            console.error('OTP verification error:', error);
-            setError('Email confirmation failed. The link may be expired or invalid. Please try signing up again.');
+            console.error('Email verification error:', error);
+            setError('Email confirmation failed. The link may be expired or already used. Please try signing up again.');
           } else if (data.user) {
-            console.log('Email confirmed successfully for user:', data.user.id);
+            console.log('Email confirmed successfully:', data.user.email);
             setConfirmed(true);
           } else {
-            console.log('OTP verification returned no user');
             setError('Email confirmation failed. Please try again.');
           }
-        } else {
-          // Check if user is already authenticated
-          const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        } 
+        // If we have access and refresh tokens, set the session
+        else if (accessToken && refreshToken) {
+          console.log('Setting session with tokens');
           
-          if (sessionError) {
-            console.error('Session error:', sessionError);
-            setError('There was an error checking your authentication status.');
-          } else if (sessionData.session) {
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+
+          if (error) {
+            console.error('Session error:', error);
+            setError('There was an error confirming your email. Please try again.');
+          } else if (data.user) {
+            console.log('Session set successfully:', data.user.email);
+            setConfirmed(true);
+          }
+        }
+        // Check if user is already authenticated
+        else {
+          const { data: sessionData } = await supabase.auth.getSession();
+          
+          if (sessionData.session) {
             console.log('User already authenticated');
             setConfirmed(true);
           } else {
-            console.log('No confirmation token found in URL');
-            setError('No confirmation token found. Please check your email for the confirmation link.');
+            console.log('No confirmation parameters found');
+            setError('No confirmation link found. Please check your email for the confirmation link.');
           }
         }
       } catch (err) {
@@ -119,15 +136,15 @@ const AuthConfirm = () => {
         <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
         
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Email Confirmed Successfully!
+          Welcome to Airbnb Clone+! 🎉
         </h2>
         
         <p className="text-gray-600 mb-6">
-          Welcome to Airbnb Clone+! Your email has been confirmed and your account is now active.
+          Your email has been successfully confirmed! Your account is now active and ready to use.
         </p>
         
         <Button onClick={handleContinue} className="w-full">
-          Continue to Airbnb Clone+
+          Start Exploring
         </Button>
       </div>
     </div>
