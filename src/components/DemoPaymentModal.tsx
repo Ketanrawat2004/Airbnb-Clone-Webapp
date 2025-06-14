@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
@@ -35,7 +36,8 @@ interface DemoPaymentModalProps {
 }
 
 const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalProps) => {
-  const [selectedMethod, setSelectedMethod] = useState<string>('');
+  const { user } = useAuth();
+  const [selectedMethod, setSelectedMethod] = useState<string>('credit-card');
   const [processing, setProcessing] = useState(false);
 
   const paymentMethods = [
@@ -45,8 +47,8 @@ const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalP
   ];
 
   const handleDemoPayment = async () => {
-    if (!selectedMethod) {
-      toast.error('Please select a payment method');
+    if (!user) {
+      toast.error('Please sign in to make a booking');
       return;
     }
 
@@ -60,10 +62,11 @@ const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalP
     try {
       console.log('Creating demo booking with data:', bookingData);
 
-      // Create the booking
+      // Create the booking with the current user's ID
       const { data: booking, error: bookingError } = await supabase
         .from('bookings')
         .insert({
+          user_id: user.id, // This is crucial for RLS policies
           hotel_id: bookingData.hotel_id,
           check_in_date: bookingData.check_in_date,
           check_out_date: bookingData.check_out_date,
@@ -196,7 +199,7 @@ const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalP
             </Button>
             <Button
               onClick={handleDemoPayment}
-              disabled={!selectedMethod || processing}
+              disabled={processing}
               className="flex-1 bg-green-600 hover:bg-green-700"
             >
               {processing ? 'Processing...' : 'Pay Now'}
