@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -132,6 +133,7 @@ const Profile = () => {
         return;
       }
 
+      console.log('Fetched bookings:', data);
       setBookings(data || []);
     } catch (error) {
       console.error('Error:', error);
@@ -253,6 +255,8 @@ const Profile = () => {
     if (!user) return;
 
     try {
+      console.log('Clearing all bookings for user:', user.id);
+      
       const { error } = await supabase
         .from('bookings')
         .delete()
@@ -264,8 +268,14 @@ const Profile = () => {
         return;
       }
 
+      console.log('All bookings cleared successfully');
       toast.success('All bookings cleared successfully');
       setClearHistoryDialogOpen(false);
+      
+      // Immediately update the bookings state to empty array
+      setBookings([]);
+      
+      // Also fetch fresh data to ensure UI is in sync
       fetchBookings();
     } catch (error) {
       console.error('Error:', error);
