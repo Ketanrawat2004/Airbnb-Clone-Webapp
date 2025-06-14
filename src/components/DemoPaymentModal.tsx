@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
@@ -10,8 +9,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CreditCard, Shield, Clock } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { CheckCircle, CreditCard, Smartphone, Wallet } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface DemoPaymentModalProps {
   open: boolean;
@@ -24,29 +23,47 @@ interface DemoPaymentModalProps {
     guests: number;
     guest_phone: string;
     total_amount: number;
-    guest_details: any;
+    guest_details: {
+      title: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      phone: string;
+    } | null;
     guest_list: any[];
   };
 }
 
 const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalProps) => {
-  const { user } = useAuth();
-  const { toast } = useToast();
+  const [selectedMethod, setSelectedMethod] = useState<string>('');
   const [processing, setProcessing] = useState(false);
 
+  const paymentMethods = [
+    { id: 'credit-card', name: 'Credit Card', icon: CreditCard },
+    { id: 'upi', name: 'UPI Payment', icon: Smartphone },
+    { id: 'wallet', name: 'Digital Wallet', icon: Wallet },
+  ];
+
   const handleDemoPayment = async () => {
-    if (!user) return;
+    if (!selectedMethod) {
+      toast.error('Please select a payment method');
+      return;
+    }
+
+    if (!bookingData.guest_details) {
+      toast.error('Guest details are missing');
+      return;
+    }
+
+    setProcessing(true);
 
     try {
-      setProcessing(true);
-      
-      console.log('Creating demo booking...');
-      
-      // Create booking directly in database (demo mode)
+      console.log('Creating demo booking with data:', bookingData);
+
+      // Create the booking
       const { data: booking, error: bookingError } = await supabase
         .from('bookings')
         .insert({
-          user_id: user.id,
           hotel_id: bookingData.hotel_id,
           check_in_date: bookingData.check_in_date,
           check_out_date: bookingData.check_out_date,
@@ -54,60 +71,70 @@ const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalP
           total_amount: bookingData.total_amount,
           guest_phone: bookingData.guest_phone,
           guest_name: `${bookingData.guest_details.firstName} ${bookingData.guest_details.lastName}`,
-          stripe_session_id: `demo_${Date.now()}`,
-          payment_status: 'paid',
           status: 'confirmed',
+          payment_status: 'paid',
+          stripe_session_id: `demo_${Date.now()}`,
+          discount_amount: 0,
         })
         .select()
         .single();
 
       if (bookingError) {
-        console.error('Error creating booking:', bookingError);
+        console.error('Booking creation error:', bookingError);
         throw new Error(`Failed to create booking: ${bookingError.message}`);
       }
 
-      console.log('Demo booking created:', booking);
+      console.log('Booking created successfully:', booking);
 
-      // Send SMS notification
+      // Send SMS confirmation
       try {
-        await supabase.functions.invoke('send-sms', {
-          body: { 
+        console.log('Sending SMS to:', bookingData.guest_phone);
+        const { data: smsData, error: smsError } = await supabase.functions.invoke('send-sms', {
+          body: {
             booking_id: booking.id,
-            phone: bookingData.guest_phone,
-          },
+            phone: bookingData.guest_phone
+          }
         });
-        console.log('SMS sent successfully');
+
+        if (smsError) {
+          console.error('SMS sending error:', smsError);
+          toast.error('Booking created but SMS failed to send');
+        } else {
+          console.log('SMS sent successfully:', smsData);
+          toast.success('Booking confirmed! SMS sent to your phone');
+        }
       } catch (smsError) {
-        console.log('SMS sending failed (demo mode):', smsError);
+        console.error('SMS function error:', smsError);
+        toast.error('Booking created but SMS failed to send');
       }
 
-      // Generate receipt
+      // Send confirmation email
       try {
-        await supabase.functions.invoke('generate-receipt', {
-          body: { booking_id: booking.id },
+        console.log('Sending confirmation email');
+        const { error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
+          body: {
+            booking_id: booking.id,
+            guest_email: bookingData.guest_details.email,
+            guest_name: `${bookingData.guest_details.firstName} ${bookingData.guest_details.lastName}`,
+          }
         });
-        console.log('Receipt generated successfully');
-      } catch (receiptError) {
-        console.log('Receipt generation failed (demo mode):', receiptError);
+
+        if (emailError) {
+          console.error('Email sending error:', emailError);
+        } else {
+          console.log('Confirmation email sent successfully');
+        }
+      } catch (emailError) {
+        console.error('Email function error:', emailError);
       }
 
-      toast({
-        title: 'Demo Payment Successful!',
-        description: 'Your booking has been confirmed (demo mode)',
-      });
+      // Close modal and redirect
+      onOpenChange(false);
+      window.location.href = '/profile';
 
-      // Redirect to payment success page with demo session
-      window.location.href = `/payment-success?session_id=demo_${booking.id}`;
-      
     } catch (error) {
       console.error('Demo payment error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      
-      toast({
-        title: 'Demo Payment Failed',
-        description: `Unable to process demo payment: ${errorMessage}`,
-        variant: 'destructive',
-      });
+      toast.error(`Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setProcessing(false);
     }
@@ -117,69 +144,62 @@ const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-center">Demo Payment</DialogTitle>
+          <DialogTitle className="flex items-center space-x-2">
+            <CheckCircle className="h-5 w-5 text-green-500" />
+            <span>Demo Payment</span>
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
-          <Card className="border-blue-200 bg-blue-50">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2 text-blue-700">
-                <Shield className="h-5 w-5" />
-                <span className="font-medium">Demo Mode</span>
-              </div>
-              <p className="text-sm text-blue-600 mt-1">
-                This is a demonstration payment. No actual charges will be made.
-              </p>
-            </CardContent>
-          </Card>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-700">
+              This is a demo payment for testing purposes. No actual charges will be made.
+            </p>
+          </div>
 
           <div className="space-y-3">
-            <div className="flex justify-between">
-              <span>Hotel:</span>
-              <span className="font-medium">{bookingData.hotel_name}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Dates:</span>
-              <span className="font-medium">
-                {new Date(bookingData.check_in_date).toLocaleDateString()} - {new Date(bookingData.check_out_date).toLocaleDateString()}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Guests:</span>
-              <span className="font-medium">{bookingData.guests}</span>
-            </div>
-            <div className="flex justify-between border-t pt-2">
-              <span className="font-semibold">Total Amount:</span>
-              <span className="font-bold text-lg">₹{(bookingData.total_amount / 100).toLocaleString('en-IN')}</span>
+            <h3 className="font-medium">Select Payment Method:</h3>
+            {paymentMethods.map((method) => (
+              <Card 
+                key={method.id} 
+                className={`cursor-pointer transition-colors ${
+                  selectedMethod === method.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                }`}
+                onClick={() => setSelectedMethod(method.id)}
+              >
+                <CardContent className="flex items-center space-x-3 p-4">
+                  <method.icon className="h-5 w-5" />
+                  <span>{method.name}</span>
+                  {selectedMethod === method.id && (
+                    <CheckCircle className="h-4 w-4 text-blue-500 ml-auto" />
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex justify-between items-center">
+              <span className="font-medium">Total Amount:</span>
+              <span className="text-lg font-bold">₹{(bookingData.total_amount / 100).toLocaleString('en-IN')}</span>
             </div>
           </div>
 
-          <div className="space-y-3 pt-4">
-            <Button 
-              onClick={handleDemoPayment}
-              disabled={processing}
-              className="w-full bg-blue-600 hover:bg-blue-700"
-            >
-              {processing ? (
-                <>
-                  <Clock className="h-4 w-4 mr-2 animate-spin" />
-                  Processing Demo Payment...
-                </>
-              ) : (
-                <>
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  Complete Demo Payment
-                </>
-              )}
-            </Button>
-            
-            <Button 
-              variant="outline" 
+          <div className="flex space-x-3">
+            <Button
+              variant="outline"
               onClick={() => onOpenChange(false)}
+              className="flex-1"
               disabled={processing}
-              className="w-full"
             >
               Cancel
+            </Button>
+            <Button
+              onClick={handleDemoPayment}
+              disabled={!selectedMethod || processing}
+              className="flex-1 bg-green-600 hover:bg-green-700"
+            >
+              {processing ? 'Processing...' : 'Pay Now'}
             </Button>
           </div>
         </div>

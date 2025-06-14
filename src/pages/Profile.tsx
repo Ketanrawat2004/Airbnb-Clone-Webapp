@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,11 +7,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Mail, Phone, Save, Download, Calendar, X } from 'lucide-react';
+import { User, Mail, Phone, Save, Download, Calendar, X, Eye, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import { Link } from 'react-router-dom';
 import CancelBookingDialog from '@/components/CancelBookingDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface Profile {
   id: string;
@@ -44,6 +55,9 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [bookingToDelete, setBookingToDelete] = useState<Booking | null>(null);
+  const [clearHistoryDialogOpen, setClearHistoryDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
@@ -72,7 +86,6 @@ const Profile = () => {
         return;
       }
 
-      // If profile exists, use it. Otherwise, get full name from user metadata
       const fullName = data?.full_name || user.user_metadata?.full_name || '';
       
       if (data) {
@@ -82,7 +95,6 @@ const Profile = () => {
           phone: data.phone || '',
         });
       } else {
-        // Create profile with sign-up data if it doesn't exist
         const newProfile = {
           id: user.id,
           full_name: fullName,
@@ -168,18 +180,23 @@ const Profile = () => {
 
   const downloadTicket = async (bookingId: string) => {
     try {
+      console.log('Downloading ticket for booking:', bookingId);
+      
       const { data, error } = await supabase.functions.invoke('generate-receipt', {
         body: { booking_id: bookingId }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Receipt generation error:', error);
+        throw error;
+      }
+
+      console.log('Receipt response:', data);
 
       if (data?.html_content) {
-        // Create a blob with the HTML content
         const blob = new Blob([data.html_content], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
         
-        // Create a temporary link and click it to download
         const a = document.createElement('a');
         a.href = url;
         a.download = `booking-receipt-${bookingId.substring(0, 8)}.html`;
@@ -189,10 +206,12 @@ const Profile = () => {
         URL.revokeObjectURL(url);
         
         toast.success('Ticket downloaded successfully!');
+      } else {
+        throw new Error('No receipt content received');
       }
     } catch (error) {
       console.error('Error downloading ticket:', error);
-      toast.error('Failed to download ticket');
+      toast.error('Failed to download ticket. Please try again.');
     }
   };
 
@@ -201,8 +220,62 @@ const Profile = () => {
     setCancelDialogOpen(true);
   };
 
+  const handleDeleteBooking = (booking: Booking) => {
+    setBookingToDelete(booking);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteBooking = async () => {
+    if (!bookingToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('id', bookingToDelete.id);
+
+      if (error) {
+        console.error('Error deleting booking:', error);
+        toast.error('Failed to delete booking');
+        return;
+      }
+
+      toast.success('Booking deleted successfully');
+      setDeleteDialogOpen(false);
+      setBookingToDelete(null);
+      fetchBookings();
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Failed to delete booking');
+    }
+  };
+
+  const handleClearAllBookings = async () => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error clearing bookings:', error);
+        toast.error('Failed to clear booking history');
+        return;
+      }
+
+      toast.success('All bookings cleared successfully');
+      setClearHistoryDialogOpen(false);
+      fetchBookings();
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Failed to clear booking history');
+    }
+  };
+
   const handleBookingCancelled = () => {
-    fetchBookings(); // Refresh the bookings list
+    fetchBookings();
   };
 
   const canCancelBooking = (booking: Booking) => {
@@ -211,7 +284,6 @@ const Profile = () => {
     today.setHours(0, 0, 0, 0);
     checkInDate.setHours(0, 0, 0, 0);
     
-    // Can cancel if check-in hasn't passed and booking is not already cancelled
     return checkInDate.getTime() >= today.getTime() && 
            booking.status !== 'cancelled' && 
            booking.payment_status !== 'refunded';
@@ -329,10 +401,25 @@ const Profile = () => {
           {/* Booking History Card */}
           <Card>
             <CardHeader>
-              <CardTitle>My Bookings</CardTitle>
-              <CardDescription>
-                View your booking history and manage your reservations
-              </CardDescription>
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle>My Bookings</CardTitle>
+                  <CardDescription>
+                    View your booking history and manage your reservations
+                  </CardDescription>
+                </div>
+                {bookings.length > 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setClearHistoryDialogOpen(true)}
+                    className="border-red-300 text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Clear All
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {bookings.length === 0 ? (
@@ -382,6 +469,7 @@ const Profile = () => {
                             </Button>
                             <Link to={`/ticket/${booking.id}`}>
                               <Button variant="outline" size="sm">
+                                <Eye className="h-4 w-4 mr-2" />
                                 View Ticket
                               </Button>
                             </Link>
@@ -399,6 +487,16 @@ const Profile = () => {
                             Cancel Booking
                           </Button>
                         )}
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteBooking(booking)}
+                          className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -409,6 +507,7 @@ const Profile = () => {
         </div>
       </div>
 
+      {/* Cancel Booking Dialog */}
       {selectedBooking && (
         <CancelBookingDialog
           open={cancelDialogOpen}
@@ -417,6 +516,42 @@ const Profile = () => {
           onBookingCancelled={handleBookingCancelled}
         />
       )}
+
+      {/* Delete Booking Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Booking</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this booking? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteBooking} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Clear All Bookings Dialog */}
+      <AlertDialog open={clearHistoryDialogOpen} onOpenChange={setClearHistoryDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear All Bookings</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to clear your entire booking history? This will permanently delete all your bookings and cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleClearAllBookings} className="bg-red-600 hover:bg-red-700">
+              Clear All
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
