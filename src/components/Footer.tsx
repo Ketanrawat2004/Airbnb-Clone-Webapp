@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-rose-400">StayFinder</h3>
+            <h3 className="text-xl font-bold text-rose-400">Airbnb Clone+</h3>
             <p className="text-gray-300 text-sm">
               Discover unique accommodations around the world. From cozy apartments to luxury villas, 
               find your perfect stay with us.
@@ -110,7 +110,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-rose-400" />
-                <span className="text-gray-300">support@stayfinder.com</span>
+                <span className="text-gray-300">support@airbnbclone.com</span>
               </div>
             </div>
             <div className="mt-4">
@@ -125,7 +125,7 @@ const Footer = () => {
         <div className="border-t border-gray-700 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-gray-400">
-              <p>&copy; {currentYear} StayFinder. All rights reserved.</p>
+              <p>&copy; {currentYear} Airbnb Clone+. All rights reserved.</p>
             </div>
             <div className="flex space-x-6 text-xs text-gray-400">
               <a href="#" className="hover:text-rose-400 transition-colors">

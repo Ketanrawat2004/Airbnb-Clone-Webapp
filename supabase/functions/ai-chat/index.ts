@@ -24,7 +24,7 @@ serve(async (req) => {
 
     console.log('Received chat request:', { message, conversationLength: conversation?.length });
 
-    const systemPrompt = `You are a helpful AI assistant for an Airbnb-style accommodation booking platform. You can help users with:
+    const systemPrompt = `You are a helpful AI assistant for Airbnb Clone+, an accommodation booking platform. You can help users with:
 
 1. Finding accommodations based on their preferences
 2. Answering questions about booking process
