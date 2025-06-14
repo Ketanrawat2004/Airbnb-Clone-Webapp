@@ -52,6 +52,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       
+      // Create the confirmation URL that points to our auth/confirm page
+      const confirmationUrl = `${window.location.origin}/auth/confirm`;
+      
+      console.log('Signing up with confirmation URL:', confirmationUrl);
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -59,6 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           data: {
             full_name: fullName,
           },
+          emailRedirectTo: confirmationUrl,
         },
       });
       
