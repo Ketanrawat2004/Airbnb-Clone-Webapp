@@ -17,16 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    console.error('useAuth must be used within an AuthProvider');
-    // Return a fallback object instead of throwing an error to prevent crashes
-    return {
-      user: null,
-      session: null,
-      loading: false,
-      signUp: async () => ({ error: new Error('Auth not initialized') }),
-      signIn: async () => ({ error: new Error('Auth not initialized') }),
-      signOut: async () => {},
-    };
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
@@ -41,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (!mounted) return;
         
         console.log('Auth state changed:', event, session);
@@ -81,10 +72,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
-      // Use the actual current domain for the redirect
-      const currentDomain = window.location.protocol + '//' + window.location.host;
-      const redirectUrl = `${currentDomain}/auth/confirm`;
-      console.log('Sign up redirect URL:', redirectUrl);
+      setLoading(true);
+      
+      // Get the current origin for redirect
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      const redirectUrl = `${origin}/auth/confirm`;
+      
+      console.log('Sign up with redirect URL:', redirectUrl);
       
       const { error } = await supabase.auth.signUp({
         email,
@@ -97,32 +91,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
       });
       
+      if (error) {
+        console.error('Sign up error:', error);
+      }
+      
       return { error };
     } catch (error) {
       console.error('Error in signUp:', error);
       return { error };
+    } finally {
+      setLoading(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
+      setLoading(true);
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
+      if (error) {
+        console.error('Sign in error:', error);
+      }
+      
       return { error };
     } catch (error) {
       console.error('Error in signIn:', error);
       return { error };
+    } finally {
+      setLoading(false);
     }
   };
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      setLoading(true);
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Sign out error:', error);
+      }
     } catch (error) {
       console.error('Error in signOut:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
