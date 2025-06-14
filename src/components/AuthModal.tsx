@@ -63,9 +63,14 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     
     if (error) {
       console.log('Sign up error:', error);
-      toast.error(error.message);
+      
+      if (error.message.includes('User already registered')) {
+        toast.error('An account with this email already exists. Please try signing in instead.');
+      } else {
+        toast.error(error.message);
+      }
     } else {
-      toast.success('You have successfully registered in Airbnb Clone+. Thank you for joining! Please check your email to verify your account before signing in.');
+      toast.success('Account created successfully! Please check your email (including spam folder) for a confirmation link. You\'ll need to click it before you can sign in.');
       onOpenChange(false);
     }
     
@@ -175,7 +180,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
               </Button>
               
               <p className="text-sm text-gray-600 text-center">
-                You'll receive an email to confirm your account after signing up.
+                You'll receive a confirmation email after signing up. Please check your inbox and spam folder.
               </p>
             </form>
           </TabsContent>
