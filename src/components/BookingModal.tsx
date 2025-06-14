@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calendar, Users, CreditCard, MapPin } from 'lucide-react';
+import { Calendar, Users, CreditCard, MapPin, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Hotel {
@@ -48,6 +49,7 @@ const BookingModal = ({
   const [checkInDate, setCheckInDate] = useState(initialCheckIn);
   const [checkOutDate, setCheckOutDate] = useState(initialCheckOut);
   const [guests, setGuests] = useState(initialGuests);
+  const [guestPhone, setGuestPhone] = useState('');
 
   const calculateNights = () => {
     if (!checkInDate || !checkOutDate) return 0;
@@ -72,10 +74,10 @@ const BookingModal = ({
       return;
     }
 
-    if (!checkInDate || !checkOutDate || !guests) {
+    if (!checkInDate || !checkOutDate || !guests || !guestPhone) {
       toast({
         title: 'Missing information',
-        description: 'Please fill in all booking details.',
+        description: 'Please fill in all booking details including phone number.',
         variant: 'destructive',
       });
       return;
@@ -99,47 +101,50 @@ const BookingModal = ({
       return;
     }
 
+    // Validate phone number format (basic validation)
+    const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
+    if (!phoneRegex.test(guestPhone)) {
+      toast({
+        title: 'Invalid phone number',
+        description: 'Please enter a valid phone number for SMS notifications.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       setLoading(true);
       
       const totalAmount = calculateTotal() * 100; // Convert to cents
       
-      const { data, error } = await supabase
-        .from('bookings')
-        .insert({
-          user_id: user.id,
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
           hotel_id: hotel.id,
           check_in_date: checkInDate,
           check_out_date: checkOutDate,
           guests: parseInt(guests),
+          guest_phone: guestPhone,
           total_amount: totalAmount,
-          status: 'confirmed'
-        })
-        .select()
-        .single();
+        },
+      });
 
       if (error) {
-        console.error('Booking error:', error);
+        console.error('Payment creation error:', error);
         throw error;
       }
 
-      toast({
-        title: 'Booking confirmed!',
-        description: `Your stay at ${hotel.name} has been booked successfully.`,
-      });
-
-      onOpenChange(false);
-      
-      // Reset form
-      setCheckInDate('');
-      setCheckOutDate('');
-      setGuests('1');
+      if (data?.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error('No payment URL received');
+      }
       
     } catch (error) {
-      console.error('Error creating booking:', error);
+      console.error('Error creating payment:', error);
       toast({
-        title: 'Booking failed',
-        description: 'There was an error processing your booking. Please try again.',
+        title: 'Payment setup failed',
+        description: 'There was an error setting up your payment. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -222,6 +227,20 @@ const BookingModal = ({
                 max={hotel.available_rooms * 2}
               />
             </div>
+
+            <div>
+              <Label htmlFor="phone" className="flex items-center text-sm font-medium mb-1">
+                <Phone className="h-3 w-3 mr-1" />
+                Phone Number (for SMS notifications)
+              </Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={guestPhone}
+                onChange={(e) => setGuestPhone(e.target.value)}
+                placeholder="+1234567890"
+              />
+            </div>
           </div>
 
           {/* Price Breakdown */}
@@ -241,12 +260,16 @@ const BookingModal = ({
           {/* Book Button */}
           <Button
             onClick={handleBooking}
-            disabled={loading || !checkInDate || !checkOutDate || !guests}
+            disabled={loading || !checkInDate || !checkOutDate || !guests || !guestPhone}
             className="w-full bg-rose-500 hover:bg-rose-600"
           >
             <CreditCard className="h-4 w-4 mr-2" />
-            {loading ? 'Processing...' : `Confirm booking${total > 0 ? ` - $${total.toFixed(2)}` : ''}`}
+            {loading ? 'Processing...' : `Pay now - $${total.toFixed(2)}`}
           </Button>
+
+          <p className="text-xs text-gray-500 text-center">
+            You will receive booking confirmation and receipt via SMS and email after successful payment.
+          </p>
         </div>
       </DialogContent>
     </Dialog>

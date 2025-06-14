@@ -14,9 +14,12 @@ export type Database = {
           check_in_date: string
           check_out_date: string
           created_at: string
+          guest_phone: string | null
           guests: number
           hotel_id: string
           id: string
+          payment_intent_id: string | null
+          payment_status: string | null
           status: string | null
           stripe_session_id: string | null
           total_amount: number
@@ -26,9 +29,12 @@ export type Database = {
           check_in_date: string
           check_out_date: string
           created_at?: string
+          guest_phone?: string | null
           guests: number
           hotel_id: string
           id?: string
+          payment_intent_id?: string | null
+          payment_status?: string | null
           status?: string | null
           stripe_session_id?: string | null
           total_amount: number
@@ -38,9 +44,12 @@ export type Database = {
           check_in_date?: string
           check_out_date?: string
           created_at?: string
+          guest_phone?: string | null
           guests?: number
           hotel_id?: string
           id?: string
+          payment_intent_id?: string | null
+          payment_status?: string | null
           status?: string | null
           stripe_session_id?: string | null
           total_amount?: number
