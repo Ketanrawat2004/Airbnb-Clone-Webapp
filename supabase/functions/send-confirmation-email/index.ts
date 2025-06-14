@@ -1,5 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { Resend } from "npm:resend@2.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,6 +17,9 @@ serve(async (req) => {
   try {
     const { email, confirmationUrl, fullName } = await req.json();
 
+    console.log('Sending confirmation email to:', email);
+    console.log('Confirmation URL:', confirmationUrl);
+
     // Modern, clean email template for Airbnb Clone+
     const htmlContent = `
     <!DOCTYPE html>
@@ -22,15 +28,6 @@ serve(async (req) => {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Confirm Your Airbnb Clone+ Account</title>
-      <!--[if mso]>
-      <noscript>
-        <xml>
-          <o:OfficeDocumentSettings>
-            <o:PixelsPerInch>96</o:PixelsPerInch>
-          </o:OfficeDocumentSettings>
-        </xml>
-      </noscript>
-      <![endif]-->
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -70,16 +67,6 @@ serve(async (req) => {
           padding: 48px 40px; 
           text-align: center; 
           position: relative;
-        }
-        
-        .header::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="30" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
         }
         
         .logo-container {
@@ -163,52 +150,6 @@ serve(async (req) => {
           cursor: pointer;
         }
         
-        .features {
-          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-          padding: 32px;
-          border-radius: 16px;
-          margin: 32px 0;
-          border: 1px solid #e2e8f0;
-        }
-        
-        .features h3 {
-          color: #ff385c;
-          margin-bottom: 20px;
-          font-size: 20px;
-          font-weight: 600;
-          text-align: center;
-        }
-        
-        .features-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 16px;
-          margin-top: 20px;
-        }
-        
-        .feature-item {
-          display: flex;
-          align-items: center;
-          padding: 12px 0;
-          color: #4b5563;
-          font-size: 15px;
-        }
-        
-        .feature-icon {
-          width: 24px;
-          height: 24px;
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-right: 12px;
-          font-size: 12px;
-          color: white;
-          font-weight: bold;
-          flex-shrink: 0;
-        }
-        
         .security-notice {
           background: #fef3c7;
           border: 1px solid #f59e0b;
@@ -260,22 +201,6 @@ serve(async (req) => {
           color: #d1d5db;
         }
         
-        .footer-links {
-          margin: 24px 0;
-          font-size: 14px;
-        }
-        
-        .footer-links a {
-          color: #6b7280;
-          text-decoration: none;
-          margin: 0 8px;
-          transition: color 0.3s ease;
-        }
-        
-        .footer-links a:hover {
-          color: #ff385c;
-        }
-        
         .footer-legal {
           font-size: 12px;
           margin-top: 24px;
@@ -304,10 +229,6 @@ serve(async (req) => {
           
           .greeting {
             font-size: 24px;
-          }
-          
-          .features-grid {
-            grid-template-columns: 1fr;
           }
         }
       </style>
@@ -342,37 +263,6 @@ serve(async (req) => {
               </a>
             </div>
 
-            <!-- Features Section -->
-            <div class="features">
-              <h3>🌟 What awaits you on Airbnb Clone+</h3>
-              <div class="features-grid">
-                <div class="feature-item">
-                  <div class="feature-icon">✓</div>
-                  <span>Browse thousands of unique accommodations worldwide</span>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon">✓</div>
-                  <span>Book instantly with secure, encrypted payments</span>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon">✓</div>
-                  <span>Read authentic reviews from verified guests</span>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon">✓</div>
-                  <span>Access 24/7 premium customer support</span>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon">✓</div>
-                  <span>Manage bookings with our intuitive dashboard</span>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon">✓</div>
-                  <span>Discover curated local experiences</span>
-                </div>
-              </div>
-            </div>
-
             <!-- Security Notice -->
             <div class="security-notice">
               <h4>🔒 Having trouble with the button?</h4>
@@ -396,13 +286,6 @@ serve(async (req) => {
               Connecting travelers with extraordinary experiences since 2024
             </div>
             
-            <div class="footer-links">
-              <a href="#">Help Center</a> •
-              <a href="#">Privacy Policy</a> •
-              <a href="#">Terms of Service</a> •
-              <a href="#">Contact Us</a>
-            </div>
-            
             <div class="footer-legal">
               <p>This email was sent to <strong>${email}</strong></p>
               <p style="margin-top: 8px;">
@@ -416,19 +299,27 @@ serve(async (req) => {
     </body>
     </html>`;
 
-    console.log('Professional confirmation email generated for:', email);
+    // Send the email using Resend
+    const emailResponse = await resend.emails.send({
+      from: "Airbnb Clone+ <onboarding@resend.dev>",
+      to: [email],
+      subject: "Confirm Your Airbnb Clone+ Account",
+      html: htmlContent,
+    });
+
+    console.log('Email sent successfully:', emailResponse);
 
     return new Response(JSON.stringify({ 
       success: true,
-      message: 'Professional confirmation email template generated successfully',
-      html_content: htmlContent
+      message: 'Confirmation email sent successfully',
+      emailId: emailResponse.id
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
 
   } catch (error) {
-    console.error('Email template generation error:', error);
+    console.error('Email sending error:', error);
     return new Response(JSON.stringify({ 
       error: error.message,
       success: false 

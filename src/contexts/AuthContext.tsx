@@ -73,28 +73,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       console.log('Sign up successful:', data);
       
-      // If the signup was successful but user needs confirmation
-      if (data.user && !data.session) {
-        console.log('User created but needs email confirmation, sending custom email...');
-        
-        try {
-          // Call our custom email function as a fallback
-          const { error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
-            body: {
-              email: email,
-              fullName: fullName,
-              confirmationUrl: `${window.location.origin}/auth/confirm?token_hash=placeholder&type=signup&redirect_to=${window.location.origin}`
-            }
-          });
-          
-          if (emailError) {
-            console.error('Custom email sending failed:', emailError);
-          } else {
-            console.log('Custom confirmation email sent successfully');
+      // Always send our custom confirmation email as backup
+      console.log('Sending custom confirmation email...');
+      
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
+          body: {
+            email: email,
+            fullName: fullName,
+            confirmationUrl: `${window.location.origin}/auth/confirm?token_hash=placeholder&type=signup&redirect_to=${window.location.origin}`
           }
-        } catch (emailError) {
-          console.error('Error calling email function:', emailError);
+        });
+        
+        if (emailError) {
+          console.error('Custom email sending failed:', emailError);
+        } else {
+          console.log('Custom confirmation email sent successfully');
         }
+      } catch (emailError) {
+        console.error('Error calling email function:', emailError);
       }
       
       return { error: null };
