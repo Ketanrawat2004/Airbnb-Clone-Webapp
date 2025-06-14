@@ -13,6 +13,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import GuestDetailsForm from './GuestDetailsForm';
 import BookingDetailsStep from './BookingDetailsStep';
+import { Guest } from './GuestForm';
 
 interface Hotel {
   id: string;
@@ -145,7 +146,7 @@ const BookingModal = ({
     setStep('guest-details');
   };
 
-  const handleGuestDetailsSubmit = async (guestDetails: GuestDetails, agreeToTerms: boolean) => {
+  const handleGuestDetailsSubmit = async (guestDetails: GuestDetails, agreeToTerms: boolean, guestList: Guest[]) => {
     if (!agreeToTerms) {
       toast({
         title: 'Agreement required',
@@ -158,6 +159,7 @@ const BookingModal = ({
     console.log('Starting payment process...');
     console.log('User:', user);
     console.log('Guest details:', guestDetails);
+    console.log('Guest list:', guestList);
     console.log('Booking details:', { checkInDate, checkOutDate, guests });
 
     try {
@@ -176,7 +178,8 @@ const BookingModal = ({
         guest_phone: guestPhone,
         total_amount: totalAmountInPaise,
         nights: nights,
-        price_per_night: hotel.price_per_night
+        price_per_night: hotel.price_per_night,
+        guest_list: guestList
       });
 
       console.log('Calling create-payment function...');
@@ -195,7 +198,8 @@ const BookingModal = ({
             last_name: guestDetails.lastName,
             email: guestDetails.email,
             phone: guestPhone,
-          }
+          },
+          guest_list: guestList
         },
       });
 
@@ -280,6 +284,7 @@ const BookingModal = ({
           <GuestDetailsForm 
             onSubmit={handleGuestDetailsSubmit}
             loading={loading}
+            totalGuests={parseInt(guests)}
           />
         )}
       </DialogContent>
