@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Download, MapPin, Calendar, Users, Phone } from 'lucide-react';
+import { ArrowLeft, Download, MapPin, Calendar, Users, Phone, Home } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 
@@ -197,8 +197,8 @@ const TicketPage = () => {
             <CardHeader className="bg-gradient-to-r from-rose-500 to-pink-600 text-white">
               <div className="text-center">
                 <div className="flex items-center justify-center mb-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-xl font-bold">A</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-3">
+                    <Home className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <h1 className="text-2xl font-bold">Airbnb Clone+</h1>

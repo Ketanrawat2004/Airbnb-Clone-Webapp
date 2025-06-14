@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -108,14 +109,19 @@ serve(async (req) => {
         .logo {
           width: 80px;
           height: 80px;
-          background-color: rgba(255,255,255,0.2);
-          border-radius: 50%;
+          background-color: #f43f5e;
+          border-radius: 12px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           font-size: 32px;
           font-weight: bold;
           margin-bottom: 15px;
+          color: white;
+        }
+        .logo::before {
+          content: "🏠";
+          font-size: 32px;
         }
         .company-name { 
           font-size: 28px; 
@@ -304,7 +310,7 @@ serve(async (req) => {
         <!-- Header -->
         <div class="header">
           <div class="logo-section">
-            <div class="logo">A</div>
+            <div class="logo"></div>
             <div class="company-name">Airbnb Clone+</div>
             <div class="company-tagline">Your Premier Hospitality Experience</div>
           </div>
