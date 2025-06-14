@@ -8,6 +8,7 @@ import { Menu, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import AuthModal from './AuthModal';
+import BackButton from './BackButton';
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -27,9 +28,12 @@ const Header = () => {
     <header className="border-b bg-white sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
-            <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone</h1>
+          {/* Left section with Back button and Logo */}
+          <div className="flex items-center space-x-4">
+            <BackButton />
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
+              <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone</h1>
+            </div>
           </div>
 
           {/* Search Bar */}
