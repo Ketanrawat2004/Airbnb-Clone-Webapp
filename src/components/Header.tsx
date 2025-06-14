@@ -49,7 +49,7 @@ const Header = () => {
               className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity" 
               onClick={handleHomeClick}
             >
-              <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone</h1>
+              <h1 className="text-2xl font-bold text-rose-500">Wanderlust Stays</h1>
             </div>
           </div>
 
