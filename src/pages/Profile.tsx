@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,6 +11,7 @@ import { toast } from 'sonner';
 import Header from '@/components/Header';
 import { Link } from 'react-router-dom';
 import CancelBookingDialog from '@/components/CancelBookingDialog';
+import PaymentSuccessToast from '@/components/PaymentSuccessToast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,6 +58,7 @@ const Profile = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState<Booking | null>(null);
   const [clearHistoryDialogOpen, setClearHistoryDialogOpen] = useState(false);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
@@ -230,10 +231,13 @@ const Profile = () => {
     if (!bookingToDelete) return;
 
     try {
+      console.log('Deleting booking:', bookingToDelete.id);
+      
       const { error } = await supabase
         .from('bookings')
         .delete()
-        .eq('id', bookingToDelete.id);
+        .eq('id', bookingToDelete.id)
+        .eq('user_id', user?.id); // Add user_id check for security
 
       if (error) {
         console.error('Error deleting booking:', error);
@@ -241,9 +245,15 @@ const Profile = () => {
         return;
       }
 
+      console.log('Booking deleted successfully');
       toast.success('Booking deleted successfully');
       setDeleteDialogOpen(false);
       setBookingToDelete(null);
+      
+      // Immediately update the bookings state
+      setBookings(prev => prev.filter(booking => booking.id !== bookingToDelete.id));
+      
+      // Also fetch fresh data
       fetchBookings();
     } catch (error) {
       console.error('Error:', error);
@@ -313,6 +323,19 @@ const Profile = () => {
     return 'Good evening';
   };
 
+  // Check URL parameters for payment success
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    const paymentSuccess = urlParams.get('payment_success');
+    
+    if (sessionId || paymentSuccess === 'true') {
+      setShowPaymentSuccess(true);
+      // Clean up URL parameters
+      window.history.replaceState({}, document.title, '/profile');
+    }
+  }, []);
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -342,6 +365,11 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      
+      {/* Payment Success Toast */}
+      {showPaymentSuccess && (
+        <PaymentSuccessToast onShow={() => setShowPaymentSuccess(false)} />
+      )}
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
@@ -575,13 +603,17 @@ const Profile = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Booking</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this booking? This action cannot be undone.
+              Are you sure you want to delete this booking for {bookingToDelete?.hotels.name}? 
+              This action cannot be undone and will permanently remove the booking from your history.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteBooking} className="bg-red-600 hover:bg-red-700">
-              Delete
+            <AlertDialogAction 
+              onClick={confirmDeleteBooking} 
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete Booking
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

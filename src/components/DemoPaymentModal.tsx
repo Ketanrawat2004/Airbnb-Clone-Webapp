@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, CreditCard, Smartphone, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface DemoPaymentModalProps {
   open: boolean;
@@ -37,6 +37,7 @@ interface DemoPaymentModalProps {
 
 const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalProps) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedMethod, setSelectedMethod] = useState<string>('credit-card');
   const [processing, setProcessing] = useState(false);
 
@@ -131,9 +132,9 @@ const DemoPaymentModal = ({ open, onOpenChange, bookingData }: DemoPaymentModalP
         console.error('Email function error:', emailError);
       }
 
-      // Close modal and redirect
+      // Close modal and redirect to payment success
       onOpenChange(false);
-      window.location.href = '/profile';
+      navigate(`/payment-success?session_id=${booking.stripe_session_id}`);
 
     } catch (error) {
       console.error('Demo payment error:', error);

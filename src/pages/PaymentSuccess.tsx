@@ -1,11 +1,11 @@
-
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, Download, MessageSquare, Home, Phone, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import PaymentSuccessToast from '@/components/PaymentSuccessToast';
 
 interface BookingDetails {
   id: string;
@@ -25,9 +25,11 @@ interface BookingDetails {
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const sessionId = searchParams.get('session_id');
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState<BookingDetails | null>(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   useEffect(() => {
     if (sessionId) {
@@ -36,6 +38,16 @@ const PaymentSuccess = () => {
       setLoading(false);
     }
   }, [sessionId]);
+
+  useEffect(() => {
+    // Show success toast after a short delay when booking is loaded
+    if (booking && !loading) {
+      const timer = setTimeout(() => {
+        setShowSuccessToast(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [booking, loading]);
 
   const fetchBookingDetails = async () => {
     try {
@@ -94,6 +106,11 @@ const PaymentSuccess = () => {
     }
   };
 
+  const handleViewAllBookings = () => {
+    // Navigate to profile with success parameter
+    navigate('/profile?payment_success=true');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -107,13 +124,18 @@ const PaymentSuccess = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      {/* Payment Success Toast */}
+      {showSuccessToast && (
+        <PaymentSuccessToast onShow={() => setShowSuccessToast(false)} />
+      )}
+      
       <Card className="max-w-lg w-full">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4">
+          <div className="mx-auto mb-4 animate-bounce">
             <CheckCircle className="h-16 w-16 text-green-500" />
           </div>
           <CardTitle className="text-2xl font-bold text-green-600">
-            Booking Confirmed!
+            🎉 Booking Confirmed! 🎉
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -191,11 +213,13 @@ const PaymentSuccess = () => {
 
           {/* Navigation Buttons */}
           <div className="pt-4 space-y-2">
-            <Link to="/profile" className="block">
-              <Button variant="outline" className="w-full">
-                View All Bookings
-              </Button>
-            </Link>
+            <Button 
+              onClick={handleViewAllBookings}
+              variant="outline" 
+              className="w-full"
+            >
+              View All Bookings
+            </Button>
             <Link to="/" className="block">
               <Button variant="ghost" className="w-full">
                 <Home className="h-4 w-4 mr-2" />
