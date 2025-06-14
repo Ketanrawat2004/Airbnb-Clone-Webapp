@@ -218,7 +218,7 @@ const GuestDetailsForm = ({ onSubmit, loading = false }: GuestDetailsFormProps) 
           />
           <div className="flex-1">
             <Label htmlFor="terms" className="text-sm text-gray-600 leading-relaxed cursor-pointer">
-              By proceeding, I agree to MakeMyTrip's{' '}
+              By proceeding, I agree to Airbnb Clone+'{' '}
               <a href="#" className="text-blue-500 underline hover:text-blue-600">User Agreement</a>
             </Label>
             {errors.terms && <p className="text-red-500 text-xs mt-1">{errors.terms}</p>}
