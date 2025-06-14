@@ -14,29 +14,41 @@ serve(async (req) => {
 
   try {
     const { booking_id } = await req.json();
+    console.log('Generating receipt for booking:', booking_id);
 
     const supabaseService = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get booking details with user profile
-    const { data: booking, error } = await supabaseService
+    // Get booking details
+    const { data: booking, error: bookingError } = await supabaseService
       .from('bookings')
-      .select(`
-        *,
-        hotels:hotel_id (name, location, facilities, rules_and_regulations),
-        profiles:user_id (full_name)
-      `)
+      .select('*')
       .eq('id', booking_id)
       .single();
 
-    if (error || !booking) {
+    if (bookingError || !booking) {
+      console.error('Error fetching booking:', bookingError);
       throw new Error('Booking not found');
     }
 
-    const hotel = booking.hotels;
-    const profile = booking.profiles;
+    console.log('Booking found:', booking);
+
+    // Get hotel details
+    const { data: hotel, error: hotelError } = await supabaseService
+      .from('hotels')
+      .select('name, location, facilities, rules_and_regulations')
+      .eq('id', booking.hotel_id)
+      .single();
+
+    if (hotelError || !hotel) {
+      console.error('Error fetching hotel:', hotelError);
+      throw new Error('Hotel not found');
+    }
+
+    console.log('Hotel found:', hotel);
+
     const checkInDate = new Date(booking.check_in_date).toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
@@ -63,7 +75,7 @@ serve(async (req) => {
       / (1000 * 3600 * 24)
     );
 
-    // Generate professional HTML content for email
+    // Generate professional HTML content
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -323,7 +335,7 @@ serve(async (req) => {
               </div>
               <div class="detail-item">
                 <div class="detail-label">Guest Name</div>
-                <div class="detail-value">${booking.guest_name || profile?.full_name || 'Guest'}</div>
+                <div class="detail-value">${booking.guest_name || 'Guest'}</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Booking Date</div>
@@ -357,7 +369,7 @@ serve(async (req) => {
             <h3 style="margin-bottom: 15px;">Payment Summary</h3>
             <div class="price-row">
               <span>Room Rate (per night)</span>
-              <span>$${((booking.total_amount / 100) / nights).toFixed(2)}</span>
+              <span>₹${((booking.total_amount / 100) / nights).toLocaleString('en-IN')}</span>
             </div>
             <div class="price-row">
               <span>Number of Nights</span>
@@ -365,12 +377,12 @@ serve(async (req) => {
             </div>
             <div class="price-row">
               <span>Subtotal</span>
-              <span>$${(booking.total_amount / 100).toFixed(2)}</span>
+              <span>₹${(booking.total_amount / 100).toLocaleString('en-IN')}</span>
             </div>
             <div class="total-amount">
               <div class="price-row" style="font-size: 20px; margin-bottom: 0;">
                 <span>Total Amount Paid</span>
-                <span>$${(booking.total_amount / 100).toFixed(2)}</span>
+                <span>₹${(booking.total_amount / 100).toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
@@ -426,7 +438,7 @@ serve(async (req) => {
           </div>
           <p>Thank you for choosing us for your stay!</p>
           <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">
-            This is an automated confirmation email. Please save this for your records.
+            This is an automated confirmation receipt. Please save this for your records.
           </p>
           <div class="social-links">
             <span style="color: #bdc3c7;">Follow us: </span>

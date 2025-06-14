@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Download, MapPin, Calendar, Users, Phone, Mail } from 'lucide-react';
+import { ArrowLeft, Download, MapPin, Calendar, Users, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 
@@ -16,17 +16,16 @@ interface TicketData {
   guests: number;
   total_amount: number;
   guest_phone: string;
+  guest_name: string;
   status: string;
   payment_status: string;
   created_at: string;
+  user_id: string;
   hotels: {
     name: string;
     location: string;
     facilities: string[];
     rules_and_regulations: string[];
-  };
-  profiles: {
-    full_name: string;
   };
 }
 
@@ -43,23 +42,51 @@ const TicketPage = () => {
 
   const fetchTicket = async () => {
     try {
-      const { data, error } = await supabase
+      console.log('Fetching ticket for booking ID:', bookingId);
+      
+      // First fetch the booking
+      const { data: booking, error: bookingError } = await supabase
         .from('bookings')
-        .select(`
-          *,
-          hotels:hotel_id (name, location, facilities, rules_and_regulations),
-          profiles:user_id (full_name)
-        `)
+        .select('*')
         .eq('id', bookingId)
         .single();
 
-      if (error) {
-        console.error('Error fetching ticket:', error);
-        toast.error('Failed to load ticket');
+      if (bookingError) {
+        console.error('Error fetching booking:', bookingError);
+        toast.error('Failed to load booking details');
         return;
       }
 
-      setTicket(data);
+      if (!booking) {
+        console.error('No booking found');
+        toast.error('Booking not found');
+        return;
+      }
+
+      console.log('Booking found:', booking);
+
+      // Then fetch the hotel details
+      const { data: hotel, error: hotelError } = await supabase
+        .from('hotels')
+        .select('name, location, facilities, rules_and_regulations')
+        .eq('id', booking.hotel_id)
+        .single();
+
+      if (hotelError) {
+        console.error('Error fetching hotel:', hotelError);
+        toast.error('Failed to load hotel details');
+        return;
+      }
+
+      console.log('Hotel found:', hotel);
+
+      // Combine the data
+      const ticketData: TicketData = {
+        ...booking,
+        hotels: hotel
+      };
+
+      setTicket(ticketData);
     } catch (error) {
       console.error('Error:', error);
       toast.error('Failed to load ticket');
@@ -72,16 +99,25 @@ const TicketPage = () => {
     if (!ticket) return;
 
     try {
+      console.log('Downloading ticket for booking:', ticket.id);
+      
       const { data, error } = await supabase.functions.invoke('generate-receipt', {
         body: { booking_id: ticket.id }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error calling generate-receipt function:', error);
+        throw error;
+      }
+
+      console.log('Receipt generation response:', data);
 
       if (data?.html_content) {
+        // Create a Blob from the HTML content
         const blob = new Blob([data.html_content], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
         
+        // Create a temporary link and trigger download
         const a = document.createElement('a');
         a.href = url;
         a.download = `booking-ticket-${ticket.id.substring(0, 8)}.html`;
@@ -91,6 +127,8 @@ const TicketPage = () => {
         URL.revokeObjectURL(url);
         
         toast.success('Ticket downloaded successfully!');
+      } else {
+        throw new Error('No HTML content received');
       }
     } catch (error) {
       console.error('Error downloading ticket:', error);
@@ -151,7 +189,7 @@ const TicketPage = () => {
             </Link>
             <Button onClick={downloadTicket}>
               <Download className="h-4 w-4 mr-2" />
-              Download PDF
+              Download Ticket
             </Button>
           </div>
 
@@ -182,7 +220,7 @@ const TicketPage = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-2 text-gray-400" />
-                      <span>{ticket.profiles.full_name}</span>
+                      <span>{ticket.guest_name || 'Guest'}</span>
                     </div>
                     <div className="flex items-center">
                       <Phone className="h-4 w-4 mr-2 text-gray-400" />
