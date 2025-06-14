@@ -62,6 +62,7 @@ export type Database = {
           available_rooms: number | null
           created_at: string
           description: string | null
+          facilities: string[] | null
           id: string
           images: string[] | null
           location: string
@@ -69,6 +70,7 @@ export type Database = {
           price_per_night: number
           rating: number | null
           reviews_count: number | null
+          rules_and_regulations: string[] | null
           total_rooms: number | null
         }
         Insert: {
@@ -76,6 +78,7 @@ export type Database = {
           available_rooms?: number | null
           created_at?: string
           description?: string | null
+          facilities?: string[] | null
           id?: string
           images?: string[] | null
           location: string
@@ -83,6 +86,7 @@ export type Database = {
           price_per_night: number
           rating?: number | null
           reviews_count?: number | null
+          rules_and_regulations?: string[] | null
           total_rooms?: number | null
         }
         Update: {
@@ -90,6 +94,7 @@ export type Database = {
           available_rooms?: number | null
           created_at?: string
           description?: string | null
+          facilities?: string[] | null
           id?: string
           images?: string[] | null
           location?: string
@@ -97,6 +102,7 @@ export type Database = {
           price_per_night?: number
           rating?: number | null
           reviews_count?: number | null
+          rules_and_regulations?: string[] | null
           total_rooms?: number | null
         }
         Relationships: []

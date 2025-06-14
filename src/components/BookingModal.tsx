@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,6 +20,8 @@ interface Hotel {
   price_per_night: number;
   images: string[];
   available_rooms: number;
+  facilities: string[];
+  rules_and_regulations: string[];
 }
 
 interface BookingModalProps {

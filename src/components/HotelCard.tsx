@@ -12,6 +12,8 @@ interface Hotel {
   description: string;
   price_per_night: number;
   amenities: string[];
+  facilities: string[];
+  rules_and_regulations: string[];
   images: string[];
   rating: number;
   reviews_count: number;
