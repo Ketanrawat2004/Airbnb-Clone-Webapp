@@ -15,7 +15,7 @@ interface Hotel {
   images: string[];
   rating: number;
   reviews_count: number;
-  available_rooms?: number;
+  available_rooms: number;
   total_rooms?: number;
 }
 
@@ -127,7 +127,7 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
             </Button>
 
             {/* Availability Badge */}
-            {hotel.available_rooms !== undefined && hotel.available_rooms > 0 && (
+            {hotel.available_rooms > 0 && (
               <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                 {hotel.available_rooms} rooms available
               </div>

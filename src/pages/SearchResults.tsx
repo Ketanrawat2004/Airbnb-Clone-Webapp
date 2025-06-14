@@ -45,7 +45,12 @@ const SearchResults = () => {
           if (error) {
             console.error('Error searching hotels:', error);
           } else {
-            setHotels(data || []);
+            // Ensure available_rooms has a default value if null
+            const hotelsWithDefaults = (data || []).map(hotel => ({
+              ...hotel,
+              available_rooms: hotel.available_rooms || 0
+            }));
+            setHotels(hotelsWithDefaults);
           }
         } else {
           // If no location, get all hotels
@@ -57,7 +62,12 @@ const SearchResults = () => {
           if (error) {
             console.error('Error fetching hotels:', error);
           } else {
-            setHotels(data || []);
+            // Ensure available_rooms has a default value if null
+            const hotelsWithDefaults = (data || []).map(hotel => ({
+              ...hotel,
+              available_rooms: hotel.available_rooms || 0
+            }));
+            setHotels(hotelsWithDefaults);
           }
         }
       } catch (error) {

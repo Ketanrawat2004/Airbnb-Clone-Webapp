@@ -14,6 +14,8 @@ interface Hotel {
   images: string[];
   rating: number;
   reviews_count: number;
+  available_rooms: number;
+  total_rooms?: number;
 }
 
 const HotelGrid = () => {
@@ -31,7 +33,12 @@ const HotelGrid = () => {
         if (error) {
           console.error('Error fetching hotels:', error);
         } else {
-          setHotels(data || []);
+          // Ensure available_rooms has a default value if null
+          const hotelsWithDefaults = (data || []).map(hotel => ({
+            ...hotel,
+            available_rooms: hotel.available_rooms || 0
+          }));
+          setHotels(hotelsWithDefaults);
         }
       } catch (error) {
         console.error('Error fetching hotels:', error);
