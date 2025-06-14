@@ -19,7 +19,7 @@ const AuthConfirm = () => {
         setLoading(true);
         
         // Get all possible URL parameters that Supabase might use
-        const token_hash = searchParams.get('token_hash') || searchParams.get('token');
+        const token_hash = searchParams.get('token_hash');
         const type = searchParams.get('type');
         const access_token = searchParams.get('access_token');
         const refresh_token = searchParams.get('refresh_token');
@@ -54,7 +54,13 @@ const AuthConfirm = () => {
           
           if (verifyError) {
             console.error('Verification error:', verifyError);
-            setError(`Verification failed: ${verifyError.message}`);
+            
+            // Provide more helpful error messages
+            if (verifyError.message.includes('expired') || verifyError.message.includes('invalid')) {
+              setError('This confirmation link has expired or is invalid. Please try signing up again to receive a new confirmation email.');
+            } else {
+              setError(`Verification failed: ${verifyError.message}`);
+            }
           } else {
             console.log('Email verified successfully:', data);
             setConfirmed(true);
@@ -75,7 +81,7 @@ const AuthConfirm = () => {
         
       } catch (err) {
         console.error('Unexpected error during confirmation:', err);
-        setError('An unexpected error occurred. Please try signing in to your account.');
+        setError('An unexpected error occurred. Please try signing up again.');
       } finally {
         setLoading(false);
       }
@@ -88,7 +94,7 @@ const AuthConfirm = () => {
     navigate('/');
   };
 
-  const handleTryAgain = () => {
+  const handleSignUpAgain = () => {
     navigate('/');
   };
 
@@ -125,8 +131,8 @@ const AuthConfirm = () => {
           <p className="text-red-600 mb-6 text-sm leading-relaxed">{error}</p>
           
           <div className="space-y-3">
-            <Button onClick={handleTryAgain} className="w-full">
-              Try Signing In
+            <Button onClick={handleSignUpAgain} className="w-full">
+              Try Signing Up Again
             </Button>
             <Button onClick={handleContinue} variant="outline" className="w-full">
               Return to Home
