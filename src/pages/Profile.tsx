@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Mail, Phone, Save, Download, Calendar, X, Eye, Trash2 } from 'lucide-react';
+import { User, Mail, Phone, Save, Download, Calendar, X, Eye, Trash2, Heart, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import { Link } from 'react-router-dom';
@@ -289,6 +288,21 @@ const Profile = () => {
            booking.payment_status !== 'refunded';
   };
 
+  // Get display name for personalization
+  const getDisplayName = () => {
+    if (formData.full_name) return formData.full_name;
+    if (user?.user_metadata?.full_name) return user.user_metadata.full_name;
+    if (user?.email) return user.email.split('@')[0];
+    return 'Guest';
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -321,22 +335,43 @@ const Profile = () => {
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">My Profile</h1>
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              {getGreeting()}, {getDisplayName()}! 👋
+            </h1>
+            <p className="text-gray-600">Welcome back to your travel dashboard</p>
+          </div>
           
           {/* Profile Information Card */}
-          <Card>
-            <CardHeader>
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-rose-50 to-pink-50">
+            <CardHeader className="pb-4">
               <div className="flex items-center space-x-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarFallback className="text-lg">
-                    {(formData.full_name || user.email)?.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <CardTitle>Profile Information</CardTitle>
-                  <CardDescription>
-                    Manage your account details and preferences
+                <div className="relative">
+                  <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
+                    <AvatarFallback className="text-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white">
+                      {getDisplayName().charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <CardTitle className="text-2xl bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+                      {getDisplayName()}'s Travel Profile
+                    </CardTitle>
+                    <Heart className="h-5 w-5 text-rose-500" />
+                  </div>
+                  <CardDescription className="text-base">
+                    Manage your travel preferences and make every journey unforgettable
                   </CardDescription>
+                  <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                    <span className="flex items-center space-x-1">
+                      <Star className="h-4 w-4 text-yellow-500" />
+                      <span>Traveler</span>
+                    </span>
+                    <span>•</span>
+                    <span>Member since {new Date(user.created_at || '').getFullYear()}</span>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -344,25 +379,26 @@ const Profile = () => {
             <CardContent>
               <form onSubmit={handleSaveProfile} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="flex items-center space-x-2">
-                    <Mail className="h-4 w-4" />
-                    <span>Email</span>
+                  <Label htmlFor="email" className="flex items-center space-x-2 text-gray-700 font-medium">
+                    <Mail className="h-4 w-4 text-rose-500" />
+                    <span>Email Address</span>
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     value={user.email || ''}
                     disabled
-                    className="bg-gray-100"
+                    className="bg-gray-50 border-gray-200 text-gray-600"
                   />
-                  <p className="text-sm text-gray-500">
-                    Email cannot be changed
+                  <p className="text-sm text-gray-500 flex items-center space-x-1">
+                    <span>🔒</span>
+                    <span>Your email is secure and cannot be changed</span>
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="full_name" className="flex items-center space-x-2">
-                    <User className="h-4 w-4" />
+                  <Label htmlFor="full_name" className="flex items-center space-x-2 text-gray-700 font-medium">
+                    <User className="h-4 w-4 text-rose-500" />
                     <span>Full Name</span>
                   </Label>
                   <Input
@@ -372,12 +408,13 @@ const Profile = () => {
                     placeholder="Enter your full name"
                     value={formData.full_name}
                     onChange={handleInputChange}
+                    className="border-gray-200 focus:border-rose-300 focus:ring-rose-200"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="flex items-center space-x-2">
-                    <Phone className="h-4 w-4" />
+                  <Label htmlFor="phone" className="flex items-center space-x-2 text-gray-700 font-medium">
+                    <Phone className="h-4 w-4 text-rose-500" />
                     <span>Phone Number</span>
                   </Label>
                   <Input
@@ -387,12 +424,17 @@ const Profile = () => {
                     placeholder="Enter your phone number"
                     value={formData.phone}
                     onChange={handleInputChange}
+                    className="border-gray-200 focus:border-rose-300 focus:ring-rose-200"
                   />
                 </div>
 
-                <Button type="submit" disabled={saving} className="w-full">
+                <Button 
+                  type="submit" 
+                  disabled={saving} 
+                  className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium py-3 shadow-lg hover:shadow-xl transition-all duration-200"
+                >
                   <Save className="h-4 w-4 mr-2" />
-                  {saving ? 'Saving...' : 'Save Changes'}
+                  {saving ? 'Saving Your Changes...' : 'Save Profile Changes'}
                 </Button>
               </form>
             </CardContent>
