@@ -155,6 +155,11 @@ const BookingModal = ({
       return;
     }
 
+    console.log('Starting payment process...');
+    console.log('User:', user);
+    console.log('Guest details:', guestDetails);
+    console.log('Booking details:', { checkInDate, checkOutDate, guests });
+
     try {
       setLoading(true);
       
@@ -163,14 +168,18 @@ const BookingModal = ({
       const totalAmountInPaise = nights * hotel.price_per_night;
       const guestPhone = `${guestDetails.countryCode}${guestDetails.phone}`;
       
-      console.log('Creating payment with details:', {
+      console.log('Payment details:', {
         hotel_id: hotel.id,
         check_in_date: checkInDate,
         check_out_date: checkOutDate,
         guests: parseInt(guests),
         guest_phone: guestPhone,
         total_amount: totalAmountInPaise,
+        nights: nights,
+        price_per_night: hotel.price_per_night
       });
+
+      console.log('Calling create-payment function...');
 
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: {
@@ -190,24 +199,34 @@ const BookingModal = ({
         },
       });
 
+      console.log('Payment function response:', { data, error });
+
       if (error) {
         console.error('Payment creation error:', error);
-        throw error;
+        throw new Error(error.message || 'Failed to create payment session');
       }
 
-      if (data?.url) {
-        // Redirect to Stripe Checkout
-        window.location.href = data.url;
-      } else {
-        throw new Error('No payment URL received');
+      if (!data) {
+        throw new Error('No response received from payment service');
       }
+
+      if (!data.url) {
+        console.error('No payment URL in response:', data);
+        throw new Error('Payment URL not received from server');
+      }
+
+      console.log('Redirecting to payment URL:', data.url);
+      
+      // Open Stripe checkout in the same tab
+      window.location.href = data.url;
       
     } catch (error) {
-      console.error('Error creating payment:', error);
+      console.error('Error in payment process:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
       toast({
         title: 'Payment setup failed',
-        description: `There was an error setting up your payment: ${errorMessage}. Please try again.`,
+        description: `Unable to process payment: ${errorMessage}. Please try again.`,
         variant: 'destructive',
       });
     } finally {
