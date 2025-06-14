@@ -59,7 +59,8 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
     setBookingModalOpen(true);
   };
 
-  const pricePerNight = hotel.price_per_night / 100; // Convert from cents
+  // Convert price from paise to rupees
+  const pricePerNight = hotel.price_per_night / 100;
 
   return (
     <>
@@ -168,7 +169,7 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-lg font-semibold">${pricePerNight}</span>
+                <span className="text-lg font-semibold">₹{pricePerNight.toLocaleString('en-IN')}</span>
                 <span className="text-gray-600 text-sm ml-1">/ night</span>
               </div>
               <Button 

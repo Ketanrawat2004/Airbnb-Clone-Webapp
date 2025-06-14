@@ -70,7 +70,8 @@ const BookingModal = ({
 
   const calculateTotal = () => {
     const nights = calculateNights();
-    return nights * (hotel.price_per_night / 100); // Convert from cents
+    // Convert from paise to rupees, then to USD for payment processing
+    return nights * (hotel.price_per_night / 100 / 83); // Convert INR to USD
   };
 
   const validateBookingDetails = () => {
@@ -157,7 +158,9 @@ const BookingModal = ({
     try {
       setLoading(true);
       
-      const totalAmount = Math.round(calculateTotal() * 100); // Convert to cents
+      // Calculate total in INR (paise) for backend
+      const nights = calculateNights();
+      const totalAmountInPaise = nights * hotel.price_per_night;
       const guestPhone = `${guestDetails.countryCode}${guestDetails.phone}`;
       
       console.log('Creating payment with details:', {
@@ -166,7 +169,7 @@ const BookingModal = ({
         check_out_date: checkOutDate,
         guests: parseInt(guests),
         guest_phone: guestPhone,
-        total_amount: totalAmount,
+        total_amount: totalAmountInPaise,
       });
 
       const { data, error } = await supabase.functions.invoke('create-payment', {
@@ -176,7 +179,7 @@ const BookingModal = ({
           check_out_date: checkOutDate,
           guests: parseInt(guests),
           guest_phone: guestPhone,
-          total_amount: totalAmount,
+          total_amount: totalAmountInPaise,
           guest_details: {
             title: guestDetails.title,
             first_name: guestDetails.firstName,

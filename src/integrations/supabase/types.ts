@@ -104,7 +104,7 @@ export type Database = {
           images?: string[] | null
           location: string
           name: string
-          price_per_night: number
+          price_per_night?: number
           rating?: number | null
           reviews_count?: number | null
           rules_and_regulations?: string[] | null
@@ -155,11 +155,109 @@ export type Database = {
         }
         Relationships: []
       }
+      room_bookings: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          room_id: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+          room_id: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          room_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_bookings_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_bookings_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rooms: {
+        Row: {
+          amenities: string[] | null
+          created_at: string
+          hotel_id: string
+          id: string
+          is_available: boolean | null
+          max_occupancy: number
+          price_per_night: number
+          room_number: string
+          room_type: string
+          updated_at: string
+        }
+        Insert: {
+          amenities?: string[] | null
+          created_at?: string
+          hotel_id: string
+          id?: string
+          is_available?: boolean | null
+          max_occupancy?: number
+          price_per_night: number
+          room_number: string
+          room_type: string
+          updated_at?: string
+        }
+        Update: {
+          amenities?: string[] | null
+          created_at?: string
+          hotel_id?: string
+          id?: string
+          is_available?: boolean | null
+          max_occupancy?: number
+          price_per_night?: number
+          room_number?: string
+          room_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rooms_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      get_available_rooms: {
+        Args: {
+          hotel_id_param: string
+          check_in_date: string
+          check_out_date: string
+        }
+        Returns: {
+          id: string
+          room_number: string
+          room_type: string
+          max_occupancy: number
+          price_per_night: number
+          amenities: string[]
+        }[]
+      }
       search_hotels: {
         Args: { search_location: string }
         Returns: {

@@ -17,6 +17,9 @@ interface HotelInfoProps {
 }
 
 const HotelInfo = ({ hotel }: HotelInfoProps) => {
+  // Convert price from paise to rupees
+  const priceInRupees = hotel.price_per_night / 100;
+
   return (
     <div className="flex space-x-3">
       <img
@@ -31,7 +34,7 @@ const HotelInfo = ({ hotel }: HotelInfoProps) => {
           {hotel.location}
         </div>
         <p className="text-sm text-gray-600">
-          ${(hotel.price_per_night / 100).toFixed(2)} per night
+          ₹{priceInRupees.toLocaleString('en-IN')} per night
         </p>
       </div>
     </div>
