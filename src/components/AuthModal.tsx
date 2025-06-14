@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 
@@ -36,7 +36,16 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     const { error } = await signIn(formData.email, formData.password);
     
     if (error) {
-      toast.error(error.message);
+      console.log('Sign in error:', error);
+      
+      // Handle specific error cases
+      if (error.message.includes('Email not confirmed')) {
+        toast.error('Please check your email and click the confirmation link before signing in. Check your spam folder if you don\'t see it.');
+      } else if (error.message.includes('Invalid login credentials')) {
+        toast.error('Invalid email or password. Please check your credentials and try again.');
+      } else {
+        toast.error(error.message);
+      }
     } else {
       toast.success('Successfully signed in!');
       onOpenChange(false);
@@ -52,9 +61,10 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     const { error } = await signUp(formData.email, formData.password, formData.fullName);
     
     if (error) {
+      console.log('Sign up error:', error);
       toast.error(error.message);
     } else {
-      toast.success('Successfully signed up! Please check your email to verify your account.');
+      toast.success('Successfully signed up! Please check your email to verify your account before signing in.');
       onOpenChange(false);
     }
     
@@ -66,6 +76,9 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Welcome to Airbnb Clone</DialogTitle>
+          <DialogDescription>
+            Sign in to your account or create a new one to get started.
+          </DialogDescription>
         </DialogHeader>
         
         <Tabs defaultValue="signin" className="w-full">
@@ -105,6 +118,10 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
+              
+              <p className="text-sm text-gray-600 text-center">
+                If you just signed up, please check your email and click the confirmation link first.
+              </p>
             </form>
           </TabsContent>
           
@@ -152,6 +169,10 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Creating account...' : 'Sign Up'}
               </Button>
+              
+              <p className="text-sm text-gray-600 text-center">
+                You'll receive an email to confirm your account after signing up.
+              </p>
             </form>
           </TabsContent>
         </Tabs>
