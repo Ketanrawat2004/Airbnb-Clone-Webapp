@@ -2,6 +2,8 @@
 import Header from '@/components/Header';
 import HotelGrid from '@/components/HotelGrid';
 import SearchBar from '@/components/SearchBar';
+import ChatBot from '@/components/ChatBot';
+import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
@@ -32,6 +34,12 @@ const Index = () => {
           <HotelGrid />
         </div>
       </section>
+
+      {/* ChatBot */}
+      <ChatBot />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
