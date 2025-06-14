@@ -11,6 +11,7 @@ import SearchResults from "./pages/SearchResults";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 import AuthConfirm from "./pages/AuthConfirm";
+import TicketPage from "./pages/TicketPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-canceled" element={<PaymentCanceled />} />
+            <Route path="/ticket/:bookingId" element={<TicketPage />} />
             {/* Handle both /auth/confirm and /confirm for email confirmation */}
             <Route path="/auth/confirm" element={<AuthConfirm />} />
             <Route path="/confirm" element={<AuthConfirm />} />
