@@ -60,6 +60,7 @@ const BookingModal = ({
   const [checkInDate, setCheckInDate] = useState(initialCheckIn);
   const [checkOutDate, setCheckOutDate] = useState(initialCheckOut);
   const [guests, setGuests] = useState(initialGuests);
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; couponId: string } | null>(null);
 
   const calculateNights = () => {
     if (!checkInDate || !checkOutDate) return 0;
@@ -161,6 +162,7 @@ const BookingModal = ({
     console.log('Guest details:', guestDetails);
     console.log('Guest list:', guestList);
     console.log('Booking details:', { checkInDate, checkOutDate, guests });
+    console.log('Applied coupon:', appliedCoupon);
 
     try {
       setLoading(true);
@@ -179,7 +181,8 @@ const BookingModal = ({
         total_amount: totalAmountInPaise,
         nights: nights,
         price_per_night: hotel.price_per_night,
-        guest_list: guestList
+        guest_list: guestList,
+        coupon_data: appliedCoupon
       });
 
       console.log('Calling create-payment function...');
@@ -199,7 +202,8 @@ const BookingModal = ({
             email: guestDetails.email,
             phone: guestPhone,
           },
-          guest_list: guestList
+          guest_list: guestList,
+          coupon_data: appliedCoupon
         },
       });
 
@@ -240,6 +244,7 @@ const BookingModal = ({
 
   const handleModalClose = () => {
     setStep('booking');
+    setAppliedCoupon(null);
     onOpenChange(false);
   };
 
@@ -279,6 +284,8 @@ const BookingModal = ({
             onCheckOutChange={setCheckOutDate}
             onGuestsChange={setGuests}
             onContinue={handleBookingContinue}
+            appliedCoupon={appliedCoupon}
+            onCouponApplied={setAppliedCoupon}
           />
         ) : (
           <GuestDetailsForm 

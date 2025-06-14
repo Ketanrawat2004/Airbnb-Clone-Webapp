@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Calendar, Users, CreditCard } from 'lucide-react';
 import HotelInfo from './HotelInfo';
 import PriceBreakdown from './PriceBreakdown';
+import CouponInput from './CouponInput';
 
 interface Hotel {
   id: string;
@@ -28,6 +29,8 @@ interface BookingDetailsStepProps {
   onCheckOutChange: (date: string) => void;
   onGuestsChange: (guests: string) => void;
   onContinue: () => void;
+  appliedCoupon?: { code: string; discountAmount: number; couponId: string } | null;
+  onCouponApplied?: (couponData: { code: string; discountAmount: number; couponId: string } | null) => void;
 }
 
 const BookingDetailsStep = ({
@@ -41,7 +44,17 @@ const BookingDetailsStep = ({
   onCheckOutChange,
   onGuestsChange,
   onContinue,
+  appliedCoupon,
+  onCouponApplied,
 }: BookingDetailsStepProps) => {
+  // Calculate booking amount in paise for coupon validation
+  const calculateBookingAmountInPaise = () => {
+    const priceInRupees = hotel.price_per_night / 100; // Convert paise to rupees
+    const baseAmount = nights * priceInRupees;
+    const discountedAmount = baseAmount * 0.85; // After 15% discount
+    return Math.round(discountedAmount * 100); // Convert back to paise
+  };
+
   return (
     <div className="space-y-6">
       {/* Hotel Info */}
@@ -92,10 +105,23 @@ const BookingDetailsStep = ({
             max={hotel.available_rooms * 2}
           />
         </div>
+
+        {/* Coupon Input */}
+        {nights > 0 && onCouponApplied && (
+          <CouponInput
+            bookingAmount={calculateBookingAmountInPaise()}
+            onCouponApplied={onCouponApplied}
+            appliedCoupon={appliedCoupon}
+          />
+        )}
       </div>
 
       {/* Price Breakdown */}
-      <PriceBreakdown nights={nights} total={total} />
+      <PriceBreakdown 
+        nights={nights} 
+        total={total} 
+        appliedCoupon={appliedCoupon}
+      />
 
       {/* Continue Button */}
       <Button

@@ -9,11 +9,53 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      booking_coupons: {
+        Row: {
+          booking_id: string
+          coupon_id: string
+          created_at: string
+          discount_amount: number
+          id: string
+        }
+        Insert: {
+          booking_id: string
+          coupon_id: string
+          created_at?: string
+          discount_amount: number
+          id?: string
+        }
+        Update: {
+          booking_id?: string
+          coupon_id?: string
+          created_at?: string
+          discount_amount?: number
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_coupons_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_coupons_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
+          base_amount: number | null
           check_in_date: string
           check_out_date: string
+          coupon_code: string | null
           created_at: string
+          discount_amount: number | null
           guest_age: number | null
           guest_gender: string | null
           guest_name: string | null
@@ -24,15 +66,19 @@ export type Database = {
           id: string
           payment_intent_id: string | null
           payment_status: string | null
+          room_type: string | null
           status: string | null
           stripe_session_id: string | null
           total_amount: number
           user_id: string
         }
         Insert: {
+          base_amount?: number | null
           check_in_date: string
           check_out_date: string
+          coupon_code?: string | null
           created_at?: string
+          discount_amount?: number | null
           guest_age?: number | null
           guest_gender?: string | null
           guest_name?: string | null
@@ -43,15 +89,19 @@ export type Database = {
           id?: string
           payment_intent_id?: string | null
           payment_status?: string | null
+          room_type?: string | null
           status?: string | null
           stripe_session_id?: string | null
           total_amount: number
           user_id: string
         }
         Update: {
+          base_amount?: number | null
           check_in_date?: string
           check_out_date?: string
+          coupon_code?: string | null
           created_at?: string
+          discount_amount?: number | null
           guest_age?: number | null
           guest_gender?: string | null
           guest_name?: string | null
@@ -62,6 +112,7 @@ export type Database = {
           id?: string
           payment_intent_id?: string | null
           payment_status?: string | null
+          room_type?: string | null
           status?: string | null
           stripe_session_id?: string | null
           total_amount?: number
@@ -76,6 +127,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean | null
+          max_discount_amount: number | null
+          min_booking_amount: number | null
+          updated_at: string
+          usage_count: number | null
+          usage_limit: number | null
+          valid_from: string
+          valid_until: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type: string
+          discount_value: number
+          id?: string
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          min_booking_amount?: number | null
+          updated_at?: string
+          usage_count?: number | null
+          usage_limit?: number | null
+          valid_from?: string
+          valid_until: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          min_booking_amount?: number | null
+          updated_at?: string
+          usage_count?: number | null
+          usage_limit?: number | null
+          valid_from?: string
+          valid_until?: string
+        }
+        Relationships: []
       }
       hotels: {
         Row: {
@@ -273,6 +372,15 @@ export type Database = {
           total_rooms: number
           available_rooms: number
           created_at: string
+        }[]
+      }
+      validate_coupon: {
+        Args: { coupon_code_param: string; booking_amount_param: number }
+        Returns: {
+          valid: boolean
+          discount_amount: number
+          coupon_id: string
+          message: string
         }[]
       }
     }
