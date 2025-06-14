@@ -14,6 +14,10 @@ export type Database = {
           check_in_date: string
           check_out_date: string
           created_at: string
+          guest_age: number | null
+          guest_gender: string | null
+          guest_name: string | null
+          guest_nationality: string | null
           guest_phone: string | null
           guests: number
           hotel_id: string
@@ -29,6 +33,10 @@ export type Database = {
           check_in_date: string
           check_out_date: string
           created_at?: string
+          guest_age?: number | null
+          guest_gender?: string | null
+          guest_name?: string | null
+          guest_nationality?: string | null
           guest_phone?: string | null
           guests: number
           hotel_id: string
@@ -44,6 +52,10 @@ export type Database = {
           check_in_date?: string
           check_out_date?: string
           created_at?: string
+          guest_age?: number | null
+          guest_gender?: string | null
+          guest_name?: string | null
+          guest_nationality?: string | null
           guest_phone?: string | null
           guests?: number
           hotel_id?: string
