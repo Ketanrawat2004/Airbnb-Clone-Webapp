@@ -5,16 +5,22 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import AuthModal from './AuthModal';
 
 const Header = () => {
   const { user, signOut } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleSearch = (location: string) => {
     console.log('Searching for:', location);
     // TODO: Implement search functionality
+  };
+
+  const handleProfileClick = () => {
+    navigate('/profile');
   };
 
   return (
@@ -22,7 +28,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
             <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone</h1>
           </div>
 
@@ -46,7 +52,7 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleProfileClick}>
                     <User className="h-4 w-4 mr-2" />
                     Profile
                   </DropdownMenuItem>
