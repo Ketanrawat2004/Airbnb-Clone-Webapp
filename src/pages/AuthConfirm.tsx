@@ -16,14 +16,37 @@ const AuthConfirm = () => {
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
-        // Check if this is a confirmation link with token
+        // Get URL parameters
         const token = searchParams.get('token');
+        const tokenHash = searchParams.get('token_hash');
         const type = searchParams.get('type');
         
-        console.log('Confirmation params:', { token, type });
+        console.log('Confirmation params:', { token, tokenHash, type });
 
-        if (token && type) {
-          // This is a confirmation link, verify the token
+        if (tokenHash && type) {
+          // This is a confirmation link with token_hash, verify it
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: type as any,
+          });
+
+          if (error) {
+            console.error('Token verification error:', error);
+            if (error.message.includes('expired')) {
+              setError('Email confirmation link has expired. Please request a new confirmation email by trying to sign up again.');
+            } else if (error.message.includes('invalid')) {
+              setError('Email confirmation link is invalid. Please check your email for the correct confirmation link.');
+            } else {
+              setError('Email confirmation failed. Please try signing up again or contact support.');
+            }
+          } else if (data.user) {
+            console.log('Email confirmed successfully:', data.user);
+            setConfirmed(true);
+          } else {
+            setError('Email confirmation failed. Please try again.');
+          }
+        } else if (token && type) {
+          // Legacy token format
           const { data, error } = await supabase.auth.verifyOtp({
             token_hash: token,
             type: type as any,
@@ -49,12 +72,12 @@ const AuthConfirm = () => {
             console.log('User already authenticated');
             setConfirmed(true);
           } else {
-            setError('No confirmation token found. Please check your email for the confirmation link.');
+            setError('No confirmation token found. Please check your email for the confirmation link or try signing up again.');
           }
         }
       } catch (err) {
         console.error('Unexpected error during confirmation:', err);
-        setError('An unexpected error occurred. Please try again.');
+        setError('An unexpected error occurred. Please try again or contact support.');
       } finally {
         setLoading(false);
       }
@@ -67,9 +90,8 @@ const AuthConfirm = () => {
     navigate('/');
   };
 
-  const handleResendConfirmation = () => {
+  const handleReturnHome = () => {
     navigate('/');
-    // You could implement resend logic here if needed
   };
 
   if (loading) {
@@ -95,18 +117,18 @@ const AuthConfirm = () => {
           <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-6" />
           
           <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Email Confirmation Failed
+            Email Confirmation Issue
           </h2>
           
-          <p className="text-red-600 mb-6">{error}</p>
+          <p className="text-red-600 mb-6 text-sm leading-relaxed">{error}</p>
           
           <div className="space-y-3">
-            <Button onClick={handleResendConfirmation} className="w-full">
+            <Button onClick={handleReturnHome} className="w-full">
               Return to Home
             </Button>
-            <Button variant="outline" onClick={handleContinue} className="w-full">
-              Continue Anyway
-            </Button>
+            <p className="text-xs text-gray-500">
+              You can try signing up again to receive a new confirmation email.
+            </p>
           </div>
         </div>
       </div>
@@ -124,11 +146,11 @@ const AuthConfirm = () => {
         <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
         
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          You have successfully registered in Airbnb Clone+
+          Email Confirmed Successfully!
         </h2>
         
         <p className="text-gray-600 mb-6">
-          Thank you for joining! Your email has been confirmed and your account is now active. You can now explore and book amazing stays around the world.
+          Welcome to Airbnb Clone+! Your email has been confirmed and your account is now active. You can now explore and book amazing stays around the world.
         </p>
         
         <Button onClick={handleContinue} className="w-full">
