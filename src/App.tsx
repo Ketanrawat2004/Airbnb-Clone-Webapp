@@ -28,7 +28,9 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-canceled" element={<PaymentCanceled />} />
+            {/* Handle both /auth/confirm and /confirm for email confirmation */}
             <Route path="/auth/confirm" element={<AuthConfirm />} />
+            <Route path="/confirm" element={<AuthConfirm />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

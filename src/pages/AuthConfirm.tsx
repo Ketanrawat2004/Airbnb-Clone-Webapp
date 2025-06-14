@@ -18,41 +18,58 @@ const AuthConfirm = () => {
       try {
         setLoading(true);
         
-        // Get token and type from URL parameters
-        const token = searchParams.get('token');
+        // Get all possible URL parameters that Supabase might use
+        const token_hash = searchParams.get('token_hash') || searchParams.get('token');
         const type = searchParams.get('type');
+        const access_token = searchParams.get('access_token');
+        const refresh_token = searchParams.get('refresh_token');
         
-        console.log('URL params - token:', token, 'type:', type);
+        console.log('URL parameters:', { token_hash, type, access_token, refresh_token });
         console.log('Full URL:', window.location.href);
         
-        // Check if this is a confirmation URL with proper parameters
-        if (token && type) {
-          console.log('Processing confirmation with token and type');
+        // If we have access_token and refresh_token, set the session directly
+        if (access_token && refresh_token) {
+          console.log('Setting session with tokens from URL');
+          const { data, error: sessionError } = await supabase.auth.setSession({
+            access_token,
+            refresh_token
+          });
           
-          // Verify the token with Supabase
-          const { data, error: confirmError } = await supabase.auth.verifyOtp({
-            token_hash: token,
+          if (sessionError) {
+            console.error('Session error:', sessionError);
+            setError(`Session error: ${sessionError.message}`);
+          } else {
+            console.log('Session set successfully:', data);
+            setConfirmed(true);
+          }
+        }
+        // If we have token_hash and type, verify with OTP
+        else if (token_hash && type) {
+          console.log('Verifying email with token hash');
+          
+          const { data, error: verifyError } = await supabase.auth.verifyOtp({
+            token_hash,
             type: type as any
           });
           
-          if (confirmError) {
-            console.error('Confirmation error:', confirmError);
-            setError(`Confirmation failed: ${confirmError.message}`);
+          if (verifyError) {
+            console.error('Verification error:', verifyError);
+            setError(`Verification failed: ${verifyError.message}`);
           } else {
-            console.log('Email confirmed successfully:', data);
+            console.log('Email verified successfully:', data);
             setConfirmed(true);
           }
-        } else {
-          // Check if user is already authenticated (they might have clicked the link while logged in)
+        }
+        // Check if user is already authenticated
+        else {
           const { data: sessionData } = await supabase.auth.getSession();
           
           if (sessionData.session) {
             console.log('User already authenticated');
             setConfirmed(true);
           } else {
-            // No token parameters and no session - this might be an invalid confirmation link
-            console.log('No confirmation parameters found in URL');
-            setError('No confirmation link found. Please check your email for the confirmation link.');
+            console.log('No valid confirmation parameters found');
+            setError('Invalid confirmation link. Please check your email for a valid confirmation link or try signing up again.');
           }
         }
         
