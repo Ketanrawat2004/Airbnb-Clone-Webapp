@@ -13,8 +13,9 @@ const BackButton = () => {
   }
 
   const handleBack = () => {
-    // Check if there's previous history, otherwise go to home
-    if (window.history.length > 1) {
+    console.log('Back button clicked');
+    // Use history state or fallback to home
+    if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
     } else {
       navigate('/');

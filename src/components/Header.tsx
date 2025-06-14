@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Menu, User } from 'lucide-react';
+import { Menu, User, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import AuthModal from './AuthModal';
@@ -33,9 +33,18 @@ const Header = () => {
     <header className="border-b bg-white sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Left section with Back button and Logo */}
+          {/* Left section with Back button, Home button, and Logo */}
           <div className="flex items-center space-x-4">
             <BackButton />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleHomeClick}
+              className="flex items-center space-x-1 text-gray-600 hover:text-gray-900"
+            >
+              <Home className="h-4 w-4" />
+              <span>Home</span>
+            </Button>
             <div 
               className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity" 
               onClick={handleHomeClick}
