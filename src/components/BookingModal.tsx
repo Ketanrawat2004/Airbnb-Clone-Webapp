@@ -9,11 +9,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Calendar, Users, CreditCard, MapPin, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import GuestDetailsForm from './GuestDetailsForm';
+import BookingDetailsStep from './BookingDetailsStep';
 
 interface Hotel {
   id: string;
@@ -220,11 +219,6 @@ const BookingModal = ({
 
   const nights = calculateNights();
   const total = calculateTotal();
-  const basePrice = total * 83; // Convert to INR
-  const discount = Math.round(basePrice * 0.64);
-  const discountedPrice = Math.round(basePrice * 0.36);
-  const taxes = Math.round(basePrice * 0.2);
-  const finalAmount = Math.round(basePrice * 0.56);
 
   return (
     <Dialog open={open} onOpenChange={handleModalClose}>
@@ -248,113 +242,18 @@ const BookingModal = ({
         </DialogHeader>
 
         {step === 'booking' ? (
-          <div className="space-y-6">
-            {/* Hotel Info */}
-            <div className="flex space-x-3">
-              <img
-                src={hotel.images[0]}
-                alt={hotel.name}
-                className="w-16 h-16 rounded-lg object-cover"
-              />
-              <div className="flex-1">
-                <h3 className="font-semibold">{hotel.name}</h3>
-                <div className="flex items-center text-sm text-gray-600">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  {hotel.location}
-                </div>
-                <p className="text-sm text-gray-600">
-                  ${(hotel.price_per_night / 100).toFixed(2)} per night
-                </p>
-              </div>
-            </div>
-
-            {/* Booking Details */}
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="checkIn" className="flex items-center text-sm font-medium mb-1">
-                    <Calendar className="h-3 w-3 mr-1" />
-                    Check-in
-                  </Label>
-                  <Input
-                    id="checkIn"
-                    type="date"
-                    value={checkInDate}
-                    onChange={(e) => setCheckInDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="checkOut" className="flex items-center text-sm font-medium mb-1">
-                    <Calendar className="h-3 w-3 mr-1" />
-                    Check-out
-                  </Label>
-                  <Input
-                    id="checkOut"
-                    type="date"
-                    value={checkOutDate}
-                    onChange={(e) => setCheckOutDate(e.target.value)}
-                    min={checkInDate || new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="guests" className="flex items-center text-sm font-medium mb-1">
-                  <Users className="h-3 w-3 mr-1" />
-                  Guests
-                </Label>
-                <Input
-                  id="guests"
-                  type="number"
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  min="1"
-                  max={hotel.available_rooms * 2}
-                />
-              </div>
-            </div>
-
-            {/* Price Breakdown */}
-            {nights > 0 && (
-              <div className="border-t pt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>1 Room x {nights} Night{nights > 1 ? 's' : ''}</span>
-                  <span></span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Base Price</span>
-                  <span>₹ {basePrice.toFixed(0)}</span>
-                </div>
-                <div className="flex justify-between text-sm text-green-600">
-                  <span>Total Discount</span>
-                  <span>- ₹ {discount}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Price after Discount</span>
-                  <span>₹ {discountedPrice}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Taxes & Service Fees</span>
-                  <span>₹ {taxes}</span>
-                </div>
-                <div className="flex justify-between font-semibold text-lg border-t pt-2">
-                  <span>Total Amount to be paid</span>
-                  <span>₹ {finalAmount}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Continue Button */}
-            <Button
-              onClick={handleBookingContinue}
-              disabled={!checkInDate || !checkOutDate || !guests || nights <= 0}
-              className="w-full bg-rose-500 hover:bg-rose-600"
-            >
-              <CreditCard className="h-4 w-4 mr-2" />
-              Continue to Guest Details
-            </Button>
-          </div>
+          <BookingDetailsStep
+            hotel={hotel}
+            checkInDate={checkInDate}
+            checkOutDate={checkOutDate}
+            guests={guests}
+            nights={nights}
+            total={total}
+            onCheckInChange={setCheckInDate}
+            onCheckOutChange={setCheckOutDate}
+            onGuestsChange={setGuests}
+            onContinue={handleBookingContinue}
+          />
         ) : (
           <GuestDetailsForm 
             onSubmit={handleGuestDetailsSubmit}
