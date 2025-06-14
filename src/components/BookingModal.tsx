@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +12,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import GuestDetailsForm from './GuestDetailsForm';
 import BookingDetailsStep from './BookingDetailsStep';
+import DemoPaymentModal from './DemoPaymentModal';
 import { Guest } from './GuestForm';
 
 interface Hotel {
@@ -55,12 +55,15 @@ const BookingModal = ({
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<'booking' | 'guest-details'>('booking');
+  const [step, setStep] = useState<'booking' | 'guest-details' | 'payment-method'>('booking');
+  const [showDemoPayment, setShowDemoPayment] = useState(false);
   
   const [checkInDate, setCheckInDate] = useState(initialCheckIn);
   const [checkOutDate, setCheckOutDate] = useState(initialCheckOut);
   const [guests, setGuests] = useState(initialGuests);
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; couponId: string } | null>(null);
+  const [guestDetails, setGuestDetails] = useState<GuestDetails | null>(null);
+  const [guestList, setGuestList] = useState<Guest[]>([]);
 
   const calculateNights = () => {
     if (!checkInDate || !checkOutDate) return 0;
@@ -157,34 +160,23 @@ const BookingModal = ({
       return;
     }
 
-    console.log('Starting payment process...');
-    console.log('User:', user);
-    console.log('Guest details:', guestDetails);
-    console.log('Guest list:', guestList);
-    console.log('Booking details:', { checkInDate, checkOutDate, guests });
-    console.log('Applied coupon:', appliedCoupon);
+    setGuestDetails(guestDetails);
+    setGuestList(guestList);
+    setStep('payment-method');
+  };
+
+  const handleStripePayment = async () => {
+    if (!guestDetails) return;
+
+    console.log('Starting Stripe payment process...');
 
     try {
       setLoading(true);
       
-      // Calculate total in INR (paise) for backend
       const nights = calculateNights();
       const totalAmountInPaise = nights * hotel.price_per_night;
       const guestPhone = `${guestDetails.countryCode}${guestDetails.phone}`;
       
-      console.log('Payment details:', {
-        hotel_id: hotel.id,
-        check_in_date: checkInDate,
-        check_out_date: checkOutDate,
-        guests: parseInt(guests),
-        guest_phone: guestPhone,
-        total_amount: totalAmountInPaise,
-        nights: nights,
-        price_per_night: hotel.price_per_night,
-        guest_list: guestList,
-        coupon_data: appliedCoupon
-      });
-
       console.log('Calling create-payment function...');
 
       const { data, error } = await supabase.functions.invoke('create-payment', {
@@ -207,34 +199,18 @@ const BookingModal = ({
         },
       });
 
-      console.log('Payment function response:', { data, error });
-
-      if (error) {
-        console.error('Payment creation error:', error);
-        throw new Error(error.message || 'Failed to create payment session');
+      if (error || !data?.url) {
+        throw new Error(error?.message || 'Payment URL not received');
       }
 
-      if (!data) {
-        throw new Error('No response received from payment service');
-      }
-
-      if (!data.url) {
-        console.error('No payment URL in response:', data);
-        throw new Error('Payment URL not received from server');
-      }
-
-      console.log('Redirecting to payment URL:', data.url);
-      
-      // Open Stripe checkout in the same tab
+      console.log('Redirecting to Stripe:', data.url);
       window.location.href = data.url;
       
     } catch (error) {
-      console.error('Error in payment process:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      
+      console.error('Stripe payment error:', error);
       toast({
         title: 'Payment setup failed',
-        description: `Unable to process payment: ${errorMessage}. Please try again.`,
+        description: `Unable to process payment: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: 'destructive',
       });
     } finally {
@@ -245,57 +221,119 @@ const BookingModal = ({
   const handleModalClose = () => {
     setStep('booking');
     setAppliedCoupon(null);
+    setGuestDetails(null);
+    setGuestList([]);
     onOpenChange(false);
   };
 
   const nights = calculateNights();
   const total = calculateTotal();
+  const totalAmountInPaise = nights * hotel.price_per_night;
 
   return (
-    <Dialog open={open} onOpenChange={handleModalClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle>
-              {step === 'booking' ? 'Book your stay' : 'Guest Details'}
-            </DialogTitle>
-            {step === 'guest-details' && (
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => setStep('booking')}
-                className="p-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleModalClose}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle>
+                {step === 'booking' && 'Book your stay'}
+                {step === 'guest-details' && 'Guest Details'}
+                {step === 'payment-method' && 'Choose Payment Method'}
+              </DialogTitle>
+              {(step === 'guest-details' || step === 'payment-method') && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => setStep(step === 'payment-method' ? 'guest-details' : 'booking')}
+                  className="p-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </DialogHeader>
 
-        {step === 'booking' ? (
-          <BookingDetailsStep
-            hotel={hotel}
-            checkInDate={checkInDate}
-            checkOutDate={checkOutDate}
-            guests={guests}
-            nights={nights}
-            total={total}
-            onCheckInChange={setCheckInDate}
-            onCheckOutChange={setCheckOutDate}
-            onGuestsChange={setGuests}
-            onContinue={handleBookingContinue}
-            appliedCoupon={appliedCoupon}
-            onCouponApplied={setAppliedCoupon}
-          />
-        ) : (
-          <GuestDetailsForm 
-            onSubmit={handleGuestDetailsSubmit}
-            loading={loading}
-            totalGuests={parseInt(guests)}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
+          {step === 'booking' && (
+            <BookingDetailsStep
+              hotel={hotel}
+              checkInDate={checkInDate}
+              checkOutDate={checkOutDate}
+              guests={guests}
+              nights={nights}
+              total={total}
+              onCheckInChange={setCheckInDate}
+              onCheckOutChange={setCheckOutDate}
+              onGuestsChange={setGuests}
+              onContinue={handleBookingContinue}
+              appliedCoupon={appliedCoupon}
+              onCouponApplied={setAppliedCoupon}
+            />
+          )}
+
+          {step === 'guest-details' && (
+            <GuestDetailsForm 
+              onSubmit={handleGuestDetailsSubmit}
+              loading={loading}
+              totalGuests={parseInt(guests)}
+            />
+          )}
+
+          {step === 'payment-method' && (
+            <div className="space-y-6">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h3 className="font-semibold mb-2">Booking Summary</h3>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>{hotel.name}</span>
+                    <span>₹{(totalAmountInPaise / 100).toLocaleString('en-IN')}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{nights} nights, {guests} guests</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="font-semibold">Choose Payment Method</h3>
+                
+                <Button 
+                  onClick={handleStripePayment}
+                  disabled={loading}
+                  className="w-full bg-rose-500 hover:bg-rose-600"
+                >
+                  Pay with Stripe (Real Payment)
+                </Button>
+                
+                <Button 
+                  onClick={() => setShowDemoPayment(true)}
+                  variant="outline"
+                  className="w-full border-blue-300 text-blue-600 hover:bg-blue-50"
+                >
+                  Demo Payment (Test Mode)
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <DemoPaymentModal
+        open={showDemoPayment}
+        onOpenChange={setShowDemoPayment}
+        bookingData={{
+          hotel_id: hotel.id,
+          hotel_name: hotel.name,
+          check_in_date: checkInDate,
+          check_out_date: checkOutDate,
+          guests: parseInt(guests),
+          guest_phone: guestDetails ? `${guestDetails.countryCode}${guestDetails.phone}` : '',
+          total_amount: totalAmountInPaise,
+          guest_details: guestDetails,
+          guest_list: guestList,
+        }}
+      />
+    </>
   );
 };
 
