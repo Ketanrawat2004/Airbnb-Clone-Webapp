@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             body: {
               email: email,
               fullName: fullName,
-              confirmationUrl: `${window.location.origin}/auth/confirm?token_hash=${data.user.email_confirm_token || 'placeholder'}&type=signup&redirect_to=${window.location.origin}`
+              confirmationUrl: `${window.location.origin}/auth/confirm?token_hash=placeholder&type=signup&redirect_to=${window.location.origin}`
             }
           });
           

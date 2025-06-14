@@ -11,8 +11,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calendar, Users, CreditCard, MapPin, Phone } from 'lucide-react';
+import { Calendar, Users, CreditCard, MapPin, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import GuestDetailsForm from './GuestDetailsForm';
 
 interface Hotel {
   id: string;
@@ -34,6 +35,15 @@ interface BookingModalProps {
   initialGuests?: string;
 }
 
+interface GuestDetails {
+  title: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  countryCode: string;
+}
+
 const BookingModal = ({ 
   hotel, 
   open, 
@@ -45,11 +55,11 @@ const BookingModal = ({
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState<'booking' | 'guest-details'>('booking');
   
   const [checkInDate, setCheckInDate] = useState(initialCheckIn);
   const [checkOutDate, setCheckOutDate] = useState(initialCheckOut);
   const [guests, setGuests] = useState(initialGuests);
-  const [guestPhone, setGuestPhone] = useState('');
 
   const calculateNights = () => {
     if (!checkInDate || !checkOutDate) return 0;
@@ -64,7 +74,7 @@ const BookingModal = ({
     return nights * (hotel.price_per_night / 100); // Convert from cents
   };
 
-  const handleBooking = async () => {
+  const handleBookingContinue = () => {
     if (!user) {
       toast({
         title: 'Sign in required',
@@ -74,10 +84,10 @@ const BookingModal = ({
       return;
     }
 
-    if (!checkInDate || !checkOutDate || !guests || !guestPhone) {
+    if (!checkInDate || !checkOutDate || !guests) {
       toast({
         title: 'Missing information',
-        description: 'Please fill in all booking details including phone number.',
+        description: 'Please fill in all booking details.',
         variant: 'destructive',
       });
       return;
@@ -101,12 +111,14 @@ const BookingModal = ({
       return;
     }
 
-    // Validate phone number format (basic validation)
-    const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
-    if (!phoneRegex.test(guestPhone)) {
+    setStep('guest-details');
+  };
+
+  const handleGuestDetailsSubmit = async (guestDetails: GuestDetails, agreeToTerms: boolean) => {
+    if (!agreeToTerms) {
       toast({
-        title: 'Invalid phone number',
-        description: 'Please enter a valid phone number for SMS notifications.',
+        title: 'Agreement required',
+        description: 'Please agree to the terms and conditions to proceed.',
         variant: 'destructive',
       });
       return;
@@ -116,6 +128,7 @@ const BookingModal = ({
       setLoading(true);
       
       const totalAmount = calculateTotal() * 100; // Convert to cents
+      const guestPhone = `${guestDetails.countryCode}${guestDetails.phone}`;
       
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: {
@@ -125,6 +138,13 @@ const BookingModal = ({
           guests: parseInt(guests),
           guest_phone: guestPhone,
           total_amount: totalAmount,
+          guest_details: {
+            title: guestDetails.title,
+            first_name: guestDetails.firstName,
+            last_name: guestDetails.lastName,
+            email: guestDetails.email,
+            phone: guestPhone,
+          }
         },
       });
 
@@ -157,120 +177,139 @@ const BookingModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Book your stay</DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle>
+              {step === 'booking' ? 'Book your stay' : 'Guest Details'}
+            </DialogTitle>
+            {step === 'guest-details' && (
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setStep('booking')}
+                className="p-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Hotel Info */}
-          <div className="flex space-x-3">
-            <img
-              src={hotel.images[0]}
-              alt={hotel.name}
-              className="w-16 h-16 rounded-lg object-cover"
-            />
-            <div className="flex-1">
-              <h3 className="font-semibold">{hotel.name}</h3>
-              <div className="flex items-center text-sm text-gray-600">
-                <MapPin className="h-3 w-3 mr-1" />
-                {hotel.location}
+        {step === 'booking' ? (
+          <div className="space-y-6">
+            {/* Hotel Info */}
+            <div className="flex space-x-3">
+              <img
+                src={hotel.images[0]}
+                alt={hotel.name}
+                className="w-16 h-16 rounded-lg object-cover"
+              />
+              <div className="flex-1">
+                <h3 className="font-semibold">{hotel.name}</h3>
+                <div className="flex items-center text-sm text-gray-600">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  {hotel.location}
+                </div>
+                <p className="text-sm text-gray-600">
+                  ${hotel.price_per_night / 100} per night
+                </p>
               </div>
-              <p className="text-sm text-gray-600">
-                ${hotel.price_per_night / 100} per night
-              </p>
             </div>
-          </div>
 
-          {/* Booking Details */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            {/* Booking Details */}
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="checkIn" className="flex items-center text-sm font-medium mb-1">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    Check-in
+                  </Label>
+                  <Input
+                    id="checkIn"
+                    type="date"
+                    value={checkInDate}
+                    onChange={(e) => setCheckInDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="checkOut" className="flex items-center text-sm font-medium mb-1">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    Check-out
+                  </Label>
+                  <Input
+                    id="checkOut"
+                    type="date"
+                    value={checkOutDate}
+                    onChange={(e) => setCheckOutDate(e.target.value)}
+                    min={checkInDate || new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+              </div>
+
               <div>
-                <Label htmlFor="checkIn" className="flex items-center text-sm font-medium mb-1">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  Check-in
+                <Label htmlFor="guests" className="flex items-center text-sm font-medium mb-1">
+                  <Users className="h-3 w-3 mr-1" />
+                  Guests
                 </Label>
                 <Input
-                  id="checkIn"
-                  type="date"
-                  value={checkInDate}
-                  onChange={(e) => setCheckInDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                />
-              </div>
-              <div>
-                <Label htmlFor="checkOut" className="flex items-center text-sm font-medium mb-1">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  Check-out
-                </Label>
-                <Input
-                  id="checkOut"
-                  type="date"
-                  value={checkOutDate}
-                  onChange={(e) => setCheckOutDate(e.target.value)}
-                  min={checkInDate || new Date().toISOString().split('T')[0]}
+                  id="guests"
+                  type="number"
+                  value={guests}
+                  onChange={(e) => setGuests(e.target.value)}
+                  min="1"
+                  max={hotel.available_rooms * 2}
                 />
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="guests" className="flex items-center text-sm font-medium mb-1">
-                <Users className="h-3 w-3 mr-1" />
-                Guests
-              </Label>
-              <Input
-                id="guests"
-                type="number"
-                value={guests}
-                onChange={(e) => setGuests(e.target.value)}
-                min="1"
-                max={hotel.available_rooms * 2}
-              />
-            </div>
+            {/* Price Breakdown */}
+            {nights > 0 && (
+              <div className="border-t pt-4 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>1 Room x {nights} Night{nights > 1 ? 's' : ''}</span>
+                  <span></span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Base Price</span>
+                  <span>₹ {(total * 83).toFixed(0)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-blue-500">
+                  <span>Total Discount</span>
+                  <span>₹ {Math.round(total * 83 * 0.64)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Price after Discount</span>
+                  <span>₹ {Math.round(total * 83 * 0.36)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Taxes & Service Fees</span>
+                  <span>₹ {Math.round(total * 83 * 0.2)}</span>
+                </div>
+                <div className="flex justify-between font-semibold text-lg border-t pt-2">
+                  <span>Total Amount to be paid</span>
+                  <span>₹ {Math.round(total * 83 * 0.56)}</span>
+                </div>
+              </div>
+            )}
 
-            <div>
-              <Label htmlFor="phone" className="flex items-center text-sm font-medium mb-1">
-                <Phone className="h-3 w-3 mr-1" />
-                Phone Number (for SMS notifications)
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={guestPhone}
-                onChange={(e) => setGuestPhone(e.target.value)}
-                placeholder="+1234567890"
-              />
-            </div>
+            {/* Continue Button */}
+            <Button
+              onClick={handleBookingContinue}
+              disabled={!checkInDate || !checkOutDate || !guests}
+              className="w-full bg-rose-500 hover:bg-rose-600"
+            >
+              <CreditCard className="h-4 w-4 mr-2" />
+              Continue to Guest Details
+            </Button>
           </div>
-
-          {/* Price Breakdown */}
-          {nights > 0 && (
-            <div className="border-t pt-4 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>${hotel.price_per_night / 100} × {nights} nights</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between font-semibold">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Book Button */}
-          <Button
-            onClick={handleBooking}
-            disabled={loading || !checkInDate || !checkOutDate || !guests || !guestPhone}
-            className="w-full bg-rose-500 hover:bg-rose-600"
-          >
-            <CreditCard className="h-4 w-4 mr-2" />
-            {loading ? 'Processing...' : `Pay now - $${total.toFixed(2)}`}
-          </Button>
-
-          <p className="text-xs text-gray-500 text-center">
-            You will receive booking confirmation and receipt via SMS and email after successful payment.
-          </p>
-        </div>
+        ) : (
+          <GuestDetailsForm 
+            onSubmit={handleGuestDetailsSubmit}
+            loading={loading}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
