@@ -24,6 +24,11 @@ const Header = () => {
     navigate('/profile');
   };
 
+  const handleHomeClick = () => {
+    console.log('Navigating to home page');
+    navigate('/');
+  };
+
   return (
     <header className="border-b bg-white sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -31,7 +36,10 @@ const Header = () => {
           {/* Left section with Back button and Logo */}
           <div className="flex items-center space-x-4">
             <BackButton />
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
+            <div 
+              className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity" 
+              onClick={handleHomeClick}
+            >
               <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone</h1>
             </div>
           </div>

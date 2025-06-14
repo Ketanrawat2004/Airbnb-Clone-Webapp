@@ -13,7 +13,12 @@ const BackButton = () => {
   }
 
   const handleBack = () => {
-    navigate(-1);
+    // Check if there's previous history, otherwise go to home
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
   };
 
   return (
