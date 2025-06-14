@@ -59,6 +59,7 @@ export type Database = {
       hotels: {
         Row: {
           amenities: string[] | null
+          available_rooms: number | null
           created_at: string
           description: string | null
           id: string
@@ -68,9 +69,11 @@ export type Database = {
           price_per_night: number
           rating: number | null
           reviews_count: number | null
+          total_rooms: number | null
         }
         Insert: {
           amenities?: string[] | null
+          available_rooms?: number | null
           created_at?: string
           description?: string | null
           id?: string
@@ -80,9 +83,11 @@ export type Database = {
           price_per_night: number
           rating?: number | null
           reviews_count?: number | null
+          total_rooms?: number | null
         }
         Update: {
           amenities?: string[] | null
+          available_rooms?: number | null
           created_at?: string
           description?: string | null
           id?: string
@@ -92,6 +97,7 @@ export type Database = {
           price_per_night?: number
           rating?: number | null
           reviews_count?: number | null
+          total_rooms?: number | null
         }
         Relationships: []
       }
@@ -127,7 +133,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      search_hotels: {
+        Args: { search_location: string }
+        Returns: {
+          id: string
+          name: string
+          location: string
+          description: string
+          price_per_night: number
+          amenities: string[]
+          images: string[]
+          rating: number
+          reviews_count: number
+          total_rooms: number
+          available_rooms: number
+          created_at: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

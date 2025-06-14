@@ -1,15 +1,17 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 interface SearchBarProps {
-  onSearch: (location: string) => void;
+  onSearch?: (location: string) => void;
   variant?: 'default' | 'hero';
 }
 
 const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
+  const navigate = useNavigate();
   const [location, setLocation] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
@@ -17,7 +19,21 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(location);
+    
+    // Create search parameters
+    const params = new URLSearchParams();
+    if (location) params.set('location', location);
+    if (checkIn) params.set('checkIn', checkIn);
+    if (checkOut) params.set('checkOut', checkOut);
+    if (guests) params.set('guests', guests);
+    
+    // Navigate to search results
+    navigate(`/search?${params.toString()}`);
+    
+    // Call the optional onSearch callback
+    if (onSearch) {
+      onSearch(location);
+    }
   };
 
   if (variant === 'hero') {

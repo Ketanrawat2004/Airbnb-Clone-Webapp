@@ -4,11 +4,6 @@ import HotelGrid from '@/components/HotelGrid';
 import SearchBar from '@/components/SearchBar';
 
 const Index = () => {
-  const handleHeroSearch = (location: string) => {
-    console.log('Hero search for:', location);
-    // TODO: Implement search functionality
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -23,7 +18,7 @@ const Index = () => {
           
           {/* Hero Search Bar */}
           <div className="max-w-4xl mx-auto bg-white rounded-full shadow-lg p-2">
-            <SearchBar onSearch={handleHeroSearch} variant="hero" />
+            <SearchBar variant="hero" />
           </div>
         </div>
       </section>
