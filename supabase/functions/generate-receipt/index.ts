@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -305,10 +304,9 @@ serve(async (req) => {
         <!-- Header -->
         <div class="header">
           <div class="logo-section">
-            <div class="logo">KR</div>
-            <div class="company-name">Ketan Rawat Hotels</div>
+            <div class="logo">A</div>
+            <div class="company-name">Airbnb Clone+</div>
             <div class="company-tagline">Your Premier Hospitality Experience</div>
-            <div class="owner-info">Managed by Ketan Rawat</div>
           </div>
           <div class="confirmation-badge">✓ BOOKING CONFIRMED</div>
         </div>
@@ -423,7 +421,7 @@ serve(async (req) => {
           <div class="contact-info">
             <h3 style="color: #667eea; margin-bottom: 15px;">Need Assistance?</h3>
             <p><strong>Hotel Contact:</strong> Available at hotel reception</p>
-            <p><strong>Booking Support:</strong> Contact Ketan Rawat</p>
+            <p><strong>Booking Support:</strong> Contact our support team</p>
             <p><strong>Emergency:</strong> 24/7 hotel front desk</p>
             <p style="margin-top: 15px; font-size: 12px; color: #666;">
               For any changes or cancellations, please contact us at least 24 hours before check-in.
@@ -434,7 +432,7 @@ serve(async (req) => {
         <!-- Footer -->
         <div class="footer">
           <div class="footer-logo">
-            <strong>Ketan Rawat Hotels</strong>
+            <strong>Airbnb Clone+</strong>
           </div>
           <p>Thank you for choosing us for your stay!</p>
           <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">
@@ -447,7 +445,7 @@ serve(async (req) => {
             <a href="#">Instagram</a>
           </div>
           <p style="font-size: 10px; margin-top: 20px; opacity: 0.6;">
-            © 2024 Ketan Rawat Hotels. All rights reserved.
+            © 2024 Airbnb Clone+. All rights reserved.
           </p>
         </div>
       </div>

@@ -196,6 +196,15 @@ const TicketPage = () => {
           <Card className="overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-rose-500 to-pink-600 text-white">
               <div className="text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-xl font-bold">A</span>
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-bold">Airbnb Clone+</h1>
+                    <p className="text-sm opacity-90">Your Premier Hospitality Experience</p>
+                  </div>
+                </div>
                 <CardTitle className="text-2xl mb-2">Booking Confirmation</CardTitle>
                 <div className="inline-block bg-white/20 px-4 py-2 rounded-full">
                   <span className="font-semibold">Booking ID: #{ticket.id.substring(0, 8).toUpperCase()}</span>
