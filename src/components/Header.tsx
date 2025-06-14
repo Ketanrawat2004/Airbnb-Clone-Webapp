@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import AuthModal from './AuthModal';
 import BackButton from './BackButton';
+import Logo from './Logo';
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -46,10 +47,11 @@ const Header = () => {
               <span>Home</span>
             </Button>
             <div 
-              className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity" 
+              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" 
               onClick={handleHomeClick}
             >
-              <h1 className="text-2xl font-bold text-rose-500">Wanderlust Stays</h1>
+              <Logo />
+              <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
             </div>
           </div>
 

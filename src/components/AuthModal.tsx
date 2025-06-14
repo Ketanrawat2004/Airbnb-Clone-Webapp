@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
+import Logo from './Logo';
 
 interface AuthModalProps {
   open: boolean;
@@ -47,7 +48,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
         toast.error(error.message);
       }
     } else {
-      toast.success('Successfully signed in!');
+      toast.success('Successfully signed in to Airbnb Clone+!');
       onOpenChange(false);
     }
     
@@ -64,7 +65,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
       console.log('Sign up error:', error);
       toast.error(error.message);
     } else {
-      toast.success('Successfully signed up! Please check your email to verify your account before signing in.');
+      toast.success('You have successfully registered in Airbnb Clone+. Thank you for joining! Please check your email to verify your account before signing in.');
       onOpenChange(false);
     }
     
@@ -75,7 +76,10 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Welcome to Airbnb Clone</DialogTitle>
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <Logo />
+            <DialogTitle className="text-xl">Airbnb Clone+</DialogTitle>
+          </div>
           <DialogDescription>
             Sign in to your account or create a new one to get started.
           </DialogDescription>
