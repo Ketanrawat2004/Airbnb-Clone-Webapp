@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Mail, Phone, Save, Download, Calendar } from 'lucide-react';
+import { User, Mail, Phone, Save, Download, Calendar, X } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import { Link } from 'react-router-dom';
+import CancelBookingDialog from '@/components/CancelBookingDialog';
 
 interface Profile {
   id: string;
@@ -42,6 +42,8 @@ const Profile = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
@@ -194,6 +196,27 @@ const Profile = () => {
     }
   };
 
+  const handleCancelBooking = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setCancelDialogOpen(true);
+  };
+
+  const handleBookingCancelled = () => {
+    fetchBookings(); // Refresh the bookings list
+  };
+
+  const canCancelBooking = (booking: Booking) => {
+    const today = new Date();
+    const checkInDate = new Date(booking.check_in_date);
+    today.setHours(0, 0, 0, 0);
+    checkInDate.setHours(0, 0, 0, 0);
+    
+    // Can cancel if check-in hasn't passed and booking is not already cancelled
+    return checkInDate.getTime() >= today.getTime() && 
+           booking.status !== 'cancelled' && 
+           booking.payment_status !== 'refunded';
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -308,7 +331,7 @@ const Profile = () => {
             <CardHeader>
               <CardTitle>My Bookings</CardTitle>
               <CardDescription>
-                View your booking history and download tickets
+                View your booking history and manage your reservations
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -337,30 +360,46 @@ const Profile = () => {
                         <div className="text-right">
                           <p className="font-semibold">₹{(booking.total_amount / 100).toLocaleString('en-IN')}</p>
                           <span className={`inline-block px-2 py-1 rounded text-xs ${
-                            booking.payment_status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                            booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                            booking.payment_status === 'paid' ? 'bg-green-100 text-green-800' : 
+                            'bg-yellow-100 text-yellow-800'
                           }`}>
-                            {booking.payment_status}
+                            {booking.status === 'cancelled' ? 'Cancelled' : booking.payment_status}
                           </span>
                         </div>
                       </div>
                       
-                      {booking.payment_status === 'paid' && (
-                        <div className="flex space-x-2">
+                      <div className="flex space-x-2 flex-wrap">
+                        {booking.payment_status === 'paid' && booking.status !== 'cancelled' && (
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => downloadTicket(booking.id)}
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Download Ticket
+                            </Button>
+                            <Link to={`/ticket/${booking.id}`}>
+                              <Button variant="outline" size="sm">
+                                View Ticket
+                              </Button>
+                            </Link>
+                          </>
+                        )}
+                        
+                        {canCancelBooking(booking) && (
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => downloadTicket(booking.id)}
+                            onClick={() => handleCancelBooking(booking)}
+                            className="border-red-300 text-red-600 hover:bg-red-50"
                           >
-                            <Download className="h-4 w-4 mr-2" />
-                            Download Ticket
+                            <X className="h-4 w-4 mr-2" />
+                            Cancel Booking
                           </Button>
-                          <Link to={`/ticket/${booking.id}`}>
-                            <Button variant="outline" size="sm">
-                              View Ticket
-                            </Button>
-                          </Link>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -369,6 +408,15 @@ const Profile = () => {
           </Card>
         </div>
       </div>
+
+      {selectedBooking && (
+        <CancelBookingDialog
+          open={cancelDialogOpen}
+          onOpenChange={setCancelDialogOpen}
+          booking={selectedBooking}
+          onBookingCancelled={handleBookingCancelled}
+        />
+      )}
     </div>
   );
 };
