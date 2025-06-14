@@ -12,7 +12,7 @@ import BackButton from './BackButton';
 import Logo from './Logo';
 
 const Header = () => {
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -29,6 +29,49 @@ const Header = () => {
     console.log('Navigating to home page');
     navigate('/');
   };
+
+  // Show loading state while auth is initializing
+  if (loading) {
+    return (
+      <header className="border-b bg-white sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <BackButton />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleHomeClick}
+                className="flex items-center space-x-1 text-gray-600 hover:text-gray-900"
+              >
+                <Home className="h-4 w-4" />
+                <span>Home</span>
+              </Button>
+              <div 
+                className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" 
+                onClick={handleHomeClick}
+              >
+                <Logo />
+                <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
+              </div>
+            </div>
+
+            <div className="hidden md:block flex-1 max-w-2xl mx-8">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+          </div>
+
+          <div className="md:hidden mt-4">
+            <SearchBar onSearch={handleSearch} />
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="border-b bg-white sticky top-0 z-50">
