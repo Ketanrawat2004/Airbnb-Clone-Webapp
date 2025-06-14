@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       
-      // Use the current domain for redirect URL
+      // Use the current domain for redirect URL - this is critical for confirmation links
       const baseUrl = window.location.origin;
       const redirectUrl = `${baseUrl}/auth/confirm`;
       
