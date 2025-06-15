@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import TestimonialCard from './TestimonialCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Quote } from 'lucide-react';
 
 interface Testimonial {
@@ -60,12 +61,20 @@ const TestimonialsSection = () => {
             <Skeleton className="h-8 w-64 mx-auto mb-4" />
             <Skeleton className="h-4 w-96 mx-auto" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="space-y-4">
-                <Skeleton className="h-40 w-full rounded-lg" />
-              </div>
-            ))}
+          <div className="relative px-12">
+            <Carousel className="w-full">
+              <CarouselContent className="-ml-4">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                    <div className="space-y-4">
+                      <Skeleton className="h-40 w-full rounded-lg" />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-0" />
+              <CarouselNext className="right-0" />
+            </Carousel>
           </div>
         </div>
       </section>
@@ -91,10 +100,24 @@ const TestimonialsSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-          ))}
+        <div className="relative px-12">
+          <Carousel 
+            className="w-full"
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+          >
+            <CarouselContent className="-ml-4">
+              {testimonials.map((testimonial) => (
+                <CarouselItem key={testimonial.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                  <TestimonialCard testimonial={testimonial} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-0" />
+            <CarouselNext className="right-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-0" />
+          </Carousel>
         </div>
       </div>
     </section>

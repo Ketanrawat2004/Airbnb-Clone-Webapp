@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import HotelCard from './HotelCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 interface Hotel {
   id: string;
@@ -68,26 +69,48 @@ const HotelGrid = () => {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div key={index} className="space-y-4">
-            <Skeleton className="h-48 sm:h-56 lg:h-64 w-full rounded-lg" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 sm:h-5 w-3/4" />
-              <Skeleton className="h-4 sm:h-5 w-1/2" />
-              <Skeleton className="h-3 sm:h-4 w-1/4" />
-            </div>
-          </div>
-        ))}
+      <div className="relative px-12">
+        <Carousel className="w-full">
+          <CarouselContent className="-ml-4">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                <div className="space-y-4">
+                  <Skeleton className="h-48 sm:h-56 lg:h-64 w-full rounded-lg" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 sm:h-5 w-3/4" />
+                    <Skeleton className="h-4 sm:h-5 w-1/2" />
+                    <Skeleton className="h-3 sm:h-4 w-1/4" />
+                  </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-0" />
+          <CarouselNext className="right-0" />
+        </Carousel>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-      {hotels.map((hotel) => (
-        <HotelCard key={hotel.id} hotel={hotel} />
-      ))}
+    <div className="relative px-12">
+      <Carousel 
+        className="w-full"
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+      >
+        <CarouselContent className="-ml-4">
+          {hotels.map((hotel) => (
+            <CarouselItem key={hotel.id} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+              <HotelCard hotel={hotel} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-0" />
+        <CarouselNext className="right-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-0" />
+      </Carousel>
     </div>
   );
 };
