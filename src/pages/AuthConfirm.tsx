@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,11 +19,24 @@ const AuthConfirm = () => {
       try {
         setLoading(true);
         
-        // Get all possible URL parameters that Supabase might use
-        const token_hash = searchParams.get('token_hash');
-        const type = searchParams.get('type');
-        const access_token = searchParams.get('access_token');
-        const refresh_token = searchParams.get('refresh_token');
+        // First, check URL search parameters (query string with ?)
+        let token_hash = searchParams.get('token_hash');
+        let type = searchParams.get('type');
+        let access_token = searchParams.get('access_token');
+        let refresh_token = searchParams.get('refresh_token');
+        
+        // If not found in search params, check URL fragments (hash with #)
+        if (!token_hash && !access_token) {
+          const hash = window.location.hash.substring(1); // Remove the # symbol
+          const hashParams = new URLSearchParams(hash);
+          
+          token_hash = hashParams.get('token_hash');
+          type = hashParams.get('type');
+          access_token = hashParams.get('access_token');
+          refresh_token = hashParams.get('refresh_token');
+          
+          console.log('Found parameters in URL hash:', { token_hash, type, access_token, refresh_token });
+        }
         
         console.log('URL parameters:', { token_hash, type, access_token, refresh_token });
         console.log('Full URL:', window.location.href);
@@ -46,6 +58,9 @@ const AuthConfirm = () => {
             console.log('Session set successfully:', data);
             sessionSet = true;
             setConfirmed(true);
+            
+            // Clear the URL hash to remove sensitive tokens
+            window.history.replaceState(null, '', window.location.pathname);
           }
         }
         // If we have token_hash and type, verify with OTP
