@@ -187,52 +187,118 @@ export type Database = {
       }
       hotels: {
         Row: {
+          address: string | null
           amenities: string[] | null
           available_rooms: number | null
+          business_center: boolean | null
+          check_in_time: string | null
+          check_out_time: string | null
+          concierge_service: boolean | null
           created_at: string
           description: string | null
+          email: string | null
           facilities: string[] | null
+          fitness_center: boolean | null
           id: string
           images: string[] | null
+          languages_spoken: string[] | null
+          laundry_service: boolean | null
           location: string
           name: string
+          parking_available: boolean | null
+          pets_allowed: boolean | null
+          phone: string | null
           price_per_night: number
+          property_type: string | null
           rating: number | null
+          restaurant_on_site: boolean | null
           reviews_count: number | null
+          room_service: boolean | null
           rules_and_regulations: string[] | null
+          smoking_allowed: boolean | null
+          spa_services: boolean | null
+          star_rating: number | null
+          total_floors: number | null
           total_rooms: number | null
+          website: string | null
+          year_built: number | null
+          year_renovated: number | null
         }
         Insert: {
+          address?: string | null
           amenities?: string[] | null
           available_rooms?: number | null
+          business_center?: boolean | null
+          check_in_time?: string | null
+          check_out_time?: string | null
+          concierge_service?: boolean | null
           created_at?: string
           description?: string | null
+          email?: string | null
           facilities?: string[] | null
+          fitness_center?: boolean | null
           id?: string
           images?: string[] | null
+          languages_spoken?: string[] | null
+          laundry_service?: boolean | null
           location: string
           name: string
+          parking_available?: boolean | null
+          pets_allowed?: boolean | null
+          phone?: string | null
           price_per_night?: number
+          property_type?: string | null
           rating?: number | null
+          restaurant_on_site?: boolean | null
           reviews_count?: number | null
+          room_service?: boolean | null
           rules_and_regulations?: string[] | null
+          smoking_allowed?: boolean | null
+          spa_services?: boolean | null
+          star_rating?: number | null
+          total_floors?: number | null
           total_rooms?: number | null
+          website?: string | null
+          year_built?: number | null
+          year_renovated?: number | null
         }
         Update: {
+          address?: string | null
           amenities?: string[] | null
           available_rooms?: number | null
+          business_center?: boolean | null
+          check_in_time?: string | null
+          check_out_time?: string | null
+          concierge_service?: boolean | null
           created_at?: string
           description?: string | null
+          email?: string | null
           facilities?: string[] | null
+          fitness_center?: boolean | null
           id?: string
           images?: string[] | null
+          languages_spoken?: string[] | null
+          laundry_service?: boolean | null
           location?: string
           name?: string
+          parking_available?: boolean | null
+          pets_allowed?: boolean | null
+          phone?: string | null
           price_per_night?: number
+          property_type?: string | null
           rating?: number | null
+          restaurant_on_site?: boolean | null
           reviews_count?: number | null
+          room_service?: boolean | null
           rules_and_regulations?: string[] | null
+          smoking_allowed?: boolean | null
+          spa_services?: boolean | null
+          star_rating?: number | null
+          total_floors?: number | null
           total_rooms?: number | null
+          website?: string | null
+          year_built?: number | null
+          year_renovated?: number | null
         }
         Relationships: []
       }
@@ -366,6 +432,88 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "rooms_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      testimonials: {
+        Row: {
+          created_at: string
+          guest_location: string | null
+          guest_name: string
+          hotel_id: string | null
+          id: string
+          is_featured: boolean | null
+          is_verified: boolean | null
+          rating: number
+          review_text: string
+          room_type: string | null
+          stay_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          guest_location?: string | null
+          guest_name: string
+          hotel_id?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          rating: number
+          review_text: string
+          room_type?: string | null
+          stay_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          guest_location?: string | null
+          guest_name?: string
+          hotel_id?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          rating?: number
+          review_text?: string
+          room_type?: string | null
+          stay_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "testimonials_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wishlists: {
+        Row: {
+          created_at: string
+          hotel_id: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hotel_id?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hotel_id?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlists_hotel_id_fkey"
             columns: ["hotel_id"]
             isOneToOne: false
             referencedRelation: "hotels"

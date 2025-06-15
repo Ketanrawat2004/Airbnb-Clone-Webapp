@@ -1,10 +1,13 @@
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, Star, ChevronLeft, ChevronRight, MapPin, Phone, Globe, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import BookingModal from './BookingModal';
+import { AuthContext } from '@/contexts/AuthContext';
+import { useWishlist } from '@/hooks/useWishlist';
 
 interface Hotel {
   id: string;
@@ -20,6 +23,16 @@ interface Hotel {
   reviews_count: number;
   available_rooms: number;
   total_rooms?: number;
+  address?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  check_in_time?: string;
+  check_out_time?: string;
+  property_type?: string;
+  star_rating?: number;
+  parking_available?: boolean;
+  pets_allowed?: boolean;
 }
 
 interface HotelCardProps {
@@ -33,8 +46,9 @@ interface HotelCardProps {
 
 const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist(user?.id);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
@@ -52,9 +66,13 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
     );
   };
 
-  const toggleLike = (e: React.MouseEvent) => {
+  const toggleWishlist = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsLiked(!isLiked);
+    if (isInWishlist(hotel.id)) {
+      await removeFromWishlist(hotel.id);
+    } else {
+      await addToWishlist(hotel.id);
+    }
   };
 
   const handleCardClick = () => {
@@ -117,23 +135,30 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
               </div>
             )}
 
-            {/* Like Button */}
+            {/* Wishlist Button */}
             <Button
               variant="secondary"
               size="sm"
               className="absolute top-2 right-2 rounded-full w-6 h-6 sm:w-8 sm:h-8 p-0 bg-white/80 hover:bg-white shadow-md"
-              onClick={toggleLike}
+              onClick={toggleWishlist}
             >
               <Heart
                 className={`h-3 w-3 sm:h-4 sm:w-4 ${
-                  isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'
+                  isInWishlist(hotel.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'
                 }`}
               />
             </Button>
 
+            {/* Property Type Badge */}
+            {hotel.property_type && (
+              <Badge className="absolute top-2 left-2 bg-blue-500 text-white text-xs">
+                {hotel.property_type}
+              </Badge>
+            )}
+
             {/* Availability Badge */}
             {hotel.available_rooms > 0 && (
-              <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
+              <div className="absolute bottom-8 left-2 bg-green-500 text-white text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
                 <span className="hidden sm:inline">{hotel.available_rooms} rooms available</span>
                 <span className="sm:hidden">{hotel.available_rooms} rooms</span>
               </div>
@@ -143,9 +168,18 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
           {/* Hotel Details */}
           <div className="p-3 sm:p-4">
             <div className="flex items-start justify-between mb-1 gap-2">
-              <h3 className="font-semibold text-gray-900 truncate flex-1 text-sm sm:text-base">
-                {hotel.name}
-              </h3>
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 truncate text-sm sm:text-base">
+                  {hotel.name}
+                </h3>
+                {hotel.star_rating && (
+                  <div className="flex items-center mt-1">
+                    {Array.from({ length: hotel.star_rating }, (_, i) => (
+                      <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                )}
+              </div>
               <div className="flex items-center space-x-1 text-xs sm:text-sm flex-shrink-0">
                 <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium">{hotel.rating}</span>
@@ -153,7 +187,27 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
               </div>
             </div>
             
-            <p className="text-gray-600 text-xs sm:text-sm mb-2 truncate">{hotel.location}</p>
+            <div className="flex items-center text-gray-600 text-xs sm:text-sm mb-2">
+              <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+              <span className="truncate">{hotel.location}</span>
+            </div>
+
+            {/* Additional Info */}
+            <div className="space-y-1 mb-3 text-xs text-gray-600">
+              {hotel.check_in_time && (
+                <div className="flex items-center">
+                  <Clock className="h-3 w-3 mr-1" />
+                  <span>Check-in: {hotel.check_in_time}</span>
+                </div>
+              )}
+              {hotel.phone && (
+                <div className="flex items-center">
+                  <Phone className="h-3 w-3 mr-1" />
+                  <span className="truncate">{hotel.phone}</span>
+                </div>
+              )}
+            </div>
+
             <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2 hidden sm:block">{hotel.description}</p>
 
             {/* Amenities - Show fewer on mobile */}

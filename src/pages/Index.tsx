@@ -1,49 +1,110 @@
 
+import AnimatedSection from '@/components/AnimatedSection';
 import Header from '@/components/Header';
-import HotelGrid from '@/components/HotelGrid';
 import SearchBar from '@/components/SearchBar';
+import HotelGrid from '@/components/HotelGrid';
+import TestimonialsSection from '@/components/TestimonialsSection';
 import ChatBot from '@/components/ChatBot';
 import Footer from '@/components/Footer';
+import CookieConsent from '@/components/CookieConsent';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen">
       <Header />
-
+      
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-rose-600 via-rose-500 to-pink-500 text-white py-8 sm:py-16 lg:py-24 overflow-hidden shadow-xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-black/25 via-transparent to-black/40 pointer-events-none z-0" />
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h1
-            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 font-playfair tracking-tight drop-shadow-sm"
-          >
-            Find your <span className="bg-white/10 px-2 sm:px-3 rounded-xl text-white shadow-lg backdrop-blur-sm">perfect stay</span>
+      <AnimatedSection className="relative bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 pt-20 pb-16">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            Find Your Perfect
+            <span className="block bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent">
+              Stay
+            </span>
           </h1>
-          <p
-            className="text-base sm:text-xl md:text-2xl mb-6 sm:mb-10 opacity-90 max-w-2xl mx-auto font-medium px-4"
-          >
-            Discover amazing places to stay around the world, curated for unforgettable experiences.
+          <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Discover amazing places to stay around the world. From luxury hotels to cozy homestays, 
+            we've got the perfect accommodation for your next adventure.
           </p>
-          <div
-            className="max-w-full sm:max-w-2xl lg:max-w-3xl mx-auto bg-white bg-opacity-95 rounded-3xl shadow-2xl p-4 sm:p-3 backdrop-blur-md"
-          >
-            <SearchBar variant="hero" />
+          <div className="max-w-4xl mx-auto">
+            <SearchBar />
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
-      {/* Hotels Grid */}
-      <section className="py-8 sm:py-16">
+      {/* Hotels Section */}
+      <AnimatedSection className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-playfair font-bold text-gray-900 mb-4 sm:mb-8 drop-shadow-sm">
-            Explore unique stays
-          </h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Featured Stays
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Handpicked accommodations that offer exceptional experiences and unforgettable memories
+            </p>
+          </div>
           <HotelGrid />
         </div>
-      </section>
+      </AnimatedSection>
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+
+      {/* Features Section */}
+      <AnimatedSection className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Why Choose Us
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              We make booking your perfect stay simple, secure, and stress-free
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="bg-rose-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Best Price Guarantee</h3>
+              <p className="text-gray-600">
+                We offer the most competitive prices with no hidden fees. Find a better deal? We'll match it.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Secure Booking</h3>
+              <p className="text-gray-600">
+                Your personal information and payments are protected with industry-standard encryption.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">24/7 Support</h3>
+              <p className="text-gray-600">
+                Our dedicated support team is available around the clock to assist you with any questions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </AnimatedSection>
 
       <ChatBot />
       <Footer />
+      <CookieConsent />
     </div>
   );
 };
