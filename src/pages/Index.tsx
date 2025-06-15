@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import SearchBar from '@/components/SearchBar';
 import HotelGrid from '@/components/HotelGrid';
@@ -38,7 +37,7 @@ const Index = () => {
             </div>
             <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold text-white leading-tight mb-6 tracking-tight">
               Find your
-              <span className="block bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
+              <span className="inline-block ml-6 bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 text-white px-8 py-4 rounded-3xl shadow-2xl backdrop-blur-sm border-2 border-white/30 animate-glow">
                 perfect stay
               </span>
             </h1>
