@@ -10,7 +10,6 @@ import SearchBar from './SearchBar';
 import AuthModal from './AuthModal';
 import BackButton from './BackButton';
 import Logo from './Logo';
-import NavigationMenu from './NavigationMenu';
 
 const Header = () => {
   const { user, loading, signOut } = useAuth();
@@ -68,21 +67,13 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Center - Navigation Menu (Desktop) and Search Bar */}
-          <div className="hidden lg:flex items-center space-x-6 flex-1 justify-center max-w-4xl mx-8">
-            <NavigationMenu />
-            <div className="flex-1 max-w-2xl">
-              <SearchBar onSearch={handleSearch} />
-            </div>
+          {/* Center - Search Bar */}
+          <div className="hidden lg:flex items-center justify-center flex-1 max-w-2xl mx-8">
+            <SearchBar onSearch={handleSearch} />
           </div>
 
-          {/* Right section - User Menu and Mobile Navigation */}
+          {/* Right section - User Menu */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Mobile Navigation Menu - Only shown on mobile */}
-            <div className="lg:hidden">
-              <NavigationMenu />
-            </div>
-
             {/* User Menu */}
             {loading ? (
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full animate-pulse"></div>
