@@ -124,14 +124,20 @@ const Footer = () => {
         {/* Developer Info Section */}
         <div className="border-t border-gray-700 mt-8 pt-6">
           <div className="bg-gray-800 rounded-lg p-4 mb-6">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="bg-rose-500 rounded-full p-2">
-                <User className="h-5 w-5 text-white" />
+            <div className="flex items-center space-x-4 mb-3">
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-rose-500 flex-shrink-0">
+                <img 
+                  src="/lovable-uploads/2b5371a2-33f0-4ff1-90ac-f53e40ab5e75.png" 
+                  alt="Ketan Rawat - Developer"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <h4 className="text-lg font-semibold text-rose-400">Developer</h4>
+              <div>
+                <h4 className="text-lg font-semibold text-rose-400">Developer</h4>
+                <p className="font-medium text-white">Ketan Rawat</p>
+              </div>
             </div>
-            <div className="text-sm text-gray-300">
-              <p className="font-medium text-white mb-1">Ketan Rawat</p>
+            <div className="text-sm text-gray-300 ml-20">
               <p className="text-gray-400">B.Tech ECE 3rd Year</p>
               <p className="text-gray-400">NIT Jamshedpur</p>
               <p className="text-rose-300 mt-2">Developer of Airbnb Clone+ Project</p>
