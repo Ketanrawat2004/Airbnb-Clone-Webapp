@@ -8,7 +8,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import Logo from './Logo';
-import OTPInput from './OTPInput';
 
 interface AuthModalProps {
   open: boolean;
@@ -36,10 +35,10 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     setLoading(true);
 
     const { error } = await signIn(formData.email, formData.password);
-    
+
     if (error) {
       console.log('Sign in error:', error);
-      
+
       // Handle specific error cases
       if (error.message.includes('Email not confirmed')) {
         toast.error('Please check your email and click the confirmation link before signing in. Check your spam folder if you don\'t see it.');
@@ -52,7 +51,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
       toast.success('Successfully signed in to Airbnb Clone+!');
       onOpenChange(false);
     }
-    
+
     setLoading(false);
   };
 
@@ -61,10 +60,10 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     setLoading(true);
 
     const { error } = await signUp(formData.email, formData.password, formData.fullName);
-    
+
     if (error) {
       console.log('Sign up error:', error);
-      
+
       if (error.message.includes('User already registered')) {
         toast.error('An account with this email already exists. Please try signing in instead.');
       } else {
@@ -74,12 +73,8 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
       toast.success('Account created successfully! Please check your email (including spam folder) for a confirmation link. You\'ll need to click it before you can sign in.');
       onOpenChange(false);
     }
-    
-    setLoading(false);
-  };
 
-  const handleOTPSuccess = () => {
-    onOpenChange(false);
+    setLoading(false);
   };
 
   return (
@@ -91,17 +86,16 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
             <DialogTitle className="text-xl">Airbnb Clone+</DialogTitle>
           </div>
           <DialogDescription>
-            Sign in to your account, create a new one, or use quick OTP sign-in.
+            Sign in to your account or create a new one.
           </DialogDescription>
         </DialogHeader>
-        
+
         <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signin">Sign In</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            <TabsTrigger value="otp">Quick OTP</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="signin">
             <form onSubmit={handleSignIn} className="space-y-4">
               <div className="space-y-2">
@@ -116,7 +110,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -129,17 +123,17 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                   required
                 />
               </div>
-              
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
-              
+
               <p className="text-sm text-gray-600 text-center">
                 If you just signed up, please check your email and click the confirmation link first.
               </p>
             </form>
           </TabsContent>
-          
+
           <TabsContent value="signup">
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="space-y-2">
@@ -154,7 +148,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -167,7 +161,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -180,19 +174,15 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                   required
                 />
               </div>
-              
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Creating account...' : 'Sign Up'}
               </Button>
-              
+
               <p className="text-sm text-gray-600 text-center">
                 You'll receive a confirmation email after signing up. Please check your inbox and spam folder.
               </p>
             </form>
-          </TabsContent>
-
-          <TabsContent value="otp">
-            <OTPInput onSuccess={handleOTPSuccess} />
           </TabsContent>
         </Tabs>
       </DialogContent>
@@ -201,3 +191,4 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
 };
 
 export default AuthModal;
+
