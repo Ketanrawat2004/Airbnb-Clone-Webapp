@@ -1,7 +1,7 @@
 
 import { ReactNode } from "react";
 
-// Simple fade/slide animation on mount
+// Simple fade/slide animation on mount with fallback styles
 export default function AnimatedSection({
   children,
   delay = 0,
@@ -13,7 +13,7 @@ export default function AnimatedSection({
 }) {
   return (
     <div
-      className={`opacity-0 translate-y-8 animate-fade-in ${className}`}
+      className={`opacity-100 translate-y-0 ${className}`}
       style={{
         animationDelay: `${delay}s`,
         animationFillMode: "forwards",

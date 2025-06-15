@@ -19,7 +19,7 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <AnimatedSection className="relative bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 pt-20 pb-16">
+      <section className="relative bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 pt-20 pb-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Find Your Perfect
@@ -35,10 +35,10 @@ const Index = () => {
             <SearchBar variant="hero" onSearch={handleSearch} />
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* Hotels Section */}
-      <AnimatedSection className="py-16 bg-white">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -50,13 +50,13 @@ const Index = () => {
           </div>
           <HotelGrid />
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* Testimonials Section */}
       <TestimonialsSection />
 
       {/* Features Section */}
-      <AnimatedSection className="py-16 bg-white">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -105,7 +105,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
       <ChatBot />
       <Footer />
