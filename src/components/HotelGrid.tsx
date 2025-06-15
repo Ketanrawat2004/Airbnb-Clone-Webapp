@@ -31,10 +31,11 @@ const HotelGrid = () => {
         // Get the current session to check if user is authenticated
         const { data: { session } } = await supabase.auth.getSession();
         
-        // Query hotels with proper error handling
+        // Query hotels with proper error handling and filter out budget hotels (1-15 rupees = 100-1500 paise)
         const { data, error } = await supabase
           .from('hotels')
           .select('*')
+          .gt('price_per_night', 1500) // Only get hotels priced above 15 rupees (1500 paise)
           .order('created_at', { ascending: false });
 
         if (error) {
