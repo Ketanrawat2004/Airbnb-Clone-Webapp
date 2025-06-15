@@ -10,6 +10,7 @@ import SearchBar from './SearchBar';
 import AuthModal from './AuthModal';
 import BackButton from './BackButton';
 import Logo from './Logo';
+import NavigationMenu from './NavigationMenu';
 
 const Header = () => {
   const { user, loading, signOut } = useAuth();
@@ -40,7 +41,7 @@ const Header = () => {
   };
 
   return (
-    <header className="border-b bg-white sticky top-0 z-50">
+    <header className="border-b bg-white sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           {/* Left section with Back button, Home button, and Logo */}
@@ -67,39 +68,52 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Search Bar - Hidden on mobile */}
-          <div className="hidden lg:block flex-1 max-w-2xl mx-8">
-            <SearchBar onSearch={handleSearch} />
+          {/* Center - Navigation Menu (Desktop) and Search Bar */}
+          <div className="hidden lg:flex items-center space-x-6 flex-1 justify-center max-w-4xl mx-8">
+            <NavigationMenu />
+            <div className="flex-1 max-w-2xl">
+              <SearchBar onSearch={handleSearch} />
+            </div>
           </div>
 
-          {/* User Menu */}
+          {/* Right section - User Menu and Mobile Navigation */}
           <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Mobile Navigation Menu - Only shown on mobile */}
+            <div className="lg:hidden">
+              <NavigationMenu />
+            </div>
+
+            {/* User Menu */}
             {loading ? (
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full animate-pulse"></div>
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center space-x-1 sm:space-x-2 rounded-full p-1 sm:p-2">
+                  <Button variant="outline" className="flex items-center space-x-1 sm:space-x-2 rounded-full p-1 sm:p-2 hover:shadow-md transition-shadow">
                     <Menu className="h-3 w-3 sm:h-4 sm:w-4" />
                     <Avatar className="h-5 w-5 sm:h-6 sm:w-6">
-                      <AvatarFallback className="text-xs sm:text-sm">
+                      <AvatarFallback className="text-xs sm:text-sm bg-rose-500 text-white">
                         {user.email?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleProfileClick}>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={handleProfileClick} className="cursor-pointer">
                     <User className="h-4 w-4 mr-2" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut}>
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={() => setAuthModalOpen(true)} size="sm" className="text-xs sm:text-sm">
+              <Button 
+                onClick={() => setAuthModalOpen(true)} 
+                size="sm" 
+                className="text-xs sm:text-sm bg-rose-500 hover:bg-rose-600 text-white shadow-md hover:shadow-lg transition-all"
+              >
                 Sign In
               </Button>
             )}

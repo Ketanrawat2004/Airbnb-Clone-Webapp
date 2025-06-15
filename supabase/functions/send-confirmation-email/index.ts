@@ -20,7 +20,7 @@ serve(async (req) => {
     console.log('Sending confirmation email to:', email);
     console.log('Confirmation URL:', confirmationUrl);
 
-    // Modern, clean email template for Airbnb Clone+
+    // Enhanced email template with better navigation and confirmation design
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -86,6 +86,7 @@ serve(async (req) => {
           margin-bottom: 24px;
           backdrop-filter: blur(10px);
           border: 1px solid rgba(255,255,255,0.2);
+          font-size: 36px;
         }
         
         .company-name { 
@@ -148,6 +149,49 @@ serve(async (req) => {
           transition: all 0.3s ease;
           border: none;
           cursor: pointer;
+        }
+        
+        .navigation-notice {
+          background: linear-gradient(135deg, #e0f2fe 0%, #f3e5f5 100%);
+          border: 1px solid #81d4fa;
+          border-radius: 12px;
+          padding: 24px;
+          margin: 32px 0;
+          text-align: center;
+        }
+        
+        .navigation-notice h4 {
+          color: #1565c0;
+          margin-bottom: 12px;
+          font-size: 18px;
+          font-weight: 600;
+        }
+        
+        .navigation-notice p {
+          color: #1976d2;
+          font-size: 15px;
+          line-height: 1.6;
+          margin-bottom: 16px;
+        }
+        
+        .feature-list {
+          list-style: none;
+          padding: 0;
+          margin: 16px 0;
+        }
+        
+        .feature-list li {
+          color: #1976d2;
+          font-size: 14px;
+          margin: 8px 0;
+          padding-left: 20px;
+          position: relative;
+        }
+        
+        .feature-list li:before {
+          content: "✨";
+          position: absolute;
+          left: 0;
         }
         
         .security-notice {
@@ -254,13 +298,31 @@ serve(async (req) => {
             </div>
 
             <div class="message">
-              To activate your account and start discovering amazing places around the world, please confirm your email address by clicking the button below:
+              To activate your account and start exploring our enhanced platform with improved navigation and features, please confirm your email address by clicking the button below:
             </div>
 
             <div class="cta-container">
               <a href="${confirmationUrl}" class="cta-button">
-                Confirm Email & Get Started
+                ✅ Confirm Email & Get Started
               </a>
+            </div>
+
+            <!-- Enhanced Navigation Features Notice -->
+            <div class="navigation-notice">
+              <h4>🚀 What's New in Airbnb Clone+</h4>
+              <p>
+                After confirming your email, you'll have access to our enhanced platform with new features:
+              </p>
+              <ul class="feature-list">
+                <li>Improved navigation menu for easy browsing</li>
+                <li>Enhanced search functionality</li>
+                <li>Personalized user dashboard</li>
+                <li>Mobile-friendly responsive design</li>
+                <li>Quick access to all platform features</li>
+              </ul>
+              <p>
+                <strong>Your account will be fully activated once you confirm your email!</strong>
+              </p>
             </div>
 
             <!-- Security Notice -->
@@ -303,7 +365,7 @@ serve(async (req) => {
     const emailResponse = await resend.emails.send({
       from: "Airbnb Clone+ <onboarding@resend.dev>",
       to: [email],
-      subject: "Confirm Your Airbnb Clone+ Account",
+      subject: "🏠 Confirm Your Airbnb Clone+ Account - Enhanced Navigation Awaits!",
       html: htmlContent,
     });
 
@@ -311,7 +373,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true,
-      message: 'Confirmation email sent successfully',
+      message: 'Enhanced confirmation email sent successfully',
       emailId: emailResponse.id
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
