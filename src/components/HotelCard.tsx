@@ -1,12 +1,11 @@
-
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Star, ChevronLeft, ChevronRight, MapPin, Phone, Globe, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import BookingModal from './BookingModal';
-import { AuthContext } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/hooks/useWishlist';
 
 interface Hotel {
@@ -46,7 +45,7 @@ interface HotelCardProps {
 
 const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist(user?.id);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);

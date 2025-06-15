@@ -1,5 +1,4 @@
-
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
@@ -10,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Star, MapPin, Wifi, Car, Coffee, Utensils, ArrowLeft, Heart, ChevronLeft, ChevronRight, Phone, Globe, Clock, Users, ParkingCircle, Building } from 'lucide-react';
-import { AuthContext } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/hooks/useWishlist';
 
 interface Hotel {
@@ -53,7 +52,7 @@ interface Hotel {
 const HotelDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist(user?.id);
   const [hotel, setHotel] = useState<Hotel | null>(null);
   const [loading, setLoading] = useState(true);
