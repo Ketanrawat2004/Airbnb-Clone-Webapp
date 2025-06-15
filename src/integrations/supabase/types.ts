@@ -492,6 +492,62 @@ export type Database = {
           },
         ]
       }
+      user_reviews: {
+        Row: {
+          created_at: string
+          guest_location: string | null
+          guest_name: string
+          hotel_id: string | null
+          id: string
+          is_featured: boolean | null
+          is_verified: boolean | null
+          rating: number
+          review_text: string
+          room_type: string | null
+          stay_date: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          guest_location?: string | null
+          guest_name: string
+          hotel_id?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          rating: number
+          review_text: string
+          room_type?: string | null
+          stay_date?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          guest_location?: string | null
+          guest_name?: string
+          hotel_id?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          rating?: number
+          review_text?: string
+          room_type?: string | null
+          stay_date?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reviews_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wishlists: {
         Row: {
           created_at: string

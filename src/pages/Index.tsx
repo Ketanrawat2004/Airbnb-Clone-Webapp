@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import CheapRatesSection from '@/components/CheapRatesSection';
 import HotelsSection from '@/components/HotelsSection';
-import TestimonialsSection from '@/components/TestimonialsSection';
+import ReviewAndTestimonialsSection from '@/components/ReviewAndTestimonialsSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import ChatBot from '@/components/ChatBot';
 import Footer from '@/components/Footer';
@@ -22,7 +22,7 @@ const Index = () => {
       <CheapRatesSection />
       <HotelsSection />
       <div className="animate-fade-up">
-        <TestimonialsSection />
+        <ReviewAndTestimonialsSection />
       </div>
       <FeaturesSection />
       <ChatBot />
