@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { SignUpOptions } from '@/types/auth';
 
@@ -9,11 +8,8 @@ export const authService = {
       
       // Get the correct redirect URL based on current environment
       const getRedirectUrl = () => {
-        // If we're in development and running on port 8080 (Vite default)
-        if (window.location.hostname === 'localhost' && window.location.port === '8080') {
-          return `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/confirm`;
-        }
-        // For deployed apps or other local setups
+        // Always use the current origin for the redirect URL
+        // This will work in both development and production
         return `${window.location.origin}/auth/confirm`;
       };
       
