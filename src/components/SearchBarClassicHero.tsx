@@ -107,11 +107,11 @@ const SearchBarClassicHero = ({
     <form onSubmit={handleSubmitForm} className="flex flex-1 items-center gap-2 w-full">
       {/* Location */}
       <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 relative" ref={suggestionRef}>
-        <MapPin className="h-5 w-5 text-gray-400" />
+        <MapPin className="h-5 w-5 text-pink-400" />
         <Input
           type="text"
           placeholder="Where are you"
-          className="rounded-md bg-gray-100 border-0 text-gray-700 placeholder:text-gray-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[100px] max-w-full"
+          className="rounded-md bg-pink-50 border-0 text-gray-700 placeholder:text-pink-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[100px] max-w-full"
           value={location}
           onChange={handleLocationInputChange}
           onFocus={() => location.length >= 2 && setShowSuggestions(true)}
@@ -128,68 +128,80 @@ const SearchBarClassicHero = ({
       </div>
 
       {/* Check-in */}
-      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-gray-200">
-        <Calendar className="h-5 w-5 text-gray-400" />
+      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-pink-200">
+        <Calendar className="h-5 w-5 text-pink-400" />
         <Popover open={checkInOpen} onOpenChange={setCheckInOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start text-left font-normal px-3 py-2 h-auto bg-gray-100 hover:bg-white border-0 rounded-md min-w-[90px]",
-                !checkInDate && "text-gray-400"
+                "w-full justify-start text-left font-normal px-3 py-2 h-auto bg-pink-50 hover:bg-white border-0 rounded-md min-w-[90px]",
+                !checkInDate && "text-pink-400"
               )}
             >
               {checkInDate ? format(checkInDate, "dd-MM-yyyy") : "dd-mm-yyyy"}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
+          <PopoverContent className="w-auto p-0 bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200" align="start">
             <CalendarComponent
               mode="single"
               selected={checkInDate}
               onSelect={handleCheckInSelect}
               disabled={(date) => date < today}
               initialFocus
-              className="pointer-events-auto"
+              className="pointer-events-auto bg-white rounded-lg shadow-lg border border-pink-200"
+              classNames={{
+                day_selected: "bg-pink-500 text-white hover:bg-pink-600",
+                day_today: "bg-pink-100 text-pink-900",
+                nav_button: "text-pink-600 hover:text-pink-800",
+                caption_label: "text-pink-800 font-semibold"
+              }}
             />
           </PopoverContent>
         </Popover>
       </div>
 
       {/* Check-out */}
-      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-gray-200">
-        <Calendar className="h-5 w-5 text-gray-400" />
+      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-pink-200">
+        <Calendar className="h-5 w-5 text-pink-400" />
         <Popover open={checkOutOpen} onOpenChange={setCheckOutOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start text-left font-normal px-3 py-2 h-auto bg-gray-100 hover:bg-white border-0 rounded-md min-w-[90px]",
-                !checkOutDate && "text-gray-400"
+                "w-full justify-start text-left font-normal px-3 py-2 h-auto bg-pink-50 hover:bg-white border-0 rounded-md min-w-[90px]",
+                !checkOutDate && "text-pink-400"
               )}
             >
               {checkOutDate ? format(checkOutDate, "dd-MM-yyyy") : "dd-mm-yyyy"}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
+          <PopoverContent className="w-auto p-0 bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200" align="start">
             <CalendarComponent
               mode="single"
               selected={checkOutDate}
               onSelect={handleCheckOutSelect}
               disabled={(date) => date < (checkInDate || tomorrow)}
               initialFocus
-              className="pointer-events-auto"
+              className="pointer-events-auto bg-white rounded-lg shadow-lg border border-pink-200"
+              classNames={{
+                day_selected: "bg-pink-500 text-white hover:bg-pink-600",
+                day_today: "bg-pink-100 text-pink-900",
+                nav_button: "text-pink-600 hover:text-pink-800",
+                caption_label: "text-pink-800 font-semibold"
+              }}
             />
           </PopoverContent>
         </Popover>
       </div>
 
       {/* Guests */}
-      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-gray-200">
-        <Users className="h-5 w-5 text-gray-400" />
+      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-pink-200">
+        <Users className="h-5 w-5 text-pink-400" />
         <Input
           type="text"
           placeholder="Guests"
-          className="rounded-md bg-gray-100 border-0 text-gray-700 placeholder:text-gray-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[50px] max-w-full"
+          className="rounded-md bg-pink-50 border-0 text-gray-700 placeholder:text-pink-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[50px] max-w-full"
           value={guests}
           onChange={(e) => onGuestsChange(e.target.value)}
           inputMode="numeric"
@@ -199,7 +211,7 @@ const SearchBarClassicHero = ({
 
       {/* Search Button */}
       <div className="pl-2 flex-shrink-0">
-        <Button type="submit" className="bg-[#f65073] hover:bg-[#db3358] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md transition">
+        <Button type="submit" className="bg-pink-500 hover:bg-pink-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md transition">
           <Search className="h-5 w-5" />
         </Button>
       </div>

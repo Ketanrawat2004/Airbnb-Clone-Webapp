@@ -8,14 +8,14 @@ interface HeroSectionProps {
 const HeroSection = ({ onSearch }: HeroSectionProps) => {
   return (
     <section className="relative h-[80vh] min-h-[600px] max-h-[800px] flex flex-col items-center justify-center text-center overflow-hidden">
-      {/* Enhanced Background with Modern Gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600"></div>
+      {/* Enhanced Background with Pink Gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-600 via-rose-600 to-pink-700"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10"></div>
       
       {/* Sophisticated Animated Elements */}
       <div className="absolute top-16 left-16 w-64 h-64 bg-white/8 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute bottom-20 right-20 w-80 h-80 bg-yellow-300/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-      <div className="absolute top-1/3 left-1/3 w-48 h-48 bg-cyan-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
+      <div className="absolute bottom-20 right-20 w-80 h-80 bg-pink-300/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-1/3 left-1/3 w-48 h-48 bg-rose-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Enhanced Header Content */}
@@ -28,7 +28,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight mb-8 tracking-tight">
             Find your{' '}
-            <span className="inline-block bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 text-transparent bg-clip-text px-6 py-2 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10">
+            <span className="inline-block bg-gradient-to-r from-pink-300 via-rose-300 to-pink-400 text-transparent bg-clip-text px-6 py-2 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10">
               perfect stay
             </span>
           </h1>
