@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -128,22 +129,6 @@
   
   .floating-card {
     @apply bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8;
-  }
-  
-  .bg-pink-gradient {
-    @apply bg-gradient-to-br from-[#db3358] to-[#f65073];
-    /* fallback color for legacy browsers */
-    background: linear-gradient(120deg, #db3358 0%, #f65073 100%);
-  }
-  .pink-highlight {
-    @apply px-3 rounded-md bg-[#fff4] text-white;
-    /* semi-transparent white bg on highlight word */
-    /* fallback for non-supporting browsers */
-    background-color: rgba(255,255,255,0.27);
-  }
-  .searchbar-pink-wrapper {
-    @apply w-full max-w-5xl rounded-full bg-white shadow-lg px-2 py-2 flex items-center;
-    min-height: 76px;
   }
 }
 

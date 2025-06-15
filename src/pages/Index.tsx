@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import SearchBar from '@/components/SearchBar';
 import HotelGrid from '@/components/HotelGrid';
@@ -16,21 +17,27 @@ const Index = () => {
     <>
       <Header />
 
-      {/* Hero Section - Classic Pink Red Grad + Simple Layout */}
-      <section className="relative h-[520px] min-h-[400px] flex flex-col items-center justify-center text-center bg-pink-gradient">
-        <div className="w-full max-w-2xl mx-auto">
-          <h1 className="text-5xl sm:text-6xl font-bold mb-6 leading-tight text-white">
-            Find your <span className="pink-highlight">perfect stay</span>
-          </h1>
-          <p className="text-lg sm:text-2xl font-medium text-white mb-10">
-            Discover amazing places to stay around the world,<br className="hidden sm:inline" />
-            curated for unforgettable experiences.
-          </p>
-        </div>
-        {/* SearchBar section with simplified appearance */}
-        <div className="w-full flex justify-center px-4 relative">
-          <div className="searchbar-pink-wrapper">
-            <SearchBar variant="classic-hero" onSearch={handleSearch} />
+      {/* Hero Section - Clean Pink Design */}
+      <section className="relative h-[500px] flex flex-col items-center justify-center text-center" style={{
+        background: 'linear-gradient(135deg, #e91e63 0%, #f06292 100%)'
+      }}>
+        <div className="w-full max-w-4xl mx-auto px-4">
+          {/* Main Heading */}
+          <div className="mb-6">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4">
+              Find your perfect stay
+            </h1>
+            <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto">
+              Discover amazing places to stay around the world,<br />
+              curated for unforgettable experiences.
+            </p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mt-8 w-full max-w-5xl mx-auto">
+            <div className="bg-white rounded-full shadow-lg p-2">
+              <SearchBar variant="classic-hero" onSearch={handleSearch} />
+            </div>
           </div>
         </div>
       </section>
