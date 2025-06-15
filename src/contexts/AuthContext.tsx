@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -54,6 +53,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       console.log('Signing up user:', email);
       
+      // Get the correct redirect URL based on current environment
+      const getRedirectUrl = () => {
+        // If we're in development and running on port 8080 (Vite default)
+        if (window.location.hostname === 'localhost' && window.location.port === '8080') {
+          return `${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/confirm`;
+        }
+        // For deployed apps or other local setups
+        return `${window.location.origin}/auth/confirm`;
+      };
+      
+      const redirectUrl = getRedirectUrl();
+      console.log('Using redirect URL:', redirectUrl);
+      
       // Sign up with Supabase - this will automatically send a confirmation email
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -62,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: `${window.location.origin}/auth/confirm`,
+          emailRedirectTo: redirectUrl,
         },
       });
       
