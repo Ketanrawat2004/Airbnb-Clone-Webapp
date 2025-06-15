@@ -1,4 +1,3 @@
-
 import SearchBar from '@/components/SearchBar';
 
 interface HeroSectionProps {
@@ -22,7 +21,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
         <div className="mb-12 animate-fade-up">
           <div className="inline-block mb-6">
             <span className="bg-white/15 backdrop-blur-lg text-white/95 px-6 sm:px-8 py-3 sm:py-4 rounded-full text-xs sm:text-sm font-semibold tracking-wider uppercase border border-white/20 shadow-xl whitespace-nowrap leading-relaxed">
-              ✨ Every Single Time
+              ✨ Discover Your Perfect Stay
             </span>
           </div>
           
