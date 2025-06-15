@@ -87,15 +87,12 @@ serve(async (req) => {
 
     console.log('Hotel found:', hotel.name);
 
-    // Calculate final amount after coupon discount
-    let finalAmount = paymentData.total_amount;
-    if (paymentData.coupon_data && paymentData.coupon_data.discountAmount) {
-      finalAmount = paymentData.total_amount - paymentData.coupon_data.discountAmount;
-    }
+    // Use the exact amount from frontend - no additional calculations
+    const finalAmount = paymentData.total_amount;
 
     // Create Razorpay order
     const orderData = {
-      amount: finalAmount, // Amount in paise
+      amount: finalAmount, // Amount in paise - exact amount from frontend
       currency: 'INR',
       receipt: `receipt_${Date.now()}`,
       notes: {
@@ -137,7 +134,7 @@ serve(async (req) => {
       check_out_date: paymentData.check_out_date,
       guests: paymentData.guests,
       total_amount: finalAmount,
-      base_amount: paymentData.total_amount,
+      base_amount: paymentData.total_amount, // Store original amount before any discounts
       discount_amount: paymentData.coupon_data?.discountAmount || 0,
       guest_phone: paymentData.guest_phone,
       razorpay_order_id: razorpayOrder.id,

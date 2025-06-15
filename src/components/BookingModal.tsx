@@ -79,6 +79,13 @@ const BookingModal = ({
     return Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
   };
 
+  const calculateFinalAmount = () => {
+    const nights = calculateNights();
+    const baseAmountInPaise = nights * hotel.price_per_night;
+    const couponDiscountInPaise = appliedCoupon ? appliedCoupon.discountAmount : 0;
+    return baseAmountInPaise - couponDiscountInPaise;
+  };
+
   const validateBookingDetails = () => {
     if (!checkInDate || !checkOutDate || !guests) {
       toast({
@@ -193,8 +200,7 @@ const BookingModal = ({
     try {
       setLoading(true);
       
-      const nights = calculateNights();
-      const totalAmountInPaise = nights * hotel.price_per_night;
+      const finalAmountInPaise = calculateFinalAmount();
       const guestPhone = `${guestDetails.countryCode}${guestDetails.phone}`;
       
       const { data, error } = await supabase.functions.invoke('create-razorpay-payment', {
@@ -204,7 +210,7 @@ const BookingModal = ({
           check_out_date: checkOutDate,
           guests: parseInt(guests),
           guest_phone: guestPhone,
-          total_amount: totalAmountInPaise,
+          total_amount: finalAmountInPaise,
           guest_details: {
             title: guestDetails.title,
             firstName: guestDetails.firstName,
@@ -258,7 +264,7 @@ const BookingModal = ({
   };
 
   const nights = calculateNights();
-  const totalAmountInPaise = nights * hotel.price_per_night;
+  const finalAmountInPaise = calculateFinalAmount();
 
   return (
     <>
@@ -360,7 +366,7 @@ const BookingModal = ({
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-gray-800">{hotel.name}</span>
-                    <span className="font-bold text-xl text-rose-600">₹{(totalAmountInPaise / 100).toLocaleString('en-IN')}</span>
+                    <span className="font-bold text-xl text-rose-600">₹{(finalAmountInPaise / 100).toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>{nights} nights • {guests} guests</span>
@@ -427,7 +433,7 @@ const BookingModal = ({
           check_out_date: checkOutDate,
           guests: parseInt(guests),
           guest_phone: guestDetails ? `${guestDetails.countryCode}${guestDetails.phone}` : '',
-          total_amount: totalAmountInPaise,
+          total_amount: finalAmountInPaise,
           guest_details: guestDetails,
           guest_list: guestList,
         }}

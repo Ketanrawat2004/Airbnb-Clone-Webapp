@@ -51,8 +51,7 @@ const BookingDetailsStep = ({
   const calculateBookingAmountInPaise = () => {
     const priceInRupees = hotel.price_per_night / 100; // Convert paise to rupees
     const baseAmount = nights * priceInRupees;
-    const discountedAmount = baseAmount * 0.85; // After 15% discount
-    return Math.round(discountedAmount * 100); // Convert back to paise
+    return Math.round(baseAmount * 100); // Convert back to paise for coupon validation
   };
 
   return (
