@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Mail, Phone } from 'lucide-react';
+import { Mail, Phone, Users } from 'lucide-react';
 import GuestForm, { Guest } from './GuestForm';
 
 interface GuestDetails {
@@ -83,6 +83,18 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
       newErrors.terms = 'You must agree to the terms and conditions';
     }
 
+    // Validate guest details
+    let hasInvalidGuests = false;
+    guests.forEach(guest => {
+      if (!guest.firstName.trim() || !guest.lastName.trim() || !guest.age.trim()) {
+        hasInvalidGuests = true;
+      }
+    });
+
+    if (hasInvalidGuests) {
+      newErrors.guests = 'Please complete all guest details';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -96,7 +108,10 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
 
   return (
     <div className="space-y-6">
-      <h3 className="text-xl font-semibold">Guest Details</h3>
+      <div className="border-b border-gray-200 pb-4">
+        <h3 className="text-xl font-semibold text-gray-900">Complete Your Booking</h3>
+        <p className="text-sm text-gray-600 mt-1">Please provide contact and guest information to proceed</p>
+      </div>
       
       {/* Booking For */}
       <div className="space-y-3">
@@ -115,15 +130,20 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Contact Details */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-medium">Contact Information</h4>
+        <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+          <h4 className="text-lg font-medium flex items-center space-x-2">
+            <div className="bg-rose-100 p-1 rounded-full">
+              <Mail className="h-4 w-4 text-rose-600" />
+            </div>
+            <span>Contact Information</span>
+          </h4>
           
           {/* Title and Name */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
             <div className="md:col-span-3">
               <Label htmlFor="title" className="text-sm font-medium">Title</Label>
               <Select value={guestDetails.title} onValueChange={(value) => handleInputChange('title', value)}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -139,10 +159,10 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
               <Label htmlFor="firstName" className="text-sm font-medium">First Name *</Label>
               <Input
                 id="firstName"
-                placeholder="First Name"
+                placeholder="Enter first name"
                 value={guestDetails.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
-                className={errors.firstName ? 'border-red-500' : ''}
+                className={`h-10 ${errors.firstName ? 'border-red-500' : ''}`}
               />
               {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
             </div>
@@ -151,10 +171,10 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
               <Label htmlFor="lastName" className="text-sm font-medium">Last Name *</Label>
               <Input
                 id="lastName"
-                placeholder="Last Name"
+                placeholder="Enter last name"
                 value={guestDetails.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
-                className={errors.lastName ? 'border-red-500' : ''}
+                className={`h-10 ${errors.lastName ? 'border-red-500' : ''}`}
               />
               {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
             </div>
@@ -166,14 +186,14 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
               <Mail className="h-4 w-4" />
               <span>Email Address *</span>
             </Label>
-            <p className="text-xs text-gray-500 mb-2">Booking voucher will be sent to this email ID</p>
+            <p className="text-xs text-gray-500 mb-2">Booking confirmation will be sent to this email</p>
             <Input
               id="email"
               type="email"
-              placeholder="Enter your email"
+              placeholder="Enter your email address"
               value={guestDetails.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className={errors.email ? 'border-red-500' : ''}
+              className={`h-10 ${errors.email ? 'border-red-500' : ''}`}
             />
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
@@ -184,9 +204,10 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
               <Phone className="h-4 w-4" />
               <span>Mobile Number *</span>
             </Label>
-            <div className="grid grid-cols-3 gap-2 mt-2">
+            <p className="text-xs text-gray-500 mb-2">For booking updates and check-in assistance</p>
+            <div className="grid grid-cols-3 gap-2">
               <Select value={guestDetails.countryCode} onValueChange={(value) => handleInputChange('countryCode', value)}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -201,7 +222,7 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
                 placeholder="Phone Number"
                 value={guestDetails.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value.replace(/\D/g, ''))}
-                className={`col-span-2 ${errors.phone ? 'border-red-500' : ''}`}
+                className={`col-span-2 h-10 ${errors.phone ? 'border-red-500' : ''}`}
                 maxLength={10}
               />
             </div>
@@ -210,38 +231,47 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
         </div>
 
         {/* Guest Information */}
-        <GuestForm 
-          guests={guests}
-          onGuestsChange={setGuests}
-          maxGuests={totalGuests}
-        />
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <GuestForm 
+            guests={guests}
+            onGuestsChange={setGuests}
+            maxGuests={totalGuests}
+          />
+          {errors.guests && <p className="text-red-500 text-xs mt-2">{errors.guests}</p>}
+        </div>
 
         {/* GST Details (Optional) */}
-        <div className="flex items-center space-x-2 py-2 border-t">
+        <div className="flex items-center space-x-2 py-3 border-t border-gray-200">
           <Checkbox id="gst" />
           <Label htmlFor="gst" className="text-sm cursor-pointer">
-            Enter GST Details <span className="text-gray-500">(Optional)</span>
+            Enter GST Details <span className="text-gray-500">(Optional for business travelers)</span>
           </Label>
         </div>
 
         {/* Terms Agreement */}
-        <div className="flex items-start space-x-2 pt-4 border-t">
-          <Checkbox 
-            id="terms" 
-            checked={agreeToTerms}
-            onCheckedChange={(checked) => {
-              setAgreeToTerms(checked as boolean);
-              if (errors.terms) {
-                setErrors(prev => ({ ...prev, terms: '' }));
-              }
-            }}
-          />
-          <div className="flex-1">
-            <Label htmlFor="terms" className="text-sm text-gray-600 leading-relaxed cursor-pointer">
-              By proceeding, I agree to Airbnb Clone+'{' '}
-              <a href="#" className="text-blue-500 underline hover:text-blue-600">User Agreement</a>
-            </Label>
-            {errors.terms && <p className="text-red-500 text-xs mt-1">{errors.terms}</p>}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <Checkbox 
+              id="terms" 
+              checked={agreeToTerms}
+              onCheckedChange={(checked) => {
+                setAgreeToTerms(checked as boolean);
+                if (errors.terms) {
+                  setErrors(prev => ({ ...prev, terms: '' }));
+                }
+              }}
+              className="mt-1"
+            />
+            <div className="flex-1">
+              <Label htmlFor="terms" className="text-sm text-gray-700 leading-relaxed cursor-pointer">
+                I agree to the{' '}
+                <a href="#" className="text-blue-600 underline hover:text-blue-800">Terms & Conditions</a>
+                {' '}and{' '}
+                <a href="#" className="text-blue-600 underline hover:text-blue-800">Privacy Policy</a>
+                {' '}of Airbnb Clone+
+              </Label>
+              {errors.terms && <p className="text-red-500 text-xs mt-1">{errors.terms}</p>}
+            </div>
           </div>
         </div>
 
@@ -249,15 +279,18 @@ const GuestDetailsForm = ({ onSubmit, loading = false, totalGuests = 1 }: GuestD
         <Button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg py-6 disabled:opacity-50"
+          className="w-full bg-rose-500 hover:bg-rose-600 text-white text-lg py-6 disabled:opacity-50 font-semibold"
         >
           {loading ? (
             <div className="flex items-center space-x-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
               <span>Processing...</span>
             </div>
           ) : (
-            'PAY NOW'
+            <>
+              <Users className="h-5 w-5 mr-2" />
+              Proceed to Payment
+            </>
           )}
         </Button>
       </form>

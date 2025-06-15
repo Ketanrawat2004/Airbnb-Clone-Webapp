@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,7 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import GuestDetailsForm from './GuestDetailsForm';
 import BookingDetailsStep from './BookingDetailsStep';
@@ -160,6 +161,33 @@ const BookingModal = ({
       return;
     }
 
+    // Validate guest count matches booking
+    if (guestList.length !== parseInt(guests)) {
+      toast({
+        title: 'Guest count mismatch',
+        description: `Please add details for all ${guests} guests.`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate all guest fields are completed
+    const incompleteGuests = guestList.some(guest => 
+      !guest.firstName.trim() || !guest.lastName.trim() || !guest.age.trim()
+    );
+
+    if (incompleteGuests) {
+      toast({
+        title: 'Incomplete guest details',
+        description: 'Please complete all required fields for each guest.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    console.log('Guest details submitted:', guestDetails);
+    console.log('Guest list:', guestList);
+
     setGuestDetails(guestDetails);
     setGuestList(guestList);
     setStep('payment-method');
@@ -233,24 +261,51 @@ const BookingModal = ({
   return (
     <>
       <Dialog open={open} onOpenChange={handleModalClose}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <div className="flex items-center justify-between">
-              <DialogTitle>
-                {step === 'booking' && 'Book your stay'}
-                {step === 'guest-details' && 'Guest Details'}
-                {step === 'payment-method' && 'Choose Payment Method'}
+              <DialogTitle className="flex items-center space-x-2">
+                {step === 'booking' && (
+                  <>
+                    <div className="bg-rose-100 p-1 rounded-full">
+                      <Users className="h-4 w-4 text-rose-600" />
+                    </div>
+                    <span>Book your stay</span>
+                  </>
+                )}
+                {step === 'guest-details' && (
+                  <>
+                    <div className="bg-blue-100 p-1 rounded-full">
+                      <Users className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <span>Guest Details</span>
+                  </>
+                )}
+                {step === 'payment-method' && (
+                  <>
+                    <div className="bg-green-100 p-1 rounded-full">
+                      <Users className="h-4 w-4 text-green-600" />
+                    </div>
+                    <span>Payment Method</span>
+                  </>
+                )}
               </DialogTitle>
               {(step === 'guest-details' || step === 'payment-method') && (
                 <Button 
                   variant="ghost" 
                   size="sm"
                   onClick={() => setStep(step === 'payment-method' ? 'guest-details' : 'booking')}
-                  className="p-2"
+                  className="p-2 hover:bg-gray-100"
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
               )}
+            </div>
+            {/* Progress Indicator */}
+            <div className="flex items-center space-x-2 mt-2">
+              <div className={`h-2 w-8 rounded-full ${step === 'booking' ? 'bg-rose-500' : 'bg-rose-200'}`} />
+              <div className={`h-2 w-8 rounded-full ${step === 'guest-details' ? 'bg-blue-500' : step === 'payment-method' ? 'bg-blue-200' : 'bg-gray-200'}`} />
+              <div className={`h-2 w-8 rounded-full ${step === 'payment-method' ? 'bg-green-500' : 'bg-gray-200'}`} />
             </div>
           </DialogHeader>
 
@@ -282,15 +337,31 @@ const BookingModal = ({
           {step === 'payment-method' && (
             <div className="space-y-6">
               <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-semibold mb-2">Booking Summary</h3>
-                <div className="space-y-1 text-sm">
+                <h3 className="font-semibold mb-3 flex items-center space-x-2">
+                  <Users className="h-5 w-5 text-gray-600" />
+                  <span>Booking Summary</span>
+                </h3>
+                <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>{hotel.name}</span>
-                    <span>₹{(totalAmountInPaise / 100).toLocaleString('en-IN')}</span>
+                    <span className="font-medium">{hotel.name}</span>
+                    <span className="font-semibold">₹{(totalAmountInPaise / 100).toLocaleString('en-IN')}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>{nights} nights, {guests} guests</span>
+                  <div className="flex justify-between text-gray-600">
+                    <span>{nights} nights • {guests} guests</span>
                   </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>{checkInDate} to {checkOutDate}</span>
+                  </div>
+                  {guestList.length > 0 && (
+                    <div className="border-t pt-2 mt-2">
+                      <p className="font-medium text-gray-700 mb-1">Guests:</p>
+                      {guestList.map((guest, index) => (
+                        <p key={guest.id} className="text-xs text-gray-600">
+                          {index + 1}. {guest.title} {guest.firstName} {guest.lastName} ({guest.age} years)
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -300,15 +371,22 @@ const BookingModal = ({
                 <Button 
                   onClick={handleStripePayment}
                   disabled={loading}
-                  className="w-full bg-rose-500 hover:bg-rose-600"
+                  className="w-full bg-rose-500 hover:bg-rose-600 py-3"
                 >
-                  Pay with Stripe (Real Payment)
+                  {loading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Processing...</span>
+                    </div>
+                  ) : (
+                    'Pay with Stripe (Real Payment)'
+                  )}
                 </Button>
                 
                 <Button 
                   onClick={() => setShowDemoPayment(true)}
                   variant="outline"
-                  className="w-full border-blue-300 text-blue-600 hover:bg-blue-50"
+                  className="w-full border-blue-300 text-blue-600 hover:bg-blue-50 py-3"
                 >
                   Demo Payment (Test Mode)
                 </Button>
