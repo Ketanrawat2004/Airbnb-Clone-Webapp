@@ -9,8 +9,13 @@ import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
 
 const Index = () => {
+  const handleSearch = (location: string) => {
+    console.log('Searching for:', location);
+    // TODO: Implement search functionality
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Header />
       
       {/* Hero Section */}
@@ -26,8 +31,8 @@ const Index = () => {
             Discover amazing places to stay around the world. From luxury hotels to cozy homestays, 
             we've got the perfect accommodation for your next adventure.
           </p>
-          <div className="max-w-4xl mx-auto">
-            <SearchBar />
+          <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-2">
+            <SearchBar variant="hero" onSearch={handleSearch} />
           </div>
         </div>
       </AnimatedSection>
