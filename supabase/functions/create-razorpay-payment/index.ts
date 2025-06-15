@@ -16,6 +16,7 @@ interface PaymentRequest {
   total_amount: number;
   guest_details: any;
   guest_list: any[];
+  coupon_data?: any;
 }
 
 serve(async (req) => {
@@ -86,9 +87,15 @@ serve(async (req) => {
 
     console.log('Hotel found:', hotel.name);
 
+    // Calculate final amount after coupon discount
+    let finalAmount = paymentData.total_amount;
+    if (paymentData.coupon_data && paymentData.coupon_data.discountAmount) {
+      finalAmount = paymentData.total_amount - paymentData.coupon_data.discountAmount;
+    }
+
     // Create Razorpay order
     const orderData = {
-      amount: paymentData.total_amount, // Amount in paise
+      amount: finalAmount, // Amount in paise
       currency: 'INR',
       receipt: `receipt_${Date.now()}`,
       notes: {
@@ -123,21 +130,28 @@ serve(async (req) => {
     // Store booking in database using service role key
     const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
 
+    const bookingData = {
+      user_id: user.id,
+      hotel_id: paymentData.hotel_id,
+      check_in_date: paymentData.check_in_date,
+      check_out_date: paymentData.check_out_date,
+      guests: paymentData.guests,
+      total_amount: finalAmount,
+      base_amount: paymentData.total_amount,
+      discount_amount: paymentData.coupon_data?.discountAmount || 0,
+      guest_phone: paymentData.guest_phone,
+      razorpay_order_id: razorpayOrder.id,
+      payment_status: 'pending',
+      status: 'pending',
+      guest_list: paymentData.guest_list || [],
+      coupon_code: paymentData.coupon_data?.code || null,
+    };
+
+    console.log('Creating booking with data:', bookingData);
+
     const { error: bookingError } = await supabaseService
       .from('bookings')
-      .insert({
-        user_id: user.id,
-        hotel_id: paymentData.hotel_id,
-        check_in_date: paymentData.check_in_date,
-        check_out_date: paymentData.check_out_date,
-        guests: paymentData.guests,
-        total_amount: paymentData.total_amount,
-        guest_phone: paymentData.guest_phone,
-        razorpay_order_id: razorpayOrder.id,
-        payment_status: 'pending',
-        status: 'pending',
-        guest_list: paymentData.guest_list || [],
-      });
+      .insert(bookingData);
 
     if (bookingError) {
       console.error('Error creating booking:', bookingError);

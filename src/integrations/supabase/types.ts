@@ -58,6 +58,7 @@ export type Database = {
           discount_amount: number | null
           guest_age: number | null
           guest_gender: string | null
+          guest_list: Json | null
           guest_name: string | null
           guest_nationality: string | null
           guest_phone: string | null
@@ -81,6 +82,7 @@ export type Database = {
           discount_amount?: number | null
           guest_age?: number | null
           guest_gender?: string | null
+          guest_list?: Json | null
           guest_name?: string | null
           guest_nationality?: string | null
           guest_phone?: string | null
@@ -104,6 +106,7 @@ export type Database = {
           discount_amount?: number | null
           guest_age?: number | null
           guest_gender?: string | null
+          guest_list?: Json | null
           guest_name?: string | null
           guest_nationality?: string | null
           guest_phone?: string | null
