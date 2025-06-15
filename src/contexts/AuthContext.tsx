@@ -9,6 +9,8 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  generateOTP: (name: string) => Promise<{ error: any; expiresAt?: string }>;
+  validateOTP: (name: string, otpCode: string) => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -115,6 +117,85 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const generateOTP = async (name: string) => {
+    try {
+      setLoading(true);
+      
+      console.log('Generating OTP for:', name);
+      
+      const { data, error } = await supabase.rpc('generate_otp', {
+        user_name: name
+      });
+      
+      if (error) {
+        console.error('OTP generation error:', error);
+        return { error };
+      }
+      
+      console.log('OTP generated successfully:', data);
+      return { error: null, expiresAt: data[0]?.expires_at };
+    } catch (error) {
+      console.error('Error in generateOTP:', error);
+      return { error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateOTP = async (name: string, otpCode: string) => {
+    try {
+      setLoading(true);
+      
+      console.log('Validating OTP for:', name);
+      
+      const { data, error } = await supabase.rpc('validate_otp', {
+        user_name: name,
+        provided_otp: otpCode
+      });
+      
+      if (error) {
+        console.error('OTP validation error:', error);
+        return { error };
+      }
+      
+      const validationResult = data[0];
+      
+      if (!validationResult?.valid) {
+        return { error: { message: validationResult?.message || 'Invalid OTP' } };
+      }
+      
+      // Create a temporary user session for OTP-based login
+      // Note: This is a simplified approach. In production, you might want to 
+      // create actual user accounts or use a different authentication flow
+      const tempUser = {
+        id: `otp-${name}`,
+        email: `${name}@otp.local`,
+        user_metadata: { full_name: name, auth_method: 'otp' }
+      };
+      
+      // For OTP login, we'll create a mock session
+      const mockSession = {
+        access_token: `otp-token-${Date.now()}`,
+        refresh_token: `otp-refresh-${Date.now()}`,
+        expires_in: 3600,
+        token_type: 'bearer',
+        user: tempUser
+      };
+      
+      // Set the user state to simulate being logged in
+      setUser(tempUser as any);
+      setSession(mockSession as any);
+      
+      console.log('OTP validation successful');
+      return { error: null };
+    } catch (error) {
+      console.error('Error in validateOTP:', error);
+      return { error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       setLoading(true);
@@ -136,6 +217,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signIn,
     signOut,
+    generateOTP,
+    validateOTP,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

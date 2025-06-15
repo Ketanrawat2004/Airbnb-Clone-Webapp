@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import Logo from './Logo';
+import OTPInput from './OTPInput';
 
 interface AuthModalProps {
   open: boolean;
@@ -77,6 +78,10 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
     setLoading(false);
   };
 
+  const handleOTPSuccess = () => {
+    onOpenChange(false);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -86,14 +91,15 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
             <DialogTitle className="text-xl">Airbnb Clone+</DialogTitle>
           </div>
           <DialogDescription>
-            Sign in to your account or create a new one to get started.
+            Sign in to your account, create a new one, or use quick OTP sign-in.
           </DialogDescription>
         </DialogHeader>
         
         <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="signin">Sign In</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsTrigger value="otp">Quick OTP</TabsTrigger>
           </TabsList>
           
           <TabsContent value="signin">
@@ -183,6 +189,10 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                 You'll receive a confirmation email after signing up. Please check your inbox and spam folder.
               </p>
             </form>
+          </TabsContent>
+
+          <TabsContent value="otp">
+            <OTPInput onSuccess={handleOTPSuccess} />
           </TabsContent>
         </Tabs>
       </DialogContent>

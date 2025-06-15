@@ -227,6 +227,33 @@ export type Database = {
         }
         Relationships: []
       }
+      otp_codes: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          is_used: boolean
+          name: string
+          otp_code: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          is_used?: boolean
+          name: string
+          otp_code: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_used?: boolean
+          name?: string
+          otp_code?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -342,6 +369,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_expired_otps: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      generate_otp: {
+        Args: { user_name: string }
+        Returns: {
+          otp_code: string
+          expires_at: string
+        }[]
+      }
       get_available_rooms: {
         Args: {
           hotel_id_param: string
@@ -380,6 +418,13 @@ export type Database = {
           valid: boolean
           discount_amount: number
           coupon_id: string
+          message: string
+        }[]
+      }
+      validate_otp: {
+        Args: { user_name: string; provided_otp: string }
+        Returns: {
+          valid: boolean
           message: string
         }[]
       }
