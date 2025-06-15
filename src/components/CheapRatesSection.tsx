@@ -1,5 +1,5 @@
 
-import HotelGrid from '@/components/HotelGrid';
+import CheapRatesHotelGrid from '@/components/CheapRatesHotelGrid';
 
 const CheapRatesSection = () => {
   return (
@@ -21,9 +21,9 @@ const CheapRatesSection = () => {
           
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
             <span className="bg-gradient-to-r from-pink-700 via-rose-600 to-pink-800 bg-clip-text text-transparent">
-              Testing
+              Cheap Rates
             </span>
-            <span className="block text-gray-800 mt-2">Cheap Rates</span>
+            <span className="block text-gray-800 mt-2">₹5 - ₹15 per night</span>
           </h2>
           
           <p className="text-gray-600 text-lg sm:text-xl max-w-4xl mx-auto leading-relaxed px-4">
@@ -33,7 +33,7 @@ const CheapRatesSection = () => {
         </div>
         
         <div className="animate-fade-up" style={{ animationDelay: '0.2s' }}>
-          <HotelGrid />
+          <CheapRatesHotelGrid />
         </div>
       </div>
     </section>
