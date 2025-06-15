@@ -28,7 +28,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-6 sm:mb-8 tracking-tight px-2">
             <span className="block mb-2 sm:mb-4">Find your</span>
-            <span className="inline-block bg-gradient-to-r from-pink-300 via-rose-300 to-pink-400 text-transparent bg-clip-text px-4 sm:px-6 py-2 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10 whitespace-nowrap">
+            <span className="inline-block bg-gradient-to-r from-pink-300 via-rose-300 to-pink-400 text-transparent bg-clip-text px-2 sm:px-4 lg:px-6 py-2 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
               perfect stay
             </span>
           </h1>
