@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Trash2, Users } from 'lucide-react';
+import { Trash2, Users, Sparkles } from 'lucide-react';
 
 export interface Guest {
   id: string;
@@ -41,12 +41,11 @@ const GuestForm = ({ guests, onGuestsChange, maxGuests }: GuestFormProps) => {
   };
 
   const removeGuest = (guestId: string) => {
-    if (guests.length <= 1) return; // Always keep at least one guest
+    if (guests.length <= 1) return;
     
     const updatedGuests = guests.filter(guest => guest.id !== guestId);
     onGuestsChange(updatedGuests);
     
-    // Clear errors for removed guest
     const newErrors = { ...errors };
     delete newErrors[guestId];
     setErrors(newErrors);
@@ -58,7 +57,6 @@ const GuestForm = ({ guests, onGuestsChange, maxGuests }: GuestFormProps) => {
     );
     onGuestsChange(updatedGuests);
     
-    // Clear error when user starts typing
     if (errors[guestId]?.[field]) {
       setErrors(prev => ({
         ...prev,
@@ -100,29 +98,36 @@ const GuestForm = ({ guests, onGuestsChange, maxGuests }: GuestFormProps) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Label className="text-lg font-medium flex items-center space-x-2">
-          <Users className="h-5 w-5" />
-          <span>Guest Details</span>
+        <Label className="text-xl font-bold flex items-center space-x-3">
+          <div className="bg-gradient-to-r from-rose-500 to-pink-500 p-2 rounded-xl">
+            <Users className="h-6 w-6 text-white" />
+          </div>
+          <span className="bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+            Guest Details
+          </span>
         </Label>
-        <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+        <div className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold border-2 border-blue-200">
           {guests.length} of {maxGuests} guests
         </div>
       </div>
 
       {guests.map((guest, index) => (
-        <Card key={guest.id} className="relative border-l-4 border-l-rose-500">
-          <CardHeader className="pb-3">
+        <Card key={guest.id} className="relative border-0 shadow-lg bg-gradient-to-r from-white to-rose-50/30 overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-rose-500 to-pink-500"></div>
+          
+          <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base flex items-center space-x-2">
-                <span className="bg-rose-100 text-rose-800 px-2 py-1 rounded-full text-xs font-medium">
+              <CardTitle className="text-lg flex items-center space-x-3">
+                <div className="bg-gradient-to-r from-rose-100 to-pink-100 text-rose-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-rose-200">
                   Guest {index + 1}
-                </span>
+                </div>
                 {index === 0 && (
-                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                    Primary
-                  </span>
+                  <div className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-blue-200 flex items-center space-x-1">
+                    <Sparkles className="h-3 w-3" />
+                    <span>Primary</span>
+                  </div>
                 )}
               </CardTitle>
               {guests.length > 1 && index > 0 && (
@@ -131,24 +136,24 @@ const GuestForm = ({ guests, onGuestsChange, maxGuests }: GuestFormProps) => {
                   variant="ghost"
                   size="sm"
                   onClick={() => removeGuest(guest.id)}
-                  className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50 h-10 w-10 p-0 rounded-xl transition-all duration-200"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-5 w-5" />
                 </Button>
               )}
             </div>
           </CardHeader>
           
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5">
             {/* Title and Name Row */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
               <div className="md:col-span-3">
-                <Label className="text-sm font-medium">Title</Label>
+                <Label className="text-sm font-semibold text-gray-700">Title</Label>
                 <Select 
                   value={guest.title} 
                   onValueChange={(value) => updateGuest(guest.id, 'title', value)}
                 >
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-12 rounded-xl border-2 border-gray-200 focus:border-rose-400">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -161,57 +166,57 @@ const GuestForm = ({ guests, onGuestsChange, maxGuests }: GuestFormProps) => {
               </div>
               
               <div className="md:col-span-4">
-                <Label className="text-sm font-medium">First Name *</Label>
+                <Label className="text-sm font-semibold text-gray-700">First Name *</Label>
                 <Input
                   placeholder="Enter first name"
                   value={guest.firstName}
                   onChange={(e) => updateGuest(guest.id, 'firstName', e.target.value)}
-                  className={`h-10 ${errors[guest.id]?.firstName ? 'border-red-500 focus:border-red-500' : ''}`}
+                  className={`${errors[guest.id]?.firstName ? 'border-red-500 focus:border-red-500' : ''}`}
                 />
                 {errors[guest.id]?.firstName && (
-                  <p className="text-red-500 text-xs mt-1">{errors[guest.id].firstName}</p>
+                  <p className="text-red-500 text-xs mt-1 font-medium">{errors[guest.id].firstName}</p>
                 )}
               </div>
               
               <div className="md:col-span-5">
-                <Label className="text-sm font-medium">Last Name *</Label>
+                <Label className="text-sm font-semibold text-gray-700">Last Name *</Label>
                 <Input
                   placeholder="Enter last name"
                   value={guest.lastName}
                   onChange={(e) => updateGuest(guest.id, 'lastName', e.target.value)}
-                  className={`h-10 ${errors[guest.id]?.lastName ? 'border-red-500 focus:border-red-500' : ''}`}
+                  className={`${errors[guest.id]?.lastName ? 'border-red-500 focus:border-red-500' : ''}`}
                 />
                 {errors[guest.id]?.lastName && (
-                  <p className="text-red-500 text-xs mt-1">{errors[guest.id].lastName}</p>
+                  <p className="text-red-500 text-xs mt-1 font-medium">{errors[guest.id].lastName}</p>
                 )}
               </div>
             </div>
 
             {/* Age and Gender Row */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-sm font-medium">Age *</Label>
+                <Label className="text-sm font-semibold text-gray-700">Age *</Label>
                 <Input
                   type="number"
                   placeholder="Age"
                   value={guest.age}
                   onChange={(e) => updateGuest(guest.id, 'age', e.target.value)}
-                  className={`h-10 ${errors[guest.id]?.age ? 'border-red-500 focus:border-red-500' : ''}`}
+                  className={`${errors[guest.id]?.age ? 'border-red-500 focus:border-red-500' : ''}`}
                   min="1"
                   max="120"
                 />
                 {errors[guest.id]?.age && (
-                  <p className="text-red-500 text-xs mt-1">{errors[guest.id].age}</p>
+                  <p className="text-red-500 text-xs mt-1 font-medium">{errors[guest.id].age}</p>
                 )}
               </div>
               
               <div>
-                <Label className="text-sm font-medium">Gender</Label>
+                <Label className="text-sm font-semibold text-gray-700">Gender</Label>
                 <Select 
                   value={guest.gender} 
                   onValueChange={(value) => updateGuest(guest.id, 'gender', value)}
                 >
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-12 rounded-xl border-2 border-gray-200 focus:border-rose-400">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -232,21 +237,21 @@ const GuestForm = ({ guests, onGuestsChange, maxGuests }: GuestFormProps) => {
           type="button"
           variant="outline"
           onClick={addGuest}
-          className="w-full border-dashed border-2 border-gray-300 hover:border-rose-400 hover:bg-rose-50 text-gray-600 hover:text-rose-600 py-6"
+          className="w-full border-dashed border-3 border-gray-300 hover:border-rose-400 hover:bg-gradient-to-r hover:from-rose-50 hover:to-pink-50 text-gray-600 hover:text-rose-600 py-8 rounded-xl transition-all duration-200 hover:scale-105"
         >
-          <Users className="h-4 w-4 mr-2" />
-          Add Guest {guests.length + 1}
+          <Users className="h-5 w-5 mr-2" />
+          <span className="text-lg font-semibold">Add Guest {guests.length + 1}</span>
         </Button>
       )}
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-        <div className="flex items-start space-x-2">
-          <div className="bg-blue-500 rounded-full p-1 mt-0.5">
-            <Users className="h-3 w-3 text-white" />
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4">
+        <div className="flex items-start space-x-3">
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full p-2 mt-0.5">
+            <Users className="h-4 w-4 text-white" />
           </div>
           <div>
-            <p className="text-sm text-blue-800 font-medium">Guest Information</p>
-            <p className="text-xs text-blue-600 mt-1">
+            <p className="text-blue-800 font-semibold">Guest Information</p>
+            <p className="text-blue-600 text-sm mt-1">
               Please ensure all guest details are accurate as they will be used for booking confirmation and check-in.
             </p>
           </div>

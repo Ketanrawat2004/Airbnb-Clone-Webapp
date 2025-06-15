@@ -9,12 +9,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Users } from 'lucide-react';
+import { ArrowLeft, Users, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import GuestDetailsForm from './GuestDetailsForm';
 import BookingDetailsStep from './BookingDetailsStep';
 import DemoPaymentModal from './DemoPaymentModal';
+import RazorpayPaymentModal from './RazorpayPaymentModal';
 import { Guest } from './GuestForm';
+import { useNavigate } from 'react-router-dom';
 
 interface Hotel {
   id: string;
@@ -55,9 +57,12 @@ const BookingModal = ({
 }: BookingModalProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'booking' | 'guest-details' | 'payment-method'>('booking');
   const [showDemoPayment, setShowDemoPayment] = useState(false);
+  const [showRazorpayPayment, setShowRazorpayPayment] = useState(false);
+  const [razorpayData, setRazorpayData] = useState<any>(null);
   
   const [checkInDate, setCheckInDate] = useState(initialCheckIn);
   const [checkOutDate, setCheckOutDate] = useState(initialCheckOut);
@@ -72,12 +77,6 @@ const BookingModal = ({
     const checkOut = new Date(checkOutDate);
     const timeDiff = checkOut.getTime() - checkIn.getTime();
     return Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
-  };
-
-  const calculateTotal = () => {
-    const nights = calculateNights();
-    // Convert from paise to rupees, then to USD for payment processing
-    return nights * (hotel.price_per_night / 100 / 83); // Convert INR to USD
   };
 
   const validateBookingDetails = () => {
@@ -161,7 +160,6 @@ const BookingModal = ({
       return;
     }
 
-    // Validate guest count matches booking
     if (guestList.length !== parseInt(guests)) {
       toast({
         title: 'Guest count mismatch',
@@ -171,7 +169,6 @@ const BookingModal = ({
       return;
     }
 
-    // Validate all guest fields are completed
     const incompleteGuests = guestList.some(guest => 
       !guest.firstName.trim() || !guest.lastName.trim() || !guest.age.trim()
     );
@@ -185,18 +182,13 @@ const BookingModal = ({
       return;
     }
 
-    console.log('Guest details submitted:', guestDetails);
-    console.log('Guest list:', guestList);
-
     setGuestDetails(guestDetails);
     setGuestList(guestList);
     setStep('payment-method');
   };
 
-  const handleStripePayment = async () => {
+  const handleRazorpayPayment = async () => {
     if (!guestDetails) return;
-
-    console.log('Starting Stripe payment process...');
 
     try {
       setLoading(true);
@@ -205,9 +197,7 @@ const BookingModal = ({
       const totalAmountInPaise = nights * hotel.price_per_night;
       const guestPhone = `${guestDetails.countryCode}${guestDetails.phone}`;
       
-      console.log('Calling create-payment function...');
-
-      const { data, error } = await supabase.functions.invoke('create-payment', {
+      const { data, error } = await supabase.functions.invoke('create-razorpay-payment', {
         body: {
           hotel_id: hotel.id,
           check_in_date: checkInDate,
@@ -217,8 +207,8 @@ const BookingModal = ({
           total_amount: totalAmountInPaise,
           guest_details: {
             title: guestDetails.title,
-            first_name: guestDetails.firstName,
-            last_name: guestDetails.lastName,
+            firstName: guestDetails.firstName,
+            lastName: guestDetails.lastName,
             email: guestDetails.email,
             phone: guestPhone,
           },
@@ -227,15 +217,15 @@ const BookingModal = ({
         },
       });
 
-      if (error || !data?.url) {
-        throw new Error(error?.message || 'Payment URL not received');
+      if (error || !data?.order_id) {
+        throw new Error(error?.message || 'Payment setup failed');
       }
 
-      console.log('Redirecting to Stripe:', data.url);
-      window.location.href = data.url;
+      setRazorpayData(data);
+      setShowRazorpayPayment(true);
       
     } catch (error) {
-      console.error('Stripe payment error:', error);
+      console.error('Razorpay payment error:', error);
       toast({
         title: 'Payment setup failed',
         description: `Unable to process payment: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -246,47 +236,65 @@ const BookingModal = ({
     }
   };
 
+  const handlePaymentSuccess = (paymentId: string) => {
+    toast({
+      title: 'Payment successful! 🎉',
+      description: 'Your booking has been confirmed.',
+    });
+    
+    // Navigate to success page
+    navigate(`/payment-success?payment_id=${paymentId}`);
+    handleModalClose();
+  };
+
   const handleModalClose = () => {
     setStep('booking');
     setAppliedCoupon(null);
     setGuestDetails(null);
     setGuestList([]);
+    setShowRazorpayPayment(false);
+    setRazorpayData(null);
     onOpenChange(false);
   };
 
   const nights = calculateNights();
-  const total = calculateTotal();
   const totalAmountInPaise = nights * hotel.price_per_night;
 
   return (
     <>
       <Dialog open={open} onOpenChange={handleModalClose}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-white via-rose-50/20 to-pink-50/30 border-0 shadow-2xl">
           <DialogHeader>
             <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center space-x-2">
+              <DialogTitle className="flex items-center space-x-3">
                 {step === 'booking' && (
                   <>
-                    <div className="bg-rose-100 p-1 rounded-full">
-                      <Users className="h-4 w-4 text-rose-600" />
+                    <div className="bg-gradient-to-r from-rose-500 to-pink-500 p-2 rounded-xl shadow-lg">
+                      <Users className="h-5 w-5 text-white" />
                     </div>
-                    <span>Book your stay</span>
+                    <span className="text-xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+                      Book your stay
+                    </span>
                   </>
                 )}
                 {step === 'guest-details' && (
                   <>
-                    <div className="bg-blue-100 p-1 rounded-full">
-                      <Users className="h-4 w-4 text-blue-600" />
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-2 rounded-xl shadow-lg">
+                      <Users className="h-5 w-5 text-white" />
                     </div>
-                    <span>Guest Details</span>
+                    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                      Guest Details
+                    </span>
                   </>
                 )}
                 {step === 'payment-method' && (
                   <>
-                    <div className="bg-green-100 p-1 rounded-full">
-                      <Users className="h-4 w-4 text-green-600" />
+                    <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-xl shadow-lg">
+                      <Sparkles className="h-5 w-5 text-white" />
                     </div>
-                    <span>Payment Method</span>
+                    <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                      Payment Method
+                    </span>
                   </>
                 )}
               </DialogTitle>
@@ -295,17 +303,25 @@ const BookingModal = ({
                   variant="ghost" 
                   size="sm"
                   onClick={() => setStep(step === 'payment-method' ? 'guest-details' : 'booking')}
-                  className="p-2 hover:bg-gray-100"
+                  className="p-3 hover:bg-gray-100 rounded-xl transition-all duration-200"
                 >
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-5 w-5" />
                 </Button>
               )}
             </div>
-            {/* Progress Indicator */}
-            <div className="flex items-center space-x-2 mt-2">
-              <div className={`h-2 w-8 rounded-full ${step === 'booking' ? 'bg-rose-500' : 'bg-rose-200'}`} />
-              <div className={`h-2 w-8 rounded-full ${step === 'guest-details' ? 'bg-blue-500' : step === 'payment-method' ? 'bg-blue-200' : 'bg-gray-200'}`} />
-              <div className={`h-2 w-8 rounded-full ${step === 'payment-method' ? 'bg-green-500' : 'bg-gray-200'}`} />
+            
+            {/* Enhanced Progress Indicator */}
+            <div className="flex items-center space-x-3 mt-4">
+              <div className={`h-3 w-12 rounded-full transition-all duration-300 ${
+                step === 'booking' ? 'bg-gradient-to-r from-rose-500 to-pink-500 shadow-lg' : 'bg-rose-200'
+              }`} />
+              <div className={`h-3 w-12 rounded-full transition-all duration-300 ${
+                step === 'guest-details' ? 'bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg' : 
+                step === 'payment-method' ? 'bg-blue-200' : 'bg-gray-200'
+              }`} />
+              <div className={`h-3 w-12 rounded-full transition-all duration-300 ${
+                step === 'payment-method' ? 'bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg' : 'bg-gray-200'
+              }`} />
             </div>
           </DialogHeader>
 
@@ -316,7 +332,7 @@ const BookingModal = ({
               checkOutDate={checkOutDate}
               guests={guests}
               nights={nights}
-              total={total}
+              total={nights * (hotel.price_per_night / 100)}
               onCheckInChange={setCheckInDate}
               onCheckOutChange={setCheckOutDate}
               onGuestsChange={setGuests}
@@ -336,15 +352,15 @@ const BookingModal = ({
 
           {step === 'payment-method' && (
             <div className="space-y-6">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-semibold mb-3 flex items-center space-x-2">
-                  <Users className="h-5 w-5 text-gray-600" />
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200 shadow-inner">
+                <h3 className="font-bold mb-4 flex items-center space-x-2 text-lg">
+                  <Users className="h-6 w-6 text-gray-600" />
                   <span>Booking Summary</span>
                 </h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="font-medium">{hotel.name}</span>
-                    <span className="font-semibold">₹{(totalAmountInPaise / 100).toLocaleString('en-IN')}</span>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-800">{hotel.name}</span>
+                    <span className="font-bold text-xl text-rose-600">₹{(totalAmountInPaise / 100).toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>{nights} nights • {guests} guests</span>
@@ -353,40 +369,45 @@ const BookingModal = ({
                     <span>{checkInDate} to {checkOutDate}</span>
                   </div>
                   {guestList.length > 0 && (
-                    <div className="border-t pt-2 mt-2">
-                      <p className="font-medium text-gray-700 mb-1">Guests:</p>
-                      {guestList.map((guest, index) => (
-                        <p key={guest.id} className="text-xs text-gray-600">
-                          {index + 1}. {guest.title} {guest.firstName} {guest.lastName} ({guest.age} years)
-                        </p>
-                      ))}
+                    <div className="border-t pt-3 mt-3">
+                      <p className="font-semibold text-gray-700 mb-2">Guests:</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+                        {guestList.map((guest, index) => (
+                          <p key={guest.id} className="text-xs text-gray-600 bg-white rounded-lg px-2 py-1">
+                            {index + 1}. {guest.title} {guest.firstName} {guest.lastName} ({guest.age} years)
+                          </p>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="font-semibold">Choose Payment Method</h3>
+              <div className="space-y-4">
+                <h3 className="font-bold text-lg">Choose Payment Method</h3>
                 
                 <Button 
-                  onClick={handleStripePayment}
+                  onClick={handleRazorpayPayment}
                   disabled={loading}
-                  className="w-full bg-rose-500 hover:bg-rose-600 py-3"
+                  className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
                 >
                   {loading ? (
                     <div className="flex items-center space-x-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Processing...</span>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Setting up payment...</span>
                     </div>
                   ) : (
-                    'Pay with Stripe (Real Payment)'
+                    <>
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      Pay with Razorpay
+                    </>
                   )}
                 </Button>
                 
                 <Button 
                   onClick={() => setShowDemoPayment(true)}
                   variant="outline"
-                  className="w-full border-blue-300 text-blue-600 hover:bg-blue-50 py-3"
+                  className="w-full border-2 border-blue-300 text-blue-600 hover:bg-blue-50 py-6 text-lg font-semibold rounded-xl transition-all duration-200 hover:scale-105"
                 >
                   Demo Payment (Test Mode)
                 </Button>
@@ -411,6 +432,15 @@ const BookingModal = ({
           guest_list: guestList,
         }}
       />
+
+      {razorpayData && (
+        <RazorpayPaymentModal
+          open={showRazorpayPayment}
+          onOpenChange={setShowRazorpayPayment}
+          paymentData={razorpayData}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
     </>
   );
 };
