@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, Download, MessageSquare, Home, Calendar, MapPin, Sparkles } from 'lucide-react';
@@ -7,6 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import PaymentSuccessToast from '@/components/PaymentSuccessToast';
+
+// WhatsApp helper function (get WhatsApp URL with message)
+function getWhatsAppUrl(phone: string, message: string) {
+  // WhatsApp API expects numbers without "+", but do a best effort
+  const safePhone = phone.replace(/^\+/, '');
+  return `https://wa.me/${safePhone}?text=${encodeURIComponent(message)}`;
+}
 
 interface BookingDetails {
   id: string;
@@ -32,6 +38,9 @@ const PaymentSuccess = () => {
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState<BookingDetails | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  // WhatsApp Feature state
+  const [hasSentWhatsapp, setHasSentWhatsapp] = useState(false);
 
   useEffect(() => {
     if (sessionId || paymentId) {
@@ -116,6 +125,39 @@ const PaymentSuccess = () => {
     navigate('/profile?payment_success=true');
   };
 
+  // WhatsApp message composition as soon as booking is available and booking not sent yet
+  const handleSendToWhatsapp = () => {
+    if (!booking) {
+      toast.error("Booking not loaded yet.");
+      return;
+    }
+    const hotelName = booking.hotels.name;
+    const location = booking.hotels.location;
+    const checkIn = new Date(booking.check_in_date).toLocaleDateString();
+    const checkOut = new Date(booking.check_out_date).toLocaleDateString();
+    const guests = booking.guests;
+    const amount = `₹${(booking.total_amount / 100).toLocaleString('en-IN')}`;
+    const referenceId = sessionId || paymentId || booking.id.substring(0, 8).toUpperCase();
+
+    const fullName = (booking.profiles && (booking.profiles as any).full_name) || "Guest";
+
+    const message =
+      `🏨 Booking Confirmed!%0A%0A` +
+      `Hotel: ${hotelName}%0A` +
+      `Location: ${location}%0A` +
+      `Check-in: ${checkIn}%0A` +
+      `Check-out: ${checkOut}%0A` +
+      `Guests: ${guests}%0A` +
+      `Total Paid: ${amount}%0A` +
+      `Reference ID: #${referenceId}%0A%0A` +
+      `Name: ${fullName}%0A%0A` +
+      `Your booking receipt is available online. Have a great stay!`;
+
+    const url = getWhatsAppUrl(booking.guest_phone, message);
+    setHasSentWhatsapp(true);
+    window.open(url, "_blank"); // Open WhatsApp in new tab/window
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 flex items-center justify-center">
@@ -189,6 +231,25 @@ const PaymentSuccess = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Send to WhatsApp Button */}
+              <div className="flex flex-col items-center justify-center mt-4 space-y-2">
+                <Button
+                  size="lg"
+                  className="w-full bg-green-500 text-white py-4 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-green-600 transition"
+                  onClick={handleSendToWhatsapp}
+                  disabled={hasSentWhatsapp}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967s-.47-.148-.668.149c-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.656-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.668-1.611-.916-2.209-.242-.579-.487-.5-.668-.51a2.777 2.777 0 0 0-.572-.011c-.198.024-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.212 3.074c.149.198 2.094 3.2 5.077 4.364.71.306 1.262.489 1.693.625.712.227 1.36.195 1.87.118.57-.085 1.758-.719 2.008-1.414.248-.694.248-1.288.173-1.414-.074-.127-.272-.198-.569-.347z" fill="currentColor"/>
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  </svg>
+                  {hasSentWhatsapp ? 'Sent to WhatsApp' : 'Send Ticket to WhatsApp'}
+                </Button>
+                <span className="text-xs text-gray-500 text-center">
+                  {hasSentWhatsapp ? 'You can re-send this ticket if needed.' : 'Tap to open WhatsApp with your booking confirmation.'}
+                </span>
               </div>
 
               {/* Enhanced Confirmation Messages */}
