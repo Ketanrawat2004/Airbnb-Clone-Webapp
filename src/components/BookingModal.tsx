@@ -337,10 +337,18 @@ const BookingModal = ({
 
       {razorpayData && (
         <RazorpayPaymentModal
-          open={showRazorpayPayment}
-          onOpenChange={setShowRazorpayPayment}
-          paymentData={razorpayData}
-          onSuccess={handlePaymentSuccess}
+          isOpen={showRazorpayPayment}
+          setIsOpen={setShowRazorpayPayment}
+          amount={razorpayData.amount}
+          currency={razorpayData.currency}
+          email={razorpayData.user_email}
+          name={razorpayData.user_name}
+          phone={razorpayData.guest_phone}
+          bookingId={razorpayData.order_id}
+          hotelId={hotel.id}
+          checkInDate={checkInDate}
+          checkOutDate={checkOutDate}
+          guests={guests}
         />
       )}
     </>
