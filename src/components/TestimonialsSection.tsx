@@ -55,25 +55,25 @@ const TestimonialsSection = () => {
 
   if (loading) {
     return (
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <Skeleton className="h-8 w-64 mx-auto mb-4" />
-            <Skeleton className="h-4 w-96 mx-auto" />
+      <section className="py-20 sm:py-24 lg:py-32 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 sm:mb-20">
+            <Skeleton className="h-10 w-64 mx-auto mb-6" />
+            <Skeleton className="h-6 w-96 mx-auto" />
           </div>
-          <div className="relative px-12">
+          <div className="relative px-4 sm:px-8 lg:px-16">
             <Carousel className="w-full">
               <CarouselContent className="-ml-4">
                 {Array.from({ length: 6 }).map((_, index) => (
                   <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                     <div className="space-y-4">
-                      <Skeleton className="h-40 w-full rounded-lg" />
+                      <Skeleton className="h-48 w-full rounded-xl" />
                     </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-0" />
-              <CarouselNext className="right-0" />
+              <CarouselPrevious className="left-2" />
+              <CarouselNext className="right-2" />
             </Carousel>
           </div>
         </div>
@@ -86,21 +86,35 @@ const TestimonialsSection = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <Quote className="h-8 w-8 text-rose-500 mr-2" />
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Guest Reviews
-            </h2>
+    <section className="py-20 sm:py-24 lg:py-32 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+      {/* Background patterns */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_75%,rgba(59,130,246,0.03),transparent_50%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_25%,rgba(99,102,241,0.03),transparent_50%)]"></div>
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="text-center mb-16 sm:mb-20">
+          <div className="inline-block p-2 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full mb-8 shadow-xl">
+            <div className="bg-white rounded-full px-8 py-4">
+              <span className="text-rose-600 text-sm font-bold tracking-wider uppercase flex items-center">
+                <Quote className="h-4 w-4 mr-2" />
+                Guest Stories
+              </span>
+            </div>
           </div>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Hear what our guests have to say about their unforgettable experiences
+          
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
+            <span className="bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
+              What Our Guests
+            </span>
+            <span className="block text-gray-800 mt-2">Are Saying</span>
+          </h2>
+          
+          <p className="text-gray-600 text-lg sm:text-xl max-w-4xl mx-auto leading-relaxed px-4">
+            Hear what our guests have to say about their unforgettable experiences and discover why they choose us for their perfect stays.
           </p>
         </div>
 
-        <div className="relative px-12">
+        <div className="relative px-4 sm:px-8 lg:px-16">
           <Carousel 
             className="w-full"
             opts={{
@@ -115,8 +129,8 @@ const TestimonialsSection = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-0" />
-            <CarouselNext className="right-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-0" />
+            <CarouselPrevious className="left-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0 hover:shadow-2xl transition-all duration-300" />
+            <CarouselNext className="right-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0 hover:shadow-2xl transition-all duration-300" />
           </Carousel>
         </div>
       </div>

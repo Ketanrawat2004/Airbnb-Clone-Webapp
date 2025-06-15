@@ -69,31 +69,31 @@ const HotelGrid = () => {
 
   if (loading) {
     return (
-      <div className="relative px-12">
+      <div className="relative px-4 sm:px-8 lg:px-16">
         <Carousel className="w-full">
           <CarouselContent className="-ml-4">
             {Array.from({ length: 8 }).map((_, index) => (
               <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                 <div className="space-y-4">
-                  <Skeleton className="h-48 sm:h-56 lg:h-64 w-full rounded-lg" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 sm:h-5 w-3/4" />
-                    <Skeleton className="h-4 sm:h-5 w-1/2" />
-                    <Skeleton className="h-3 sm:h-4 w-1/4" />
+                  <Skeleton className="h-48 sm:h-56 lg:h-64 w-full rounded-xl" />
+                  <div className="space-y-3 px-2">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-4 w-1/4" />
                   </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-0" />
-          <CarouselNext className="right-0" />
+          <CarouselPrevious className="left-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0" />
+          <CarouselNext className="right-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0" />
         </Carousel>
       </div>
     );
   }
 
   return (
-    <div className="relative px-12">
+    <div className="relative px-4 sm:px-8 lg:px-16">
       <Carousel 
         className="w-full"
         opts={{
@@ -108,8 +108,8 @@ const HotelGrid = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-0" />
-        <CarouselNext className="right-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-0" />
+        <CarouselPrevious className="left-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0 hover:shadow-2xl transition-all duration-300" />
+        <CarouselNext className="right-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0 hover:shadow-2xl transition-all duration-300" />
       </Carousel>
     </div>
   );
