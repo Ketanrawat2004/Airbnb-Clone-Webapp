@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Mail, Phone, Save, Download, Calendar, X, Eye, Trash2, Heart, Star } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { User, Mail, Phone, Save, Download, Calendar, X, Eye, Trash2, Heart, Star, MapPin, Users, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import { Link } from 'react-router-dom';
@@ -323,6 +325,22 @@ const Profile = () => {
     return 'Good evening';
   };
 
+  const getStatusBadge = (booking: Booking) => {
+    if (booking.status === 'cancelled') {
+      return <Badge variant="destructive" className="text-xs">Cancelled</Badge>;
+    }
+    if (booking.payment_status === 'paid') {
+      return <Badge className="bg-green-500 hover:bg-green-600 text-xs">Confirmed</Badge>;
+    }
+    return <Badge variant="secondary" className="text-xs">Pending</Badge>;
+  };
+
+  const calculateNights = (checkIn: string, checkOut: string) => {
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
+  };
+
   // Check URL parameters for payment success
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -331,18 +349,17 @@ const Profile = () => {
     
     if (sessionId || paymentSuccess === 'true') {
       setShowPaymentSuccess(true);
-      // Clean up URL parameters
       window.history.replaceState({}, document.title, '/profile');
     }
   }, []);
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
         <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-center items-center h-64">
-            <div className="text-lg">Loading...</div>
+            <div className="text-lg font-medium text-gray-600 animate-pulse">Loading your profile...</div>
           </div>
         </div>
       </div>
@@ -351,11 +368,15 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
         <Header />
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Please sign in to view your profile</h1>
+          <div className="text-center py-16">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+              <User className="h-12 w-12 text-gray-400" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Your Profile</h1>
+            <p className="text-gray-600 mb-8">Please sign in to view and manage your travel profile</p>
           </div>
         </div>
       </div>
@@ -363,7 +384,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       <Header />
       
       {/* Payment Success Toast */}
@@ -372,218 +393,274 @@ const Profile = () => {
       )}
       
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Welcome Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              {getGreeting()}, {getDisplayName()}! 👋
-            </h1>
-            <p className="text-gray-600">Welcome back to your travel dashboard</p>
+            <div className="inline-flex items-center space-x-3 mb-4">
+              <div className="relative">
+                <Avatar className="h-20 w-20 border-4 border-white shadow-xl">
+                  <AvatarFallback className="text-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white">
+                    {getDisplayName().charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                  <CheckCircle className="h-3 w-3 text-white" />
+                </div>
+              </div>
+              <div className="text-left">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+                  {getGreeting()}, {getDisplayName()}! 
+                </h1>
+                <p className="text-lg text-gray-600 flex items-center mt-1">
+                  <Heart className="h-5 w-5 text-rose-500 mr-2" />
+                  Welcome back to your travel dashboard
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-center space-x-6 text-sm text-gray-600 bg-white/60 backdrop-blur-sm rounded-full px-6 py-3 w-fit mx-auto shadow-lg">
+              <span className="flex items-center space-x-1">
+                <Star className="h-4 w-4 text-yellow-500" />
+                <span>Premium Traveler</span>
+              </span>
+              <span>•</span>
+              <span>Member since {new Date(user.created_at || '').getFullYear()}</span>
+              <span>•</span>
+              <span className="flex items-center space-x-1">
+                <Calendar className="h-4 w-4 text-blue-500" />
+                <span>{bookings.length} {bookings.length === 1 ? 'Booking' : 'Bookings'}</span>
+              </span>
+            </div>
           </div>
           
-          {/* Profile Information Card */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-rose-50 to-pink-50">
-            <CardHeader className="pb-4">
-              <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
-                    <AvatarFallback className="text-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white">
-                      {getDisplayName().charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <CardTitle className="text-2xl bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-                      {getDisplayName()}'s Travel Profile
-                    </CardTitle>
-                    <Heart className="h-5 w-5 text-rose-500" />
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Profile Information Card */}
+            <div className="lg:col-span-1">
+              <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent flex items-center">
+                    <User className="h-6 w-6 mr-2 text-rose-500" />
+                    Profile Settings
+                  </CardTitle>
                   <CardDescription className="text-base">
-                    Manage your travel preferences and make every journey unforgettable
+                    Manage your account information and travel preferences
                   </CardDescription>
-                  <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
-                    <span className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      <span>Traveler</span>
-                    </span>
-                    <span>•</span>
-                    <span>Member since {new Date(user.created_at || '').getFullYear()}</span>
-                  </div>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent>
-              <form onSubmit={handleSaveProfile} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="flex items-center space-x-2 text-gray-700 font-medium">
-                    <Mail className="h-4 w-4 text-rose-500" />
-                    <span>Email Address</span>
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={user.email || ''}
-                    disabled
-                    className="bg-gray-50 border-gray-200 text-gray-600"
-                  />
-                  <p className="text-sm text-gray-500 flex items-center space-x-1">
-                    <span>🔒</span>
-                    <span>Your email is secure and cannot be changed</span>
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="full_name" className="flex items-center space-x-2 text-gray-700 font-medium">
-                    <User className="h-4 w-4 text-rose-500" />
-                    <span>Full Name</span>
-                  </Label>
-                  <Input
-                    id="full_name"
-                    name="full_name"
-                    type="text"
-                    placeholder="Enter your full name"
-                    value={formData.full_name}
-                    onChange={handleInputChange}
-                    className="border-gray-200 focus:border-rose-300 focus:ring-rose-200"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="flex items-center space-x-2 text-gray-700 font-medium">
-                    <Phone className="h-4 w-4 text-rose-500" />
-                    <span>Phone Number</span>
-                  </Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="Enter your phone number"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="border-gray-200 focus:border-rose-300 focus:ring-rose-200"
-                  />
-                </div>
-
-                <Button 
-                  type="submit" 
-                  disabled={saving} 
-                  className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium py-3 shadow-lg hover:shadow-xl transition-all duration-200"
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  {saving ? 'Saving Your Changes...' : 'Save Profile Changes'}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Booking History Card */}
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle>My Bookings</CardTitle>
-                  <CardDescription>
-                    View your booking history and manage your reservations
-                  </CardDescription>
-                </div>
-                {bookings.length > 0 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setClearHistoryDialogOpen(true)}
-                    className="border-red-300 text-red-600 hover:bg-red-50"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Clear All
-                  </Button>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              {bookings.length === 0 ? (
-                <div className="text-center py-8">
-                  <Calendar className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <p className="text-gray-500">No bookings found</p>
-                  <Link to="/">
-                    <Button className="mt-4">Browse Hotels</Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {bookings.map((booking) => (
-                    <div key={booking.id} className="border rounded-lg p-4 space-y-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-lg">{booking.hotels.name}</h3>
-                          <p className="text-gray-600">{booking.hotels.location}</p>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500 mt-2">
-                            <span>Check-in: {new Date(booking.check_in_date).toLocaleDateString()}</span>
-                            <span>Check-out: {new Date(booking.check_out_date).toLocaleDateString()}</span>
-                            <span>{booking.guests} guests</span>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold">₹{(booking.total_amount / 100).toLocaleString('en-IN')}</p>
-                          <span className={`inline-block px-2 py-1 rounded text-xs ${
-                            booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                            booking.payment_status === 'paid' ? 'bg-green-100 text-green-800' : 
-                            'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {booking.status === 'cancelled' ? 'Cancelled' : booking.payment_status}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex space-x-2 flex-wrap">
-                        {booking.payment_status === 'paid' && booking.status !== 'cancelled' && (
-                          <>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => downloadTicket(booking.id)}
-                            >
-                              <Download className="h-4 w-4 mr-2" />
-                              Download Ticket
-                            </Button>
-                            <Link to={`/ticket/${booking.id}`}>
-                              <Button variant="outline" size="sm">
-                                <Eye className="h-4 w-4 mr-2" />
-                                View Ticket
-                              </Button>
-                            </Link>
-                          </>
-                        )}
-                        
-                        {canCancelBooking(booking) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleCancelBooking(booking)}
-                            className="border-red-300 text-red-600 hover:bg-red-50"
-                          >
-                            <X className="h-4 w-4 mr-2" />
-                            Cancel Booking
-                          </Button>
-                        )}
-
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDeleteBooking(booking)}
-                          className="border-gray-300 text-gray-600 hover:bg-gray-50"
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </Button>
-                      </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <form onSubmit={handleSaveProfile} className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="flex items-center space-x-2 text-gray-700 font-medium">
+                        <Mail className="h-4 w-4 text-rose-500" />
+                        <span>Email Address</span>
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={user.email || ''}
+                        disabled
+                        className="bg-gray-50 border-gray-200 text-gray-600"
+                      />
+                      <p className="text-sm text-gray-500 flex items-center space-x-1">
+                        <span>🔒</span>
+                        <span>Your email is secure and verified</span>
+                      </p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="full_name" className="flex items-center space-x-2 text-gray-700 font-medium">
+                        <User className="h-4 w-4 text-rose-500" />
+                        <span>Full Name</span>
+                      </Label>
+                      <Input
+                        id="full_name"
+                        name="full_name"
+                        type="text"
+                        placeholder="Enter your full name"
+                        value={formData.full_name}
+                        onChange={handleInputChange}
+                        className="border-gray-200 focus:border-rose-300 focus:ring-rose-200"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="flex items-center space-x-2 text-gray-700 font-medium">
+                        <Phone className="h-4 w-4 text-rose-500" />
+                        <span>Phone Number</span>
+                      </Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        placeholder="Enter your phone number"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="border-gray-200 focus:border-rose-300 focus:ring-rose-200"
+                      />
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      disabled={saving} 
+                      className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium py-3 shadow-lg hover:shadow-xl transition-all duration-200"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      {saving ? 'Saving Changes...' : 'Save Profile'}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Booking History Card */}
+            <div className="lg:col-span-2">
+              <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <CardTitle className="text-2xl flex items-center">
+                        <Calendar className="h-6 w-6 mr-2 text-rose-500" />
+                        My Travel History
+                      </CardTitle>
+                      <CardDescription className="text-base">
+                        Track your bookings and manage your reservations
+                      </CardDescription>
+                    </div>
+                    {bookings.length > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setClearHistoryDialogOpen(true)}
+                        className="border-red-200 text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Clear All
+                      </Button>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {bookings.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-100 to-pink-100 rounded-full flex items-center justify-center">
+                        <Calendar className="h-10 w-10 text-rose-500" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">No bookings yet</h3>
+                      <p className="text-gray-600 mb-6">Start your next adventure by exploring amazing places to stay</p>
+                      <Link to="/">
+                        <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700">
+                          Explore Hotels
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {bookings.map((booking) => {
+                        const nights = calculateNights(booking.check_in_date, booking.check_out_date);
+                        return (
+                          <div key={booking.id} className="bg-gradient-to-r from-gray-50 to-gray-50/50 rounded-xl p-6 border border-gray-100 hover:shadow-lg transition-all duration-200">
+                            <div className="flex justify-between items-start mb-4">
+                              <div className="space-y-2">
+                                <div className="flex items-center space-x-3">
+                                  <h3 className="font-bold text-xl text-gray-900">{booking.hotels.name}</h3>
+                                  {getStatusBadge(booking)}
+                                </div>
+                                <p className="text-gray-600 flex items-center">
+                                  <MapPin className="h-4 w-4 mr-1" />
+                                  {booking.hotels.location}
+                                </p>
+                              </div>
+                              <div className="text-right space-y-1">
+                                <p className="font-bold text-2xl text-rose-600">
+                                  ₹{(booking.total_amount / 100).toLocaleString('en-IN')}
+                                </p>
+                                <p className="text-sm text-gray-500">for {nights} {nights === 1 ? 'night' : 'nights'}</p>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                              <div className="flex items-center space-x-2 text-gray-600">
+                                <Calendar className="h-4 w-4" />
+                                <div>
+                                  <p className="text-xs text-gray-500">Check-in</p>
+                                  <p className="font-medium">{new Date(booking.check_in_date).toLocaleDateString()}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-2 text-gray-600">
+                                <Calendar className="h-4 w-4" />
+                                <div>
+                                  <p className="text-xs text-gray-500">Check-out</p>
+                                  <p className="font-medium">{new Date(booking.check_out_date).toLocaleDateString()}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-2 text-gray-600">
+                                <Users className="h-4 w-4" />
+                                <div>
+                                  <p className="text-xs text-gray-500">Guests</p>
+                                  <p className="font-medium">{booking.guests} {booking.guests === 1 ? 'Guest' : 'Guests'}</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <Separator className="my-4" />
+                            
+                            <div className="flex flex-wrap gap-2">
+                              {booking.payment_status === 'paid' && booking.status !== 'cancelled' && (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => downloadTicket(booking.id)}
+                                    className="hover:bg-blue-50 border-blue-200 text-blue-700"
+                                  >
+                                    <Download className="h-4 w-4 mr-1" />
+                                    Download
+                                  </Button>
+                                  <Link to={`/ticket/${booking.id}`}>
+                                    <Button variant="outline" size="sm" className="hover:bg-green-50 border-green-200 text-green-700">
+                                      <Eye className="h-4 w-4 mr-1" />
+                                      View Ticket
+                                    </Button>
+                                  </Link>
+                                </>
+                              )}
+                              
+                              {canCancelBooking(booking) && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleCancelBooking(booking)}
+                                  className="hover:bg-red-50 border-red-200 text-red-700"
+                                >
+                                  <X className="h-4 w-4 mr-1" />
+                                  Cancel
+                                </Button>
+                              )}
+
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDeleteBooking(booking)}
+                                className="hover:bg-gray-50 border-gray-200 text-gray-600"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                Delete
+                              </Button>
+                            </div>
+                            
+                            <div className="mt-3 text-xs text-gray-500 flex items-center">
+                              <Clock className="h-3 w-3 mr-1" />
+                              Booked on {new Date(booking.created_at).toLocaleDateString()}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
 
