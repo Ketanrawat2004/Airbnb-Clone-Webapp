@@ -1,5 +1,3 @@
-
-import AnimatedSection from '@/components/AnimatedSection';
 import Header from '@/components/Header';
 import SearchBar from '@/components/SearchBar';
 import HotelGrid from '@/components/HotelGrid';
@@ -15,47 +13,24 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50">
+    <>
       <Header />
-      
-      {/* Hero Section with Unique Color Combination */}
-      <section className="relative overflow-hidden">
-        {/* Background with layered gradients */}
-        <div className="absolute inset-0 bg-gradient-to-br from-teal-600 via-cyan-500 to-blue-600"></div>
-        <div className="absolute inset-0 bg-gradient-to-tr from-coral-500/20 via-transparent to-amber-400/30"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(234,179,8,0.3),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(6,182,212,0.4),transparent_50%)]"></div>
-        
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-amber-400/30 to-orange-500/30 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-teal-400/30 to-cyan-500/30 rounded-full blur-xl"></div>
-        
-        <div className="relative pt-24 pb-20 px-4">
-          <div className="container mx-auto text-center">
-            <div className="inline-block p-3 bg-white/10 backdrop-blur-sm rounded-2xl mb-6">
-              <span className="text-amber-300 text-sm font-semibold tracking-wider uppercase">
-                ✨ Discover Amazing Places
-              </span>
-            </div>
-            
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-8 leading-tight">
-              <span className="text-white drop-shadow-lg">Find Your</span>
-              <br />
-              <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 bg-clip-text text-transparent drop-shadow-lg">
-                Perfect Stay
-              </span>
-            </h1>
-            
-            <p className="text-xl sm:text-2xl text-teal-50 mb-12 max-w-4xl mx-auto leading-relaxed drop-shadow-sm">
-              Discover extraordinary accommodations that turn every journey into an unforgettable adventure. 
-              From luxury escapes to cozy hideaways.
-            </p>
-            
-            <div className="max-w-5xl mx-auto">
-              <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-3 border border-white/20">
-                <SearchBar variant="hero" onSearch={handleSearch} />
-              </div>
-            </div>
+
+      {/* Hero Section - Classic Pink Red Grad + Simple Layout */}
+      <section className="relative h-[520px] min-h-[400px] flex flex-col items-center justify-center text-center bg-pink-gradient">
+        <div className="w-full max-w-2xl mx-auto">
+          <h1 className="text-5xl sm:text-6xl font-bold mb-6 leading-tight text-white">
+            Find your <span className="pink-highlight">perfect stay</span>
+          </h1>
+          <p className="text-lg sm:text-2xl font-medium text-white mb-10">
+            Discover amazing places to stay around the world,<br className="hidden sm:inline" />
+            curated for unforgettable experiences.
+          </p>
+        </div>
+        {/* SearchBar section with simplified appearance */}
+        <div className="w-full flex justify-center px-4 relative">
+          <div className="searchbar-pink-wrapper">
+            <SearchBar variant="classic-hero" onSearch={handleSearch} />
           </div>
         </div>
       </section>
@@ -171,7 +146,7 @@ const Index = () => {
       <ChatBot />
       <Footer />
       <CookieConsent />
-    </div>
+    </>
   );
 };
 

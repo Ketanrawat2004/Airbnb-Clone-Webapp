@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface SearchBarProps {
   onSearch?: (location: string) => void;
-  variant?: 'default' | 'hero';
+  variant?: 'default' | 'hero' | 'classic-hero';
 }
 
 interface LocationSuggestion {
@@ -127,6 +127,68 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
       setShowSuggestions(true);
     }
   };
+
+  if (variant === 'classic-hero') {
+    return (
+      <form onSubmit={handleSubmit} className="flex flex-1 items-center gap-2 w-full">
+        {/* Location */}
+        <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3">
+          <MapPin className="h-5 w-5 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Where are you"
+            className="rounded-md bg-gray-100 border-0 text-gray-700 placeholder:text-gray-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[100px] max-w-full"
+            value={location}
+            onChange={handleLocationChange}
+            onFocus={() => location.length >= 2 && setShowSuggestions(true)}
+          />
+        </div>
+        {/* Check-in */}
+        <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-gray-200">
+          <Calendar className="h-5 w-5 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="dd-mm-yyyy"
+            className="rounded-md bg-gray-100 border-0 text-gray-700 placeholder:text-gray-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[90px] max-w-full"
+            value={checkIn}
+            onChange={(e) => setCheckIn(e.target.value)}
+            inputMode="text"
+          />
+        </div>
+        {/* Check-out */}
+        <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-gray-200">
+          <Calendar className="h-5 w-5 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="dd-mm-yyyy"
+            className="rounded-md bg-gray-100 border-0 text-gray-700 placeholder:text-gray-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[90px] max-w-full"
+            value={checkOut}
+            onChange={(e) => setCheckOut(e.target.value)}
+            inputMode="text"
+          />
+        </div>
+        {/* Guests */}
+        <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-gray-200">
+          <Users className="h-5 w-5 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Guests"
+            className="rounded-md bg-gray-100 border-0 text-gray-700 placeholder:text-gray-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[50px] max-w-full"
+            value={guests}
+            onChange={(e) => setGuests(e.target.value)}
+            inputMode="numeric"
+            min="1"
+          />
+        </div>
+        {/* Search Button */}
+        <div className="pl-2 flex-shrink-0">
+          <Button type="submit" className="bg-[#f65073] hover:bg-[#db3358] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md transition">
+            <Search className="h-5 w-5" />
+          </Button>
+        </div>
+      </form>
+    );
+  }
 
   if (variant === 'hero') {
     return (
