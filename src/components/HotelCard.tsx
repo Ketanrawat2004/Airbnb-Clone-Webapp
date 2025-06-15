@@ -49,6 +49,7 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   const { user } = useAuth();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist(user?.id);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const toggleWishlist = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -74,10 +75,15 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   return (
     <>
       <Card 
-        className="group cursor-pointer hover:shadow-lg transition-all duration-300 border-0 shadow-sm hover:scale-[1.02] w-full"
+        className="group cursor-pointer transition-all duration-500 border-0 shadow-lg hover:shadow-2xl bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden hover:scale-[1.02] w-full relative"
         onClick={handleCardClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <CardContent className="p-0">
+        {/* Hover Glow Effect */}
+        <div className={`absolute inset-0 bg-gradient-to-r from-teal-400/20 via-cyan-400/20 to-blue-400/20 rounded-3xl transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
+        
+        <CardContent className="p-0 relative">
           <HotelCardImage
             images={hotel.images}
             hotelName={hotel.name}
@@ -88,22 +94,24 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
             onCardClick={handleCardClick}
           />
           
-          <HotelCardDetails
-            name={hotel.name}
-            location={hotel.location}
-            description={hotel.description}
-            rating={hotel.rating}
-            reviewsCount={hotel.reviews_count}
-            starRating={hotel.star_rating}
-            checkInTime={hotel.check_in_time}
-            phone={hotel.phone}
-            amenities={hotel.amenities}
-          />
+          <div className="p-4 sm:p-5">
+            <HotelCardDetails
+              name={hotel.name}
+              location={hotel.location}
+              description={hotel.description}
+              rating={hotel.rating}
+              reviewsCount={hotel.reviews_count}
+              starRating={hotel.star_rating}
+              checkInTime={hotel.check_in_time}
+              phone={hotel.phone}
+              amenities={hotel.amenities}
+            />
 
-          <HotelCardPricing
-            pricePerNight={pricePerNight}
-            onBookClick={handleBookClick}
-          />
+            <HotelCardPricing
+              pricePerNight={pricePerNight}
+              onBookClick={handleBookClick}
+            />
+          </div>
         </CardContent>
       </Card>
 
