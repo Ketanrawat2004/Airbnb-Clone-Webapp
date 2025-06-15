@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Heart, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,7 @@ interface HotelCardProps {
 }
 
 const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -56,7 +58,7 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   };
 
   const handleCardClick = () => {
-    setBookingModalOpen(true);
+    navigate(`/hotel/${hotel.id}`);
   };
 
   // Convert price from paise to rupees

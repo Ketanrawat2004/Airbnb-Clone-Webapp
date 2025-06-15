@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import SearchResults from "./pages/SearchResults";
+import HotelDetail from "./pages/HotelDetail";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 import AuthConfirm from "./pages/AuthConfirm";
@@ -24,6 +25,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/hotel/:id" element={<HotelDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-canceled" element={<PaymentCanceled />} />
