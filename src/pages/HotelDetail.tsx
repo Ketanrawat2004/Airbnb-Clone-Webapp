@@ -2,21 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import ChatBot from '@/components/ChatBot';
 import BookingModal from '@/components/BookingModal';
-import BackButton from '@/components/BackButton';
-import HotelImageGallery from '@/components/HotelImageGallery';
-import HotelBasicInfo from '@/components/HotelBasicInfo';
-import HotelContactDetails from '@/components/HotelContactDetails';
-import HotelAmenities from '@/components/HotelAmenities';
-import HotelServices from '@/components/HotelServices';
-import HotelFacilities from '@/components/HotelFacilities';
-import HotelRules from '@/components/HotelRules';
-import HotelBookingCard from '@/components/HotelBookingCard';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import HotelDetailLayout from '@/components/HotelDetailLayout';
+import HotelDetailContent from '@/components/HotelDetailContent';
+import HotelDetailSkeleton from '@/components/HotelDetailSkeleton';
+import HotelDetailError from '@/components/HotelDetailError';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/hooks/useWishlist';
 
@@ -106,84 +96,39 @@ const HotelDetail = () => {
     }
   };
 
+  const handleReserveClick = () => {
+    setBookingModalOpen(true);
+  };
+
+  const handleBackToHome = () => {
+    navigate('/');
+  };
+
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="container mx-auto px-4 py-8">
-          <Skeleton className="h-8 w-64 mb-6" />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <Skeleton className="h-64 sm:h-96 w-full rounded-lg" />
-            <div className="space-y-4">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-12 w-32" />
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
+    return <HotelDetailSkeleton />;
   }
 
   if (!hotel) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Hotel not found</h1>
-          <Button onClick={() => navigate('/')}>Back to Home</Button>
-        </div>
-        <Footer />
-      </div>
-    );
+    return <HotelDetailError onBackToHome={handleBackToHome} />;
   }
 
-  const pricePerNight = hotel.price_per_night / 100;
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      
-      <div className="container mx-auto px-4 py-4 sm:py-8">
-        <div className="mb-4 sm:mb-6">
-          <BackButton />
-        </div>
-
-        <HotelImageGallery
-          images={hotel.images}
-          hotelName={hotel.name}
+    <>
+      <HotelDetailLayout>
+        <HotelDetailContent
+          hotel={hotel}
           isInWishlist={isInWishlist(hotel.id)}
           onToggleWishlist={toggleWishlist}
+          onReserveClick={handleReserveClick}
         />
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <HotelBasicInfo hotel={hotel} />
-            <HotelContactDetails hotel={hotel} />
-            <HotelAmenities amenities={hotel.amenities} />
-            <HotelServices hotel={hotel} />
-            <HotelFacilities facilities={hotel.facilities} />
-            <HotelRules rules={hotel.rules_and_regulations} />
-          </div>
-
-          <HotelBookingCard
-            pricePerNight={pricePerNight}
-            onReserveClick={() => setBookingModalOpen(true)}
-          />
-        </div>
-      </div>
+      </HotelDetailLayout>
 
       <BookingModal
         hotel={hotel}
         open={bookingModalOpen}
         onOpenChange={setBookingModalOpen}
       />
-      
-      <ChatBot />
-      <Footer />
-    </div>
+    </>
   );
 };
 
