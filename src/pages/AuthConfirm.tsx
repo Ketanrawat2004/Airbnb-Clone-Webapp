@@ -5,11 +5,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
+import { toast } from 'sonner';
 
 const AuthConfirm = () => {
   const [loading, setLoading] = useState(true);
   const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [autoRedirecting, setAutoRedirecting] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -27,6 +29,8 @@ const AuthConfirm = () => {
         console.log('URL parameters:', { token_hash, type, access_token, refresh_token });
         console.log('Full URL:', window.location.href);
         
+        let sessionSet = false;
+        
         // If we have access_token and refresh_token, set the session directly
         if (access_token && refresh_token) {
           console.log('Setting session with tokens from URL');
@@ -40,6 +44,7 @@ const AuthConfirm = () => {
             setError(`Session error: ${sessionError.message}`);
           } else {
             console.log('Session set successfully:', data);
+            sessionSet = true;
             setConfirmed(true);
           }
         }
@@ -63,6 +68,7 @@ const AuthConfirm = () => {
             }
           } else {
             console.log('Email verified successfully:', data);
+            sessionSet = true;
             setConfirmed(true);
           }
         }
@@ -72,11 +78,23 @@ const AuthConfirm = () => {
           
           if (sessionData.session) {
             console.log('User already authenticated');
+            sessionSet = true;
             setConfirmed(true);
           } else {
             console.log('No valid confirmation parameters found');
             setError('Invalid confirmation link. Please check your email for a valid confirmation link or try signing up again.');
           }
+        }
+        
+        // If session was set successfully, auto-redirect after a short delay
+        if (sessionSet) {
+          toast.success('Email confirmed successfully! Welcome to Airbnb Clone+! 🎉');
+          setAutoRedirecting(true);
+          
+          // Wait 2 seconds to show the success message, then redirect
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
         }
         
       } catch (err) {
@@ -88,7 +106,7 @@ const AuthConfirm = () => {
     };
 
     handleEmailConfirmation();
-  }, [searchParams]);
+  }, [searchParams, navigate]);
 
   const handleContinue = () => {
     navigate('/');
@@ -158,12 +176,24 @@ const AuthConfirm = () => {
         </h2>
         
         <p className="text-gray-600 mb-6">
-          Thank you for confirming your email! Your account is now ready. You can now sign in and start exploring amazing places around the world.
+          Thank you for confirming your email! Your account is now ready and you're automatically signed in.
         </p>
         
-        <Button onClick={handleContinue} className="w-full">
-          Continue to Sign In
-        </Button>
+        {autoRedirecting ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-center space-x-2">
+              <Loader2 className="h-4 w-4 animate-spin text-rose-500" />
+              <span className="text-gray-600">Redirecting you to the main page...</span>
+            </div>
+            <Button onClick={handleContinue} variant="outline" className="w-full">
+              Continue Now
+            </Button>
+          </div>
+        ) : (
+          <Button onClick={handleContinue} className="w-full">
+            Continue to Explore
+          </Button>
+        )}
       </div>
     </div>
   );
