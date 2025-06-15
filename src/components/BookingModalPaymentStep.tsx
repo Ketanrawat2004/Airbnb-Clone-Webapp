@@ -1,7 +1,7 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2, CreditCard } from 'lucide-react';
 import BookingModalBookingSummary from './BookingModalBookingSummary';
 import { Guest } from './GuestForm';
 
@@ -52,6 +52,16 @@ const BookingModalPaymentStep = ({
   onRazorpayPayment,
   onDemoPayment
 }: BookingModalPaymentStepProps) => {
+  const [readyToPayment, setReadyToPayment] = useState(false);
+
+  // Preload payment readiness
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReadyToPayment(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="space-y-6">
       <BookingModalBookingSummary
@@ -65,17 +75,25 @@ const BookingModalPaymentStep = ({
       />
 
       <div className="space-y-4">
-        <h3 className="font-bold text-lg">Choose Payment Method</h3>
+        <h3 className="font-bold text-lg flex items-center space-x-2">
+          <CreditCard className="h-5 w-5 text-rose-500" />
+          <span>Choose Payment Method</span>
+        </h3>
         
         <Button 
           onClick={onRazorpayPayment}
-          disabled={loading}
-          className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 disabled:scale-100"
+          disabled={loading || !readyToPayment}
+          className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 disabled:scale-100 disabled:opacity-70"
         >
           {loading ? (
             <div className="flex items-center space-x-3">
               <Loader2 className="h-5 w-5 animate-spin" />
-              <span>Processing payment...</span>
+              <span>Setting up payment...</span>
+            </div>
+          ) : !readyToPayment ? (
+            <div className="flex items-center space-x-3">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Preparing...</span>
             </div>
           ) : (
             <div className="flex items-center space-x-2">
@@ -89,9 +107,12 @@ const BookingModalPaymentStep = ({
           onClick={onDemoPayment}
           variant="outline"
           disabled={loading}
-          className="w-full border-2 border-blue-300 text-blue-600 hover:bg-blue-50 py-6 text-lg font-semibold rounded-xl transition-all duration-200 hover:scale-105 disabled:scale-100"
+          className="w-full border-2 border-blue-300 text-blue-600 hover:bg-blue-50 py-6 text-lg font-semibold rounded-xl transition-all duration-200 hover:scale-105 disabled:scale-100 disabled:opacity-70"
         >
-          Demo Payment (Test Mode)
+          <div className="flex items-center space-x-2">
+            <CreditCard className="h-5 w-5" />
+            <span>Demo Payment (Test Mode)</span>
+          </div>
         </Button>
       </div>
     </div>

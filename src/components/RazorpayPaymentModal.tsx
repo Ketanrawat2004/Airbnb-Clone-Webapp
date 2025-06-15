@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { CreditCard, Shield, Zap } from 'lucide-react';
+import { CreditCard, Shield, Zap, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -35,24 +35,39 @@ const RazorpayPaymentModal = ({
   onSuccess 
 }: RazorpayPaymentModalProps) => {
   const [loading, setLoading] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
   const { toast } = useToast();
+
+  // Preload Razorpay script when modal opens
+  const loadRazorpayScript = async () => {
+    if (window.Razorpay || scriptLoaded) return true;
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      script.onload = () => {
+        setScriptLoaded(true);
+        resolve(true);
+      };
+      script.onerror = () => reject(new Error('Failed to load Razorpay script'));
+      document.body.appendChild(script);
+    });
+  };
+
+  // Load script when modal opens
+  React.useEffect(() => {
+    if (open && !scriptLoaded) {
+      loadRazorpayScript().catch(console.error);
+    }
+  }, [open, scriptLoaded]);
 
   const handlePayment = async () => {
     setLoading(true);
 
     try {
-      // Load Razorpay script if not already loaded
-      if (!window.Razorpay) {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.async = true;
-        document.body.appendChild(script);
-
-        await new Promise((resolve, reject) => {
-          script.onload = resolve;
-          script.onerror = reject;
-        });
-      }
+      // Ensure script is loaded
+      await loadRazorpayScript();
 
       const options = {
         key: paymentData.key_id,
@@ -71,7 +86,7 @@ const RazorpayPaymentModal = ({
         },
         handler: async (response: any) => {
           try {
-            // Verify payment on backend
+            // Quick payment verification
             const { data, error } = await supabase.functions.invoke('verify-razorpay-payment', {
               body: {
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -101,9 +116,7 @@ const RazorpayPaymentModal = ({
           }
         },
         modal: {
-          ondismiss: () => {
-            setLoading(false);
-          },
+          ondismiss: () => setLoading(false),
         },
       };
 
@@ -116,7 +129,6 @@ const RazorpayPaymentModal = ({
         description: 'Unable to process payment. Please try again.',
         variant: 'destructive',
       });
-    } finally {
       setLoading(false);
     }
   };
@@ -159,7 +171,7 @@ const RazorpayPaymentModal = ({
             </div>
             <div className="flex items-center space-x-2 p-3 bg-orange-50 rounded-lg border border-orange-200">
               <Zap className="h-5 w-5 text-orange-600" />
-              <span className="text-sm font-medium text-orange-800">Instant</span>
+              <span className="text-sm font-medium text-orange-800">Fast</span>
             </div>
           </div>
 
@@ -172,12 +184,12 @@ const RazorpayPaymentModal = ({
           <Button 
             onClick={handlePayment}
             disabled={loading}
-            className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
+            className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 disabled:opacity-70"
           >
             {loading ? (
               <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                <span>Processing...</span>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Loading Payment...</span>
               </div>
             ) : (
               <>
@@ -188,7 +200,7 @@ const RazorpayPaymentModal = ({
           </Button>
 
           <div className="text-center text-xs text-gray-500">
-            Powered by Razorpay • Your payment is secure and encrypted
+            Powered by Razorpay • Secure & Encrypted
           </div>
         </div>
       </DialogContent>

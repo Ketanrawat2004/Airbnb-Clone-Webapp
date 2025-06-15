@@ -20,14 +20,12 @@ interface PaymentRequest {
 }
 
 serve(async (req) => {
-  console.log('Razorpay payment function called with method:', req.method);
-
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Check for required environment variables immediately
+    // Environment variables check
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -39,91 +37,65 @@ serve(async (req) => {
     }
 
     if (!razorpayKeyId || !razorpayKeySecret) {
-      throw new Error("Razorpay credentials are not configured. Please add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to edge function secrets.");
+      throw new Error("Razorpay credentials not configured");
+    }
+
+    // Fast authentication
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Authentication required");
     }
 
     const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
-
-    // Get authenticated user
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("No authorization header provided");
-    }
-
     const token = authHeader.replace("Bearer ", "");
     
-    const { data, error: authError } = await supabaseClient.auth.getUser(token);
-    if (authError) {
-      console.error('Authentication error:', authError);
-      throw new Error(`Authentication failed: ${authError.message}`);
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+    if (authError || !user?.email) {
+      throw new Error("Authentication failed");
     }
-
-    const user = data.user;
-    if (!user?.email) {
-      throw new Error("User not authenticated or email not available");
-    }
-
-    console.log('User authenticated:', user.id);
 
     const paymentData: PaymentRequest = await req.json();
-    console.log('Payment amount received:', paymentData.total_amount);
-
-    // Get hotel details - optimized query
-    const { data: hotel, error: hotelError } = await supabaseClient
-      .from('hotels')
-      .select('name, location')
-      .eq('id', paymentData.hotel_id)
-      .single();
-
-    if (hotelError || !hotel) {
-      console.error('Hotel fetch error:', hotelError);
-      throw new Error("Hotel not found");
-    }
-
-    // Use the exact amount from frontend without any modifications
     const finalAmount = paymentData.total_amount;
-    console.log('Final amount for Razorpay:', finalAmount);
 
-    // Create Razorpay order with optimized payload
+    // Optimized Razorpay order creation - minimal payload
     const orderData = {
       amount: finalAmount,
       currency: 'INR',
-      receipt: `receipt_${Date.now()}_${user.id.slice(-8)}`,
+      receipt: `booking_${Date.now()}`,
       notes: {
         hotel_id: paymentData.hotel_id,
         user_id: user.id,
-        check_in: paymentData.check_in_date,
-        check_out: paymentData.check_out_date,
-        guests: paymentData.guests.toString(),
       },
     };
 
     const auth = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
     
-    // Parallel execution: Create Razorpay order and prepare booking data
-    const [razorpayResponse] = await Promise.all([
-      fetch('https://api.razorpay.com/v1/orders', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Basic ${auth}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      })
-    ]);
+    // Create Razorpay order with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+    const razorpayResponse = await fetch('https://api.razorpay.com/v1/orders', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
 
     if (!razorpayResponse.ok) {
       const errorText = await razorpayResponse.text();
-      console.error('Razorpay API error:', errorText);
-      throw new Error(`Razorpay API error: ${errorText}`);
+      throw new Error(`Razorpay error: ${errorText}`);
     }
 
     const razorpayOrder = await razorpayResponse.json();
-    console.log('Razorpay order created:', razorpayOrder.id);
 
-    // Store booking in database using service role key
+    // Store minimal booking data using service role
     const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
-
+    
     const bookingData = {
       user_id: user.id,
       hotel_id: paymentData.hotel_id,
@@ -137,7 +109,7 @@ serve(async (req) => {
       razorpay_order_id: razorpayOrder.id,
       payment_status: 'pending',
       status: 'pending',
-      guest_list: paymentData.guest_list || [],
+      guest_list: paymentData.guest_list,
       coupon_code: paymentData.coupon_data?.code || null,
     };
 
@@ -146,18 +118,24 @@ serve(async (req) => {
       .insert(bookingData);
 
     if (bookingError) {
-      console.error('Error creating booking:', bookingError);
-      throw new Error(`Failed to create booking: ${bookingError.message}`);
+      console.error('Booking creation error:', bookingError);
+      throw new Error('Booking creation failed');
     }
 
-    console.log('Booking created successfully');
+    // Get hotel name quickly - only name needed
+    const { data: hotel } = await supabaseClient
+      .from('hotels')
+      .select('name')
+      .eq('id', paymentData.hotel_id)
+      .single();
 
+    // Return minimal response for faster processing
     const response = { 
       order_id: razorpayOrder.id,
       amount: razorpayOrder.amount,
       currency: razorpayOrder.currency,
       key_id: razorpayKeyId,
-      hotel_name: hotel.name,
+      hotel_name: hotel?.name || 'Hotel',
       user_email: user.email,
       user_name: `${paymentData.guest_details?.firstName || ''} ${paymentData.guest_details?.lastName || ''}`.trim() || 'Guest',
       guest_phone: paymentData.guest_phone,
@@ -169,12 +147,11 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Razorpay payment creation error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Payment creation error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Payment setup failed';
     
     return new Response(JSON.stringify({ 
-      error: errorMessage,
-      details: error instanceof Error ? error.stack : undefined 
+      error: errorMessage
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
