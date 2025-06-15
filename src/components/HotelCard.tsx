@@ -67,38 +67,38 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   return (
     <>
       <Card 
-        className="group cursor-pointer hover:shadow-lg transition-all duration-300 border-0 shadow-sm hover:scale-[1.02]"
+        className="group cursor-pointer hover:shadow-lg transition-all duration-300 border-0 shadow-sm hover:scale-[1.02] w-full"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleCardClick}
       >
         <CardContent className="p-0">
           {/* Image Gallery */}
-          <div className="relative overflow-hidden rounded-t-lg aspect-square">
+          <div className="relative overflow-hidden rounded-t-lg aspect-square sm:aspect-[4/3]">
             <img
               src={hotel.images[currentImageIndex]}
               alt={hotel.name}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
             />
             
-            {/* Navigation Arrows */}
+            {/* Navigation Arrows - Hidden on mobile */}
             {hotel.images.length > 1 && isHovered && (
               <>
                 <Button
                   variant="secondary"
                   size="sm"
-                  className="absolute left-2 top-1/2 transform -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-white/80 hover:bg-white shadow-md"
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 rounded-full w-6 h-6 sm:w-8 sm:h-8 p-0 bg-white/80 hover:bg-white shadow-md hidden sm:flex items-center justify-center"
                   onClick={prevImage}
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
                 <Button
                   variant="secondary"
                   size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-white/80 hover:bg-white shadow-md"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full w-6 h-6 sm:w-8 sm:h-8 p-0 bg-white/80 hover:bg-white shadow-md hidden sm:flex items-center justify-center"
                   onClick={nextImage}
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
               </>
             )}
@@ -109,7 +109,7 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
                 {hotel.images.map((_, index) => (
                   <div
                     key={index}
-                    className={`w-2 h-2 rounded-full ${
+                    className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${
                       index === currentImageIndex ? 'bg-white' : 'bg-white/50'
                     }`}
                   />
@@ -121,11 +121,11 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
             <Button
               variant="secondary"
               size="sm"
-              className="absolute top-2 right-2 rounded-full w-8 h-8 p-0 bg-white/80 hover:bg-white shadow-md"
+              className="absolute top-2 right-2 rounded-full w-6 h-6 sm:w-8 sm:h-8 p-0 bg-white/80 hover:bg-white shadow-md"
               onClick={toggleLike}
             >
               <Heart
-                className={`h-4 w-4 ${
+                className={`h-3 w-3 sm:h-4 sm:w-4 ${
                   isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'
                 }`}
               />
@@ -133,56 +133,57 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
 
             {/* Availability Badge */}
             {hotel.available_rooms > 0 && (
-              <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                {hotel.available_rooms} rooms available
+              <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
+                <span className="hidden sm:inline">{hotel.available_rooms} rooms available</span>
+                <span className="sm:hidden">{hotel.available_rooms} rooms</span>
               </div>
             )}
           </div>
 
           {/* Hotel Details */}
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="font-semibold text-gray-900 truncate flex-1 mr-2">
+          <div className="p-3 sm:p-4">
+            <div className="flex items-start justify-between mb-1 gap-2">
+              <h3 className="font-semibold text-gray-900 truncate flex-1 text-sm sm:text-base">
                 {hotel.name}
               </h3>
-              <div className="flex items-center space-x-1 text-sm">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <div className="flex items-center space-x-1 text-xs sm:text-sm flex-shrink-0">
+                <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium">{hotel.rating}</span>
-                <span className="text-gray-500">({hotel.reviews_count})</span>
+                <span className="text-gray-500 hidden sm:inline">({hotel.reviews_count})</span>
               </div>
             </div>
             
-            <p className="text-gray-600 text-sm mb-2">{hotel.location}</p>
-            <p className="text-gray-600 text-sm mb-3 line-clamp-2">{hotel.description}</p>
+            <p className="text-gray-600 text-xs sm:text-sm mb-2 truncate">{hotel.location}</p>
+            <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2 hidden sm:block">{hotel.description}</p>
 
-            {/* Amenities */}
+            {/* Amenities - Show fewer on mobile */}
             <div className="flex flex-wrap gap-1 mb-3">
-              {hotel.amenities.slice(0, 3).map((amenity, index) => (
-                <span key={index} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+              {hotel.amenities.slice(0, 2).map((amenity, index) => (
+                <span key={index} className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
                   {amenity}
                 </span>
               ))}
-              {hotel.amenities.length > 3 && (
-                <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
-                  +{hotel.amenities.length - 3} more
+              {hotel.amenities.length > 2 && (
+                <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                  +{hotel.amenities.length - 2} more
                 </span>
               )}
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-lg font-semibold">₹{pricePerNight.toLocaleString('en-IN')}</span>
-                <span className="text-gray-600 text-sm ml-1">/ night</span>
+                <span className="text-base sm:text-lg font-semibold">₹{pricePerNight.toLocaleString('en-IN')}</span>
+                <span className="text-gray-600 text-xs sm:text-sm ml-1">/ night</span>
               </div>
               <Button 
                 size="sm" 
-                className="bg-rose-500 hover:bg-rose-600"
+                className="bg-rose-500 hover:bg-rose-600 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2"
                 onClick={(e) => {
                   e.stopPropagation();
                   setBookingModalOpen(true);
                 }}
               >
-                Book now
+                Book
               </Button>
             </div>
           </div>

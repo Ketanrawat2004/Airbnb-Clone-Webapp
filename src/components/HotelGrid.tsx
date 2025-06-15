@@ -54,14 +54,14 @@ const HotelGrid = () => {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="space-y-4">
-            <Skeleton className="h-64 w-full rounded-lg" />
+            <Skeleton className="h-48 sm:h-56 lg:h-64 w-full rounded-lg" />
             <div className="space-y-2">
-              <Skeleton className="h-5 w-3/4" />
-              <Skeleton className="h-5 w-1/2" />
-              <Skeleton className="h-4 w-1/4" />
+              <Skeleton className="h-4 sm:h-5 w-3/4" />
+              <Skeleton className="h-4 sm:h-5 w-1/2" />
+              <Skeleton className="h-3 sm:h-4 w-1/4" />
             </div>
           </div>
         ))}
@@ -70,7 +70,7 @@ const HotelGrid = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
       {hotels.map((hotel) => (
         <HotelCard key={hotel.id} hotel={hotel} />
       ))}

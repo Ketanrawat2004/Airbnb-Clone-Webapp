@@ -41,45 +41,48 @@ const Header = () => {
 
   return (
     <header className="border-b bg-white sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           {/* Left section with Back button, Home button, and Logo */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <BackButton />
             <Button
               variant="ghost"
               size="sm"
               onClick={handleHomeClick}
-              className="flex items-center space-x-1 text-gray-600 hover:text-gray-900"
+              className="hidden sm:flex items-center space-x-1 text-gray-600 hover:text-gray-900"
             >
               <Home className="h-4 w-4" />
               <span>Home</span>
             </Button>
             <div 
-              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" 
+              className="flex items-center space-x-2 sm:space-x-3 cursor-pointer hover:opacity-80 transition-opacity" 
               onClick={handleHomeClick}
             >
               <Logo />
-              <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
+              <h1 className="text-lg sm:text-2xl font-bold text-rose-500">
+                <span className="hidden sm:inline">Airbnb Clone+</span>
+                <span className="sm:hidden">Airbnb+</span>
+              </h1>
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="hidden md:block flex-1 max-w-2xl mx-8">
+          {/* Search Bar - Hidden on mobile */}
+          <div className="hidden lg:block flex-1 max-w-2xl mx-8">
             <SearchBar onSearch={handleSearch} />
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {loading ? (
-              <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full animate-pulse"></div>
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center space-x-2 rounded-full">
-                    <Menu className="h-4 w-4" />
-                    <Avatar className="h-6 w-6">
-                      <AvatarFallback>
+                  <Button variant="outline" className="flex items-center space-x-1 sm:space-x-2 rounded-full p-1 sm:p-2">
+                    <Menu className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <Avatar className="h-5 w-5 sm:h-6 sm:w-6">
+                      <AvatarFallback className="text-xs sm:text-sm">
                         {user.email?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -96,7 +99,7 @@ const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={() => setAuthModalOpen(true)}>
+              <Button onClick={() => setAuthModalOpen(true)} size="sm" className="text-xs sm:text-sm">
                 Sign In
               </Button>
             )}
@@ -104,7 +107,7 @@ const Header = () => {
         </div>
 
         {/* Mobile Search Bar */}
-        <div className="md:hidden mt-4">
+        <div className="lg:hidden mt-3 sm:mt-4">
           <SearchBar onSearch={handleSearch} />
         </div>
       </div>

@@ -84,23 +84,23 @@ const SearchResults = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Search Summary */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             {location ? `Stays in ${location}` : "All stays"}
           </h1>
-          <div className="flex flex-wrap items-center gap-4 text-gray-600">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-3 sm:gap-4 text-gray-600">
             {location && (
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4" />
-                <span>{location}</span>
+                <span className="text-sm sm:text-base">{location}</span>
               </div>
             )}
             {checkIn && checkOut && (
               <div className="flex items-center space-x-2">
                 <Calendar className="h-4 w-4" />
-                <span>
+                <span className="text-sm sm:text-base">
                   {checkIn} - {checkOut}
                 </span>
               </div>
@@ -108,21 +108,21 @@ const SearchResults = () => {
             {guests && (
               <div className="flex items-center space-x-2">
                 <Users className="h-4 w-4" />
-                <span>{guests} guests</span>
+                <span className="text-sm sm:text-base">{guests} guests</span>
               </div>
             )}
           </div>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 mt-2 text-sm sm:text-base">
             {loading ? "Searching..." : `${hotels.length} stays found`}
           </p>
         </div>
 
         {/* Results Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="space-y-3">
-                <Skeleton className="h-64 w-full rounded-lg" />
+                <Skeleton className="h-48 sm:h-56 lg:h-64 w-full rounded-lg" />
                 <div className="space-y-2">
                   <Skeleton className="h-4 w-3/4" />
                   <Skeleton className="h-4 w-1/2" />
@@ -132,7 +132,7 @@ const SearchResults = () => {
             ))}
           </div>
         ) : hotels.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {hotels.map((hotel) => (
               <HotelCard
                 key={hotel.id}
@@ -146,14 +146,14 @@ const SearchResults = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16">
+          <div className="text-center py-12 sm:py-16">
             <div className="text-gray-400 mb-4">
-              <MapPin className="h-16 w-16 mx-auto" />
+              <MapPin className="h-12 w-12 sm:h-16 sm:w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
               No stays found
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-sm sm:text-base">
               Try adjusting your search criteria or browse all available stays.
             </p>
           </div>

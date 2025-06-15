@@ -118,17 +118,17 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
   if (variant === 'hero') {
     return (
       <form onSubmit={handleSubmit} className="flex items-center w-full">
-        <div className="flex-1 flex items-center">
-          <div className="flex-1 px-4 py-3 border-r border-gray-200 relative" ref={suggestionRef}>
+        <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center">
+          <div className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border-b sm:border-b-0 sm:border-r border-gray-200 relative" ref={suggestionRef}>
             <div className="flex items-center space-x-2">
-              <MapPin className="h-5 w-5 text-gray-400" />
+              <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <Input
                 type="text"
                 placeholder="Where are you going?"
                 value={location}
                 onChange={handleLocationChange}
                 onFocus={() => location.length >= 2 && setShowSuggestions(true)}
-                className="border-0 p-0 text-gray-900 placeholder:text-gray-500 focus:ring-0"
+                className="border-0 p-0 text-gray-900 placeholder:text-gray-500 focus:ring-0 text-sm sm:text-base"
               />
             </div>
             {showSuggestions && (
@@ -144,8 +144,8 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center space-x-2 border-b border-gray-100 last:border-b-0"
                     >
                       <MapPin className="h-4 w-4 text-gray-400" />
-                      <span className="text-gray-900">{suggestion.location}</span>
-                      <span className="text-gray-500 text-sm ml-auto">
+                      <span className="text-gray-900 text-sm">{suggestion.location}</span>
+                      <span className="text-gray-500 text-xs ml-auto">
                         {suggestion.count} {suggestion.count === 1 ? 'property' : 'properties'}
                       </span>
                     </button>
@@ -156,46 +156,46 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
               </div>
             )}
           </div>
-          <div className="px-4 py-3 border-r border-gray-200">
+          <div className="px-3 sm:px-4 py-2 sm:py-3 border-b sm:border-b-0 sm:border-r border-gray-200">
             <div className="flex items-center space-x-2">
-              <Calendar className="h-5 w-5 text-gray-400" />
+              <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <Input
                 type="date"
                 placeholder="Check in"
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
-                className="border-0 p-0 text-gray-900 focus:ring-0 w-32"
+                className="border-0 p-0 text-gray-900 focus:ring-0 w-20 sm:w-32 text-sm sm:text-base"
               />
             </div>
           </div>
-          <div className="px-4 py-3 border-r border-gray-200">
+          <div className="px-3 sm:px-4 py-2 sm:py-3 border-b sm:border-b-0 sm:border-r border-gray-200">
             <div className="flex items-center space-x-2">
-              <Calendar className="h-5 w-5 text-gray-400" />
+              <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <Input
                 type="date"
                 placeholder="Check out"
                 value={checkOut}
                 onChange={(e) => setCheckOut(e.target.value)}
-                className="border-0 p-0 text-gray-900 focus:ring-0 w-32"
+                className="border-0 p-0 text-gray-900 focus:ring-0 w-20 sm:w-32 text-sm sm:text-base"
               />
             </div>
           </div>
-          <div className="px-4 py-3">
+          <div className="px-3 sm:px-4 py-2 sm:py-3">
             <div className="flex items-center space-x-2">
-              <Users className="h-5 w-5 text-gray-400" />
+              <Users className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <Input
                 type="number"
                 placeholder="Guests"
                 value={guests}
                 onChange={(e) => setGuests(e.target.value)}
-                className="border-0 p-0 text-gray-900 placeholder:text-gray-500 focus:ring-0 w-20"
+                className="border-0 p-0 text-gray-900 placeholder:text-gray-500 focus:ring-0 w-16 sm:w-20 text-sm sm:text-base"
                 min="1"
               />
             </div>
           </div>
         </div>
-        <Button type="submit" className="bg-rose-500 hover:bg-rose-600 rounded-full p-3 mx-2">
-          <Search className="h-5 w-5" />
+        <Button type="submit" className="bg-rose-500 hover:bg-rose-600 rounded-full p-2 sm:p-3 mx-1 sm:mx-2">
+          <Search className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
       </form>
     );
@@ -211,7 +211,7 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
           value={location}
           onChange={handleLocationChange}
           onFocus={() => location.length >= 2 && setShowSuggestions(true)}
-          className="pl-10 pr-4 py-2 rounded-full border-gray-300 focus:border-rose-500 focus:ring-rose-500"
+          className="pl-10 pr-4 py-2 rounded-full border-gray-300 focus:border-rose-500 focus:ring-rose-500 text-sm sm:text-base"
         />
         {showSuggestions && (
           <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto mt-1">
@@ -226,8 +226,8 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
                   className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center space-x-2 border-b border-gray-100 last:border-b-0"
                 >
                   <MapPin className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-900">{suggestion.location}</span>
-                  <span className="text-gray-500 text-sm ml-auto">
+                  <span className="text-gray-900 text-sm">{suggestion.location}</span>
+                  <span className="text-gray-500 text-xs ml-auto">
                     {suggestion.count} {suggestion.count === 1 ? 'property' : 'properties'}
                   </span>
                 </button>
