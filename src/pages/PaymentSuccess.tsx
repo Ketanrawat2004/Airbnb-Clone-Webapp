@@ -41,6 +41,8 @@ const PaymentSuccess = () => {
 
   // WhatsApp Feature state
   const [hasSentWhatsapp, setHasSentWhatsapp] = useState(false);
+  // Add a flag to prevent multiple auto-redirects per visit:
+  const [autoWhatsappTriggered, setAutoWhatsappTriggered] = useState(false);
 
   useEffect(() => {
     if (sessionId || paymentId) {
@@ -91,55 +93,17 @@ const PaymentSuccess = () => {
     }
   };
 
-  const downloadTicket = async () => {
-    if (!booking) return;
-
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-receipt', {
-        body: { booking_id: booking.id }
-      });
-
-      if (error) throw error;
-
-      if (data?.html_content) {
-        const blob = new Blob([data.html_content], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `booking-receipt-${booking.id.substring(0, 8)}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        toast.success('Ticket downloaded successfully!');
-      }
-    } catch (error) {
-      console.error('Error downloading ticket:', error);
-      toast.error('Failed to download ticket');
-    }
-  };
-
-  const handleViewAllBookings = () => {
-    navigate('/profile?payment_success=true');
-  };
-
-  // WhatsApp message composition as soon as booking is available and booking not sent yet
-  const handleSendToWhatsapp = () => {
-    if (!booking) {
-      toast.error("Booking not loaded yet.");
-      return;
-    }
-    const hotelName = booking.hotels.name;
-    const location = booking.hotels.location;
-    const checkIn = new Date(booking.check_in_date).toLocaleDateString();
-    const checkOut = new Date(booking.check_out_date).toLocaleDateString();
-    const guests = booking.guests;
-    const amount = `₹${(booking.total_amount / 100).toLocaleString('en-IN')}`;
-    const referenceId = sessionId || paymentId || booking.id.substring(0, 8).toUpperCase();
-
-    const fullName = (booking.profiles && (booking.profiles as any).full_name) || "Guest";
+  // Centralize WhatsApp message creation
+  function buildWhatsappMessage(b: BookingDetails) {
+    const hotelName = b.hotels.name;
+    const location = b.hotels.location;
+    const checkIn = new Date(b.check_in_date).toLocaleDateString();
+    const checkOut = new Date(b.check_out_date).toLocaleDateString();
+    const guests = b.guests;
+    const amount = `₹${(b.total_amount / 100).toLocaleString('en-IN')}`;
+    const referenceId =
+      sessionId || paymentId || b.id.substring(0, 8).toUpperCase();
+    const fullName = (b.profiles && (b.profiles as any).full_name) || "Guest";
 
     const message =
       `🏨 Booking Confirmed!%0A%0A` +
@@ -153,10 +117,39 @@ const PaymentSuccess = () => {
       `Name: ${fullName}%0A%0A` +
       `Your booking receipt is available online. Have a great stay!`;
 
+    return message;
+  }
+
+  // Replace handleSendToWhatsapp → sendToWhatsapp and reuse for both automatic and manual
+  const sendToWhatsapp = (isAuto = false) => {
+    if (!booking) {
+      if (!isAuto) toast.error("Booking not loaded yet.");
+      return;
+    }
+    const message = buildWhatsappMessage(booking);
     const url = getWhatsAppUrl(booking.guest_phone, message);
     setHasSentWhatsapp(true);
-    window.open(url, "_blank"); // Open WhatsApp in new tab/window
+    window.open(url, "_blank");
+    if (!isAuto) toast.success("Ticket sent to WhatsApp!");
   };
+
+  const handleViewAllBookings = () => {
+    navigate('/profile?payment_success=true');
+  };
+
+  // Automatically trigger WhatsApp send after booking loads, but only ONCE
+  useEffect(() => {
+    if (
+      booking &&
+      !loading &&
+      !hasSentWhatsapp &&
+      !autoWhatsappTriggered
+    ) {
+      sendToWhatsapp(true); // true = auto
+      setAutoWhatsappTriggered(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [booking, loading]); // don't depend on autoWhatsappTriggered, hasSentWhatsapp to avoid extra triggers
 
   if (loading) {
     return (
@@ -238,7 +231,7 @@ const PaymentSuccess = () => {
                 <Button
                   size="lg"
                   className="w-full bg-green-500 text-white py-4 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-green-600 transition"
-                  onClick={handleSendToWhatsapp}
+                  onClick={() => sendToWhatsapp(false)}
                   disabled={hasSentWhatsapp}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
