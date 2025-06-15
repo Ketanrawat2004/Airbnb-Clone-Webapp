@@ -1,3 +1,4 @@
+
 import SearchBar from '@/components/SearchBar';
 
 interface HeroSectionProps {
@@ -26,7 +27,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           </div>
           
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-6 sm:mb-8 tracking-tight px-2">
-            <span className="inline-block">Find your </span>
+            <span className="inline-block mr-4">Find your</span>
             <span className="inline-block bg-gradient-to-r from-pink-300 via-rose-300 to-pink-400 text-transparent bg-clip-text px-2 sm:px-4 lg:px-6 py-3 sm:py-4 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10 leading-relaxed">
               perfect stay
             </span>
