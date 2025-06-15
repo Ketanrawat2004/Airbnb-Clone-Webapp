@@ -1,208 +1,208 @@
-
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CreditCard, Shield, Zap, Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Loader2, CreditCard, Shield, Lock } from 'lucide-react';
 
 interface RazorpayPaymentModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  paymentData: {
-    order_id: string;
-    amount: number;
-    currency: string;
-    key_id: string;
-    hotel_name: string;
-    user_email: string;
-    user_name: string;
-    guest_phone: string;
-  };
-  onSuccess: (paymentId: string) => void;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  amount: number;
+  currency: string;
+  email: string;
+  name: string;
+  phone: string;
+  bookingId: string;
+  hotelId: string;
+  checkInDate: string;
+  checkOutDate: string;
+  guests: string;
 }
 
-const RazorpayPaymentModal = ({ 
-  open, 
-  onOpenChange, 
-  paymentData, 
-  onSuccess 
-}: RazorpayPaymentModalProps) => {
-  const [loading, setLoading] = useState(false);
+const RazorpayPaymentModal: React.FC<RazorpayPaymentModalProps> = ({
+  isOpen,
+  setIsOpen,
+  amount,
+  currency,
+  email,
+  name,
+  phone,
+  bookingId,
+  hotelId,
+  checkInDate,
+  checkOutDate,
+  guests,
+}) => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
-  const { toast } = useToast();
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // Preload Razorpay script when modal opens
-  const loadRazorpayScript = async () => {
-    if (window.Razorpay || scriptLoaded) return true;
-
-    return new Promise((resolve, reject) => {
+  useEffect(() => {
+    const loadRazorpayScript = () => {
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
       script.async = true;
-      script.onload = () => {
-        setScriptLoaded(true);
-        resolve(true);
+      script.onload = () => setScriptLoaded(true);
+      script.onerror = () => {
+        console.error('Failed to load Razorpay script');
+        setPaymentError('Failed to load payment gateway. Please try again.');
       };
-      script.onerror = () => reject(new Error('Failed to load Razorpay script'));
       document.body.appendChild(script);
-    });
-  };
+    };
 
-  // Load script when modal opens
-  React.useEffect(() => {
-    if (open && !scriptLoaded) {
-      loadRazorpayScript().catch(console.error);
+    if (isOpen && !scriptLoaded) {
+      loadRazorpayScript();
     }
-  }, [open, scriptLoaded]);
+
+    return () => {
+      // Clean up script on unmount or when modal is closed
+      const script = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+      if (script) {
+        document.body.removeChild(script);
+        setScriptLoaded(false);
+      }
+    };
+  }, [isOpen, scriptLoaded]);
 
   const handlePayment = async () => {
     setLoading(true);
+    setPaymentError(null);
 
     try {
-      // Ensure script is loaded
-      await loadRazorpayScript();
+      const res = await fetch('/api/razorpay', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to create order: ${res.status} ${res.statusText}`);
+      }
+
+      const orderData = await res.json();
+
+      if (!orderData || !orderData.order.id) {
+        throw new Error('Failed to fetch order ID from server');
+      }
 
       const options = {
-        key: paymentData.key_id,
-        amount: paymentData.amount,
-        currency: paymentData.currency,
-        name: 'Hotel Booking',
-        description: `Booking for ${paymentData.hotel_name}`,
-        order_id: paymentData.order_id,
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: orderData.order.amount,
+        currency: orderData.order.currency,
+        name: 'Airbnb Clone+ Booking',
+        description: 'Secure Payment for your stay',
+        image: '/favicon.ico',
+        order_id: orderData.order.id,
+        handler: async function (response: any) {
+          // Verify payment and update booking status
+          const verificationRes = await fetch('/api/razorpay/verification', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              orderId: orderData.order.id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpaySignature: response.razorpay_signature,
+              bookingId: bookingId,
+              hotelId: hotelId,
+              checkInDate: checkInDate,
+              checkOutDate: checkOutDate,
+              guests: guests
+            }),
+          });
+
+          if (!verificationRes.ok) {
+            const errorResult = await verificationRes.json();
+            throw new Error(errorResult.error || 'Payment verification failed');
+          }
+
+          setPaymentSuccess(true);
+          setLoading(false);
+          setTimeout(() => {
+            setIsOpen(false);
+            window.location.href = `/ticket/${bookingId}`;
+          }, 2000);
+        },
         prefill: {
-          name: paymentData.user_name,
-          email: paymentData.user_email,
-          contact: paymentData.guest_phone,
+          name: name,
+          email: email,
+          contact: phone,
+        },
+        notes: {
+          address: 'Airbnb Clone+ Corporate Office',
         },
         theme: {
-          color: '#f43f5e',
-        },
-        handler: async (response: any) => {
-          try {
-            // Quick payment verification
-            const { data, error } = await supabase.functions.invoke('verify-razorpay-payment', {
-              body: {
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-              },
-            });
-
-            if (error || !data?.success) {
-              throw new Error('Payment verification failed');
-            }
-
-            toast({
-              title: 'Payment Successful! 🎉',
-              description: 'Your booking has been confirmed.',
-            });
-
-            onSuccess(response.razorpay_payment_id);
-            onOpenChange(false);
-          } catch (error) {
-            console.error('Payment verification error:', error);
-            toast({
-              title: 'Payment verification failed',
-              description: 'Please contact support if money was deducted.',
-              variant: 'destructive',
-            });
-          }
-        },
-        modal: {
-          ondismiss: () => setLoading(false),
+          color: '#FF5A5F',
         },
       };
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } catch (error) {
-      console.error('Payment error:', error);
-      toast({
-        title: 'Payment failed',
-        description: 'Unable to process payment. Please try again.',
-        variant: 'destructive',
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.on('payment.failed', function (error: any) {
+        console.error('Payment failed:', error);
+        setPaymentError('Payment failed. Please check your details and try again.');
+        setLoading(false);
       });
+      razorpay.open();
+    } catch (error: any) {
+      console.error('Payment error:', error);
+      setPaymentError(error.message || 'An error occurred during payment.');
       setLoading(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center space-x-2 text-xl">
-            <div className="bg-gradient-to-r from-rose-500 to-pink-500 p-2 rounded-lg">
-              <CreditCard className="h-6 w-6 text-white" />
-            </div>
-            <span>Secure Payment</span>
+          <DialogTitle>
+            {paymentSuccess ? 'Payment Successful!' : 'Secure Payment'}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Payment Summary */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
-            <h3 className="font-semibold text-gray-800 mb-2">Payment Summary</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Hotel:</span>
-                <span className="font-medium">{paymentData.hotel_name}</span>
-              </div>
-              <div className="flex justify-between items-center pt-2 border-t border-blue-200">
-                <span className="font-semibold text-gray-800">Total Amount:</span>
-                <span className="font-bold text-xl text-rose-600">
-                  ₹{(paymentData.amount / 100).toLocaleString('en-IN')}
-                </span>
-              </div>
-            </div>
+        {paymentSuccess ? (
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <Shield className="h-12 w-12 text-green-500" />
+            <p className="text-lg font-semibold text-green-600">
+              Your payment was processed successfully!
+            </p>
+            <p>Redirecting to your ticket...</p>
           </div>
-
-          {/* Security Features */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center space-x-2 p-3 bg-green-50 rounded-lg border border-green-200">
-              <Shield className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium text-green-800">Secure</span>
-            </div>
-            <div className="flex items-center space-x-2 p-3 bg-orange-50 rounded-lg border border-orange-200">
-              <Zap className="h-5 w-5 text-orange-600" />
-              <span className="text-sm font-medium text-orange-800">Fast</span>
-            </div>
-          </div>
-
-          {/* Payment Methods */}
-          <div className="text-center text-xs text-gray-500">
-            Supports UPI, Cards, Net Banking, and Wallets
-          </div>
-
-          {/* Pay Button */}
-          <Button 
-            onClick={handlePayment}
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 disabled:opacity-70"
-          >
-            {loading ? (
-              <div className="flex items-center space-x-2">
-                <Loader2 className="h-5 w-5 animate-spin" />
-                <span>Loading Payment...</span>
+        ) : (
+          <div className="grid gap-4">
+            {paymentError && (
+              <div className="rounded-md border border-destructive bg-destructive/15 p-3 text-sm text-destructive">
+                <Lock className="h-4 w-4 mr-2 inline-block align-middle" />
+                {paymentError}
               </div>
-            ) : (
-              <>
-                <CreditCard className="h-5 w-5 mr-2" />
-                Pay ₹{(paymentData.amount / 100).toLocaleString('en-IN')}
-              </>
             )}
-          </Button>
-
-          <div className="text-center text-xs text-gray-500">
-            Powered by Razorpay • Secure & Encrypted
+            <div className="flex items-center space-x-2">
+              <CreditCard className="h-5 w-5 text-rose-500" />
+              <p className="text-sm font-medium">
+                Pay securely with Razorpay
+              </p>
+            </div>
+            <Button
+              onClick={handlePayment}
+              disabled={!scriptLoaded || loading}
+              className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing Payment...
+                </>
+              ) : (
+                <>
+                  Pay ₹{(amount / 100).toLocaleString()}
+                </>
+              )}
+            </Button>
           </div>
-        </div>
+        )}
       </DialogContent>
     </Dialog>
   );
