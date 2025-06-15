@@ -117,19 +117,23 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
 
   if (variant === 'hero') {
     return (
-      <form onSubmit={handleSubmit} className="flex items-center w-full">
-        <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center">
-          <div className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border-b sm:border-b-0 sm:border-r border-gray-200 relative" ref={suggestionRef}>
-            <div className="flex items-center space-x-2">
-              <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Where are you going?"
-                value={location}
-                onChange={handleLocationChange}
-                onFocus={() => location.length >= 2 && setShowSuggestions(true)}
-                className="border-0 p-0 text-gray-900 placeholder:text-gray-500 focus:ring-0 text-sm sm:text-base"
-              />
+      <form onSubmit={handleSubmit} className="w-full">
+        <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center">
+          {/* Location Input */}
+          <div className="flex-1 relative" ref={suggestionRef}>
+            <div className="flex items-center space-x-3 px-4 py-3 sm:py-4 border-b sm:border-b-0 sm:border-r border-gray-200">
+              <MapPin className="h-5 w-5 text-gray-400 flex-shrink-0" />
+              <div className="flex-1">
+                <label className="block text-xs text-gray-500 mb-1">Where are you going?</label>
+                <Input
+                  type="text"
+                  placeholder="Search destinations"
+                  value={location}
+                  onChange={handleLocationChange}
+                  onFocus={() => location.length >= 2 && setShowSuggestions(true)}
+                  className="border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm font-medium"
+                />
+              </div>
             </div>
             {showSuggestions && (
               <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
@@ -156,47 +160,64 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
               </div>
             )}
           </div>
-          <div className="px-3 sm:px-4 py-2 sm:py-3 border-b sm:border-b-0 sm:border-r border-gray-200">
-            <div className="flex items-center space-x-2">
-              <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-              <Input
-                type="date"
-                placeholder="Check in"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-                className="border-0 p-0 text-gray-900 focus:ring-0 w-20 sm:w-32 text-sm sm:text-base"
-              />
+
+          {/* Check-in Date */}
+          <div className="flex-1">
+            <div className="flex items-center space-x-3 px-4 py-3 sm:py-4 border-b sm:border-b-0 sm:border-r border-gray-200">
+              <Calendar className="h-5 w-5 text-gray-400 flex-shrink-0" />
+              <div className="flex-1">
+                <label className="block text-xs text-gray-500 mb-1">Check in</label>
+                <Input
+                  type="date"
+                  value={checkIn}
+                  onChange={(e) => setCheckIn(e.target.value)}
+                  className="border-0 p-0 text-gray-900 focus:ring-0 text-sm font-medium"
+                />
+              </div>
             </div>
           </div>
-          <div className="px-3 sm:px-4 py-2 sm:py-3 border-b sm:border-b-0 sm:border-r border-gray-200">
-            <div className="flex items-center space-x-2">
-              <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-              <Input
-                type="date"
-                placeholder="Check out"
-                value={checkOut}
-                onChange={(e) => setCheckOut(e.target.value)}
-                className="border-0 p-0 text-gray-900 focus:ring-0 w-20 sm:w-32 text-sm sm:text-base"
-              />
+
+          {/* Check-out Date */}
+          <div className="flex-1">
+            <div className="flex items-center space-x-3 px-4 py-3 sm:py-4 border-b sm:border-b-0 sm:border-r border-gray-200">
+              <Calendar className="h-5 w-5 text-gray-400 flex-shrink-0" />
+              <div className="flex-1">
+                <label className="block text-xs text-gray-500 mb-1">Check out</label>
+                <Input
+                  type="date"
+                  value={checkOut}
+                  onChange={(e) => setCheckOut(e.target.value)}
+                  className="border-0 p-0 text-gray-900 focus:ring-0 text-sm font-medium"
+                />
+              </div>
             </div>
           </div>
-          <div className="px-3 sm:px-4 py-2 sm:py-3">
-            <div className="flex items-center space-x-2">
-              <Users className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-              <Input
-                type="number"
-                placeholder="Guests"
-                value={guests}
-                onChange={(e) => setGuests(e.target.value)}
-                className="border-0 p-0 text-gray-900 placeholder:text-gray-500 focus:ring-0 w-16 sm:w-20 text-sm sm:text-base"
-                min="1"
-              />
+
+          {/* Guests */}
+          <div className="flex-1">
+            <div className="flex items-center space-x-3 px-4 py-3 sm:py-4">
+              <Users className="h-5 w-5 text-gray-400 flex-shrink-0" />
+              <div className="flex-1">
+                <label className="block text-xs text-gray-500 mb-1">Guests</label>
+                <Input
+                  type="number"
+                  placeholder="Add guests"
+                  value={guests}
+                  onChange={(e) => setGuests(e.target.value)}
+                  className="border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm font-medium"
+                  min="1"
+                />
+              </div>
             </div>
+          </div>
+
+          {/* Search Button */}
+          <div className="flex justify-center sm:justify-end px-4 py-2 sm:px-2">
+            <Button type="submit" className="bg-rose-500 hover:bg-rose-600 rounded-full p-3 w-12 h-12 flex items-center justify-center">
+              <Search className="h-5 w-5" />
+            </Button>
           </div>
         </div>
-        <Button type="submit" className="bg-rose-500 hover:bg-rose-600 rounded-full p-2 sm:p-3 mx-1 sm:mx-2">
-          <Search className="h-4 w-4 sm:h-5 sm:w-5" />
-        </Button>
       </form>
     );
   }
