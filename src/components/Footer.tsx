@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube, User } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -121,8 +121,26 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Developer Info Section */}
+        <div className="border-t border-gray-700 mt-8 pt-6">
+          <div className="bg-gray-800 rounded-lg p-4 mb-6">
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="bg-rose-500 rounded-full p-2">
+                <User className="h-5 w-5 text-white" />
+              </div>
+              <h4 className="text-lg font-semibold text-rose-400">Developer</h4>
+            </div>
+            <div className="text-sm text-gray-300">
+              <p className="font-medium text-white mb-1">Ketan Rawat</p>
+              <p className="text-gray-400">B.Tech ECE 3rd Year</p>
+              <p className="text-gray-400">NIT Jamshedpur</p>
+              <p className="text-rose-300 mt-2">Developer of Airbnb Clone+ Project</p>
+            </div>
+          </div>
+        </div>
+
         {/* Bottom Section */}
-        <div className="border-t border-gray-700 mt-8 pt-8">
+        <div className="border-t border-gray-700 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-gray-400">
               <p>&copy; {currentYear} Airbnb Clone+. All rights reserved.</p>
