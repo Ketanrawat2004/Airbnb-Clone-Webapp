@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, User, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import SearchBar from './SearchBar';
 import AuthModal from './AuthModal';
 import BackButton from './BackButton';
@@ -43,8 +44,9 @@ const Header = () => {
     <header className="border-b bg-white sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
-          {/* Left section with Back button, Home button, and Logo */}
+          {/* Left section with Sidebar trigger, Back button, Home button, and Logo */}
           <div className="flex items-center space-x-2 sm:space-x-4">
+            <SidebarTrigger className="p-2" />
             <BackButton />
             <Button
               variant="ghost"
