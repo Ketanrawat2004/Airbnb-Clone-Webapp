@@ -24,28 +24,47 @@ interface PropertyCardProps {
   property: Property;
 }
 
+// Default property images using reliable Unsplash photos
+const DEFAULT_PROPERTY_IMAGES = [
+  "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop"
+];
+
 const PropertyCard = ({ property }: PropertyCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
+
+  // Use default images if no images provided or if images fail to load
+  const validImages = property.images && property.images.length > 0 ? property.images : DEFAULT_PROPERTY_IMAGES;
+  const workingImages = validImages.filter((_, index) => !imageErrors.has(index));
+  const displayImages = workingImages.length > 0 ? workingImages : DEFAULT_PROPERTY_IMAGES;
 
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentImageIndex((prev) => 
-      prev === property.images.length - 1 ? 0 : prev + 1
+      prev === displayImages.length - 1 ? 0 : prev + 1
     );
   };
 
   const prevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentImageIndex((prev) => 
-      prev === 0 ? property.images.length - 1 : prev - 1
+      prev === 0 ? displayImages.length - 1 : prev - 1
     );
   };
 
   const toggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsLiked(!isLiked);
+  };
+
+  const handleImageError = (index: number) => {
+    setImageErrors(prev => new Set([...prev, index]));
   };
 
   return (
@@ -58,13 +77,15 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
         {/* Image Gallery */}
         <div className="relative overflow-hidden rounded-t-lg aspect-square">
           <img
-            src={property.images[currentImageIndex]}
+            src={displayImages[currentImageIndex]}
             alt={property.title}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            onError={() => handleImageError(currentImageIndex)}
+            loading="lazy"
           />
           
           {/* Navigation Arrows */}
-          {property.images.length > 1 && isHovered && (
+          {displayImages.length > 1 && isHovered && (
             <>
               <Button
                 variant="secondary"
@@ -86,9 +107,9 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           )}
 
           {/* Image Indicators */}
-          {property.images.length > 1 && (
+          {displayImages.length > 1 && (
             <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
-              {property.images.map((_, index) => (
+              {displayImages.map((_, index) => (
                 <div
                   key={index}
                   className={`w-2 h-2 rounded-full ${
