@@ -67,6 +67,8 @@ export type Database = {
           id: string
           payment_intent_id: string | null
           payment_status: string | null
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
           room_type: string | null
           status: string | null
           stripe_session_id: string | null
@@ -91,6 +93,8 @@ export type Database = {
           id?: string
           payment_intent_id?: string | null
           payment_status?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           room_type?: string | null
           status?: string | null
           stripe_session_id?: string | null
@@ -115,6 +119,8 @@ export type Database = {
           id?: string
           payment_intent_id?: string | null
           payment_status?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           room_type?: string | null
           status?: string | null
           stripe_session_id?: string | null
