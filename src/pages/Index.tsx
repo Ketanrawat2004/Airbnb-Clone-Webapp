@@ -38,12 +38,10 @@ const Index = () => {
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight mb-8 tracking-tight">
-              Find your
-              <div className="mt-2">
-                <span className="inline-block bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 text-transparent bg-clip-text px-6 py-2 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10">
-                  perfect stay
-                </span>
-              </div>
+              Find your{' '}
+              <span className="inline-block bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 text-transparent bg-clip-text px-6 py-2 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10">
+                perfect stay
+              </span>
             </h1>
             
             <p className="text-lg sm:text-xl md:text-2xl text-white/95 max-w-4xl mx-auto leading-relaxed font-light px-4">
