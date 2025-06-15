@@ -6,15 +6,14 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Users, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import GuestDetailsForm from './GuestDetailsForm';
 import BookingDetailsStep from './BookingDetailsStep';
 import DemoPaymentModal from './DemoPaymentModal';
 import RazorpayPaymentModal from './RazorpayPaymentModal';
+import BookingModalHeader from './BookingModalHeader';
+import BookingModalPaymentStep from './BookingModalPaymentStep';
 import { Guest } from './GuestForm';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,6 +46,8 @@ interface GuestDetails {
   countryCode: string;
 }
 
+type Step = 'booking' | 'guest-details' | 'payment-method';
+
 const BookingModal = ({ 
   hotel, 
   open, 
@@ -59,7 +60,7 @@ const BookingModal = ({
   const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<'booking' | 'guest-details' | 'payment-method'>('booking');
+  const [step, setStep] = useState<Step>('booking');
   const [showDemoPayment, setShowDemoPayment] = useState(false);
   const [showRazorpayPayment, setShowRazorpayPayment] = useState(false);
   const [razorpayData, setRazorpayData] = useState<any>(null);
@@ -271,64 +272,7 @@ const BookingModal = ({
       <Dialog open={open} onOpenChange={handleModalClose}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-white via-rose-50/20 to-pink-50/30 border-0 shadow-2xl">
           <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center space-x-3">
-                {step === 'booking' && (
-                  <>
-                    <div className="bg-gradient-to-r from-rose-500 to-pink-500 p-2 rounded-xl shadow-lg">
-                      <Users className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-                      Book your stay
-                    </span>
-                  </>
-                )}
-                {step === 'guest-details' && (
-                  <>
-                    <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-2 rounded-xl shadow-lg">
-                      <Users className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                      Guest Details
-                    </span>
-                  </>
-                )}
-                {step === 'payment-method' && (
-                  <>
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-xl shadow-lg">
-                      <Sparkles className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                      Payment Method
-                    </span>
-                  </>
-                )}
-              </DialogTitle>
-              {(step === 'guest-details' || step === 'payment-method') && (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setStep(step === 'payment-method' ? 'guest-details' : 'booking')}
-                  className="p-3 hover:bg-gray-100 rounded-xl transition-all duration-200"
-                >
-                  <ArrowLeft className="h-5 w-5" />
-                </Button>
-              )}
-            </div>
-            
-            {/* Enhanced Progress Indicator */}
-            <div className="flex items-center space-x-3 mt-4">
-              <div className={`h-3 w-12 rounded-full transition-all duration-300 ${
-                step === 'booking' ? 'bg-gradient-to-r from-rose-500 to-pink-500 shadow-lg' : 'bg-rose-200'
-              }`} />
-              <div className={`h-3 w-12 rounded-full transition-all duration-300 ${
-                step === 'guest-details' ? 'bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg' : 
-                step === 'payment-method' ? 'bg-blue-200' : 'bg-gray-200'
-              }`} />
-              <div className={`h-3 w-12 rounded-full transition-all duration-300 ${
-                step === 'payment-method' ? 'bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg' : 'bg-gray-200'
-              }`} />
-            </div>
+            <BookingModalHeader step={step} onStepChange={setStep} />
           </DialogHeader>
 
           {step === 'booking' && (
@@ -357,68 +301,20 @@ const BookingModal = ({
           )}
 
           {step === 'payment-method' && (
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200 shadow-inner">
-                <h3 className="font-bold mb-4 flex items-center space-x-2 text-lg">
-                  <Users className="h-6 w-6 text-gray-600" />
-                  <span>Booking Summary</span>
-                </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-800">{hotel.name}</span>
-                    <span className="font-bold text-xl text-rose-600">₹{(finalAmountInPaise / 100).toLocaleString('en-IN')}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>{nights} nights • {guests} guests</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>{checkInDate} to {checkOutDate}</span>
-                  </div>
-                  {guestList.length > 0 && (
-                    <div className="border-t pt-3 mt-3">
-                      <p className="font-semibold text-gray-700 mb-2">Guests:</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-                        {guestList.map((guest, index) => (
-                          <p key={guest.id} className="text-xs text-gray-600 bg-white rounded-lg px-2 py-1">
-                            {index + 1}. {guest.title} {guest.firstName} {guest.lastName} ({guest.age} years)
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="font-bold text-lg">Choose Payment Method</h3>
-                
-                <Button 
-                  onClick={handleRazorpayPayment}
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
-                >
-                  {loading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Setting up payment...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <Sparkles className="h-5 w-5 mr-2" />
-                      Pay with Razorpay
-                    </>
-                  )}
-                </Button>
-                
-                <Button 
-                  onClick={() => setShowDemoPayment(true)}
-                  variant="outline"
-                  className="w-full border-2 border-blue-300 text-blue-600 hover:bg-blue-50 py-6 text-lg font-semibold rounded-xl transition-all duration-200 hover:scale-105"
-                >
-                  Demo Payment (Test Mode)
-                </Button>
-              </div>
-            </div>
+            <BookingModalPaymentStep
+              hotel={hotel}
+              nights={nights}
+              guests={guests}
+              checkInDate={checkInDate}
+              checkOutDate={checkOutDate}
+              finalAmountInPaise={finalAmountInPaise}
+              guestList={guestList}
+              guestDetails={guestDetails}
+              appliedCoupon={appliedCoupon}
+              loading={loading}
+              onRazorpayPayment={handleRazorpayPayment}
+              onDemoPayment={() => setShowDemoPayment(true)}
+            />
           )}
         </DialogContent>
       </Dialog>
