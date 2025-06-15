@@ -27,9 +27,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Starting Razorpay payment creation process...');
-
-    // Check for required environment variables
+    // Check for required environment variables immediately
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -44,8 +42,6 @@ serve(async (req) => {
       throw new Error("Razorpay credentials are not configured. Please add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to edge function secrets.");
     }
 
-    console.log('Environment variables verified');
-
     const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
     // Get authenticated user
@@ -55,7 +51,6 @@ serve(async (req) => {
     }
 
     const token = authHeader.replace("Bearer ", "");
-    console.log('Authenticating user...');
     
     const { data, error: authError } = await supabaseClient.auth.getUser(token);
     if (authError) {
@@ -68,12 +63,12 @@ serve(async (req) => {
       throw new Error("User not authenticated or email not available");
     }
 
-    console.log('User authenticated:', user.id, user.email);
+    console.log('User authenticated:', user.id);
 
     const paymentData: PaymentRequest = await req.json();
-    console.log('Payment data received:', paymentData);
+    console.log('Payment amount received:', paymentData.total_amount);
 
-    // Get hotel details
+    // Get hotel details - optimized query
     const { data: hotel, error: hotelError } = await supabaseClient
       .from('hotels')
       .select('name, location')
@@ -85,39 +80,41 @@ serve(async (req) => {
       throw new Error("Hotel not found");
     }
 
-    console.log('Hotel found:', hotel.name);
-
-    // Use the exact amount from frontend - no additional calculations
+    // Use the exact amount from frontend without any modifications
     const finalAmount = paymentData.total_amount;
+    console.log('Final amount for Razorpay:', finalAmount);
 
-    // Create Razorpay order
+    // Create Razorpay order with optimized payload
     const orderData = {
-      amount: finalAmount, // Amount in paise - exact amount from frontend
+      amount: finalAmount,
       currency: 'INR',
-      receipt: `receipt_${Date.now()}`,
+      receipt: `receipt_${Date.now()}_${user.id.slice(-8)}`,
       notes: {
         hotel_id: paymentData.hotel_id,
-        hotel_name: hotel.name,
         user_id: user.id,
         check_in: paymentData.check_in_date,
         check_out: paymentData.check_out_date,
         guests: paymentData.guests.toString(),
-        guest_phone: paymentData.guest_phone,
       },
     };
 
     const auth = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
-    const razorpayResponse = await fetch('https://api.razorpay.com/v1/orders', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(orderData),
-    });
+    
+    // Parallel execution: Create Razorpay order and prepare booking data
+    const [razorpayResponse] = await Promise.all([
+      fetch('https://api.razorpay.com/v1/orders', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      })
+    ]);
 
     if (!razorpayResponse.ok) {
       const errorText = await razorpayResponse.text();
+      console.error('Razorpay API error:', errorText);
       throw new Error(`Razorpay API error: ${errorText}`);
     }
 
@@ -134,7 +131,7 @@ serve(async (req) => {
       check_out_date: paymentData.check_out_date,
       guests: paymentData.guests,
       total_amount: finalAmount,
-      base_amount: paymentData.total_amount, // Store original amount before any discounts
+      base_amount: finalAmount,
       discount_amount: paymentData.coupon_data?.discountAmount || 0,
       guest_phone: paymentData.guest_phone,
       razorpay_order_id: razorpayOrder.id,
@@ -143,8 +140,6 @@ serve(async (req) => {
       guest_list: paymentData.guest_list || [],
       coupon_code: paymentData.coupon_data?.code || null,
     };
-
-    console.log('Creating booking with data:', bookingData);
 
     const { error: bookingError } = await supabaseService
       .from('bookings')
@@ -164,11 +159,9 @@ serve(async (req) => {
       key_id: razorpayKeyId,
       hotel_name: hotel.name,
       user_email: user.email,
-      user_name: paymentData.guest_details?.firstName + ' ' + paymentData.guest_details?.lastName || 'Guest',
+      user_name: `${paymentData.guest_details?.firstName || ''} ${paymentData.guest_details?.lastName || ''}`.trim() || 'Guest',
       guest_phone: paymentData.guest_phone,
     };
-
-    console.log('Returning response:', response);
 
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

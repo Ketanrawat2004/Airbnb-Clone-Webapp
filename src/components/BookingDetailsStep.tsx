@@ -48,10 +48,9 @@ const BookingDetailsStep = ({
   onCouponApplied,
 }: BookingDetailsStepProps) => {
   // Calculate booking amount in paise for coupon validation
+  // hotel.price_per_night is in paise, total is in rupees
   const calculateBookingAmountInPaise = () => {
-    const priceInRupees = hotel.price_per_night / 100; // Convert paise to rupees
-    const baseAmount = nights * priceInRupees;
-    return Math.round(baseAmount * 100); // Convert back to paise for coupon validation
+    return nights * hotel.price_per_night; // hotel.price_per_night is already in paise
   };
 
   return (
@@ -118,7 +117,7 @@ const BookingDetailsStep = ({
       {/* Price Breakdown */}
       <PriceBreakdown 
         nights={nights} 
-        total={total} 
+        total={hotel.price_per_night / 100} 
         appliedCoupon={appliedCoupon}
       />
 

@@ -8,12 +8,13 @@ interface PriceBreakdownProps {
 const PriceBreakdown = ({ nights, total, appliedCoupon }: PriceBreakdownProps) => {
   if (nights <= 0) return null;
 
-  // Convert total from USD to INR (already converted in backend, but total comes in USD)
-  const basePrice = total * 83; // Convert USD to INR
+  // The total parameter comes from hotel.price_per_night which is already in paise
+  // So we need to calculate: nights * price_per_night_in_paise
+  const basePriceInPaise = nights * total * 100; // total is price per night in rupees, convert to paise
   
-  // Apply coupon discount if available
-  const couponDiscountAmount = appliedCoupon ? appliedCoupon.discountAmount / 100 : 0;
-  const finalAmount = basePrice - couponDiscountAmount;
+  // Apply coupon discount if available (discount is already in paise)
+  const couponDiscountInPaise = appliedCoupon ? appliedCoupon.discountAmount : 0;
+  const finalAmountInPaise = basePriceInPaise - couponDiscountInPaise;
 
   return (
     <div className="border-t pt-4 space-y-2">
@@ -23,19 +24,19 @@ const PriceBreakdown = ({ nights, total, appliedCoupon }: PriceBreakdownProps) =
       </div>
       <div className="flex justify-between text-sm">
         <span>Base Price</span>
-        <span>₹{basePrice.toLocaleString('en-IN')}</span>
+        <span>₹{(basePriceInPaise / 100).toLocaleString('en-IN')}</span>
       </div>
       
       {appliedCoupon && (
         <div className="flex justify-between text-sm text-green-600">
           <span>Coupon ({appliedCoupon.code})</span>
-          <span>- ₹{couponDiscountAmount.toLocaleString('en-IN')}</span>
+          <span>- ₹{(couponDiscountInPaise / 100).toLocaleString('en-IN')}</span>
         </div>
       )}
       
       <div className="flex justify-between font-semibold text-lg border-t pt-2">
         <span>Total Amount</span>
-        <span>₹{finalAmount.toLocaleString('en-IN')}</span>
+        <span>₹{(finalAmountInPaise / 100).toLocaleString('en-IN')}</span>
       </div>
     </div>
   );

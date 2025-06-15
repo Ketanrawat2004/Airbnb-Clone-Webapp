@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import BookingModalBookingSummary from './BookingModalBookingSummary';
 import { Guest } from './GuestForm';
 
@@ -70,25 +70,26 @@ const BookingModalPaymentStep = ({
         <Button 
           onClick={onRazorpayPayment}
           disabled={loading}
-          className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
+          className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white py-6 text-lg font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 disabled:scale-100"
         >
           {loading ? (
-            <div className="flex items-center space-x-2">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-              <span>Setting up payment...</span>
+            <div className="flex items-center space-x-3">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Processing payment...</span>
             </div>
           ) : (
-            <>
-              <Sparkles className="h-5 w-5 mr-2" />
-              Pay with Razorpay
-            </>
+            <div className="flex items-center space-x-2">
+              <Sparkles className="h-5 w-5" />
+              <span>Pay ₹{(finalAmountInPaise / 100).toLocaleString('en-IN')} with Razorpay</span>
+            </div>
           )}
         </Button>
         
         <Button 
           onClick={onDemoPayment}
           variant="outline"
-          className="w-full border-2 border-blue-300 text-blue-600 hover:bg-blue-50 py-6 text-lg font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+          disabled={loading}
+          className="w-full border-2 border-blue-300 text-blue-600 hover:bg-blue-50 py-6 text-lg font-semibold rounded-xl transition-all duration-200 hover:scale-105 disabled:scale-100"
         >
           Demo Payment (Test Mode)
         </Button>
