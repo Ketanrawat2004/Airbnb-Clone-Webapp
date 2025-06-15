@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -28,6 +29,18 @@ export default {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        coral: {
+          50: '#fef7f3',
+          100: '#fdeee6',
+          200: '#fbd5c0',
+          300: '#f8bc9a',
+          400: '#f48a4e',
+          500: '#f05a28',
+          600: '#e0451f',
+          700: '#bc391a',
+          800: '#993014',
+          900: '#7d270f',
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
@@ -90,14 +103,25 @@ export default {
           }
         },
         "fade-up": {
-          "0%": { opacity: 0, transform: "translateY(24px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
+          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(10px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)"
+          }
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         "fade-up": "fade-up 0.6s cubic-bezier(.39,.575,.565,1) forwards",
+        "fade-in": "fade-in 0.3s ease-out",
       }
     }
   },
