@@ -133,6 +133,36 @@ const PaymentSuccess = () => {
     if (!isAuto) toast.success("Ticket sent to WhatsApp!");
   };
 
+  // 🟢 Restore the Download Ticket function
+  const downloadTicket = async () => {
+    if (!booking) return;
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-receipt', {
+        body: { booking_id: booking.id }
+      });
+
+      if (error) throw error;
+
+      if (data?.html_content) {
+        const blob = new Blob([data.html_content], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `booking-receipt-${booking.id.substring(0, 8)}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        toast.success('Ticket downloaded successfully!');
+      }
+    } catch (error) {
+      console.error('Error downloading ticket:', error);
+      toast.error('Failed to download ticket');
+    }
+  };
+
   const handleViewAllBookings = () => {
     navigate('/profile?payment_success=true');
   };
