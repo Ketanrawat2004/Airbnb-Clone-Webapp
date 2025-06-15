@@ -14,15 +14,15 @@ export default function StaggeredFadeIn({
     <div className={className}>
       {Children.map(children, (child, idx) => {
         if (!isValidElement(child)) return child;
-        return cloneElement(child, {
+        // Cast to React.ReactElement<any> so we can override style/className
+        const el = child as React.ReactElement<any>;
+        return cloneElement(el, {
           style: {
-            ...(child.props.style || {}),
+            ...(el.props.style || {}),
             animationDelay: `${idx * stagger}s`,
             animationFillMode: "forwards",
           },
-          className: `${
-            child.props.className || ""
-          } opacity-0 translate-y-8 animate-fade-in`,
+          className: `${el.props.className || ""} opacity-0 translate-y-8 animate-fade-in`,
         });
       })}
     </div>
