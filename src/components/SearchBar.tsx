@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, Users } from 'lucide-react';
@@ -32,15 +31,27 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
       if (location.trim().length >= 2) {
         setIsLoadingSuggestions(true);
         try {
-          const { data, error } = await supabase
+          // Get the current session to check if user is authenticated
+          const { data: { session } } = await supabase.auth.getSession();
+          
+          // Query hotels table with proper error handling
+          const query = supabase
             .from('hotels')
             .select('location')
             .ilike('location', `%${location.trim()}%`)
             .limit(10);
 
+          const { data, error } = await query;
+
           if (error) {
-            console.error('Error fetching location suggestions:', error);
-          } else {
+            console.warn('Error fetching location suggestions:', error.message);
+            // Handle the case where RLS might be blocking the query
+            if (error.message.includes('RLS') || error.message.includes('policy')) {
+              console.info('Note: Location suggestions require authentication for full functionality');
+            }
+            setLocationSuggestions([]);
+            setShowSuggestions(false);
+          } else if (data) {
             // Group by location and count occurrences
             const locationMap = new Map<string, number>();
             data.forEach(hotel => {
@@ -57,7 +68,9 @@ const SearchBar = ({ onSearch, variant = 'default' }: SearchBarProps) => {
             setShowSuggestions(suggestions.length > 0);
           }
         } catch (error) {
-          console.error('Error fetching location suggestions:', error);
+          console.warn('Unexpected error fetching location suggestions:', error);
+          setLocationSuggestions([]);
+          setShowSuggestions(false);
         } finally {
           setIsLoadingSuggestions(false);
         }

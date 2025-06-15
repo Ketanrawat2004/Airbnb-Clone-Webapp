@@ -27,23 +27,37 @@ const HotelGrid = () => {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
+        // Get the current session to check if user is authenticated
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        // Query hotels with proper error handling
         const { data, error } = await supabase
           .from('hotels')
           .select('*')
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.error('Error fetching hotels:', error);
-        } else {
+          console.warn('Error fetching hotels:', error.message);
+          // Handle the case where RLS might be blocking the query
+          if (error.message.includes('RLS') || error.message.includes('policy')) {
+            console.info('Note: Hotel data requires authentication for full access');
+            // You might want to show a message to users about signing in
+            setHotels([]);
+          } else {
+            // For other errors, show empty state
+            setHotels([]);
+          }
+        } else if (data) {
           // Ensure available_rooms has a default value if null
-          const hotelsWithDefaults = (data || []).map(hotel => ({
+          const hotelsWithDefaults = data.map(hotel => ({
             ...hotel,
             available_rooms: hotel.available_rooms || 0
           }));
           setHotels(hotelsWithDefaults);
         }
       } catch (error) {
-        console.error('Error fetching hotels:', error);
+        console.warn('Unexpected error fetching hotels:', error);
+        setHotels([]);
       } finally {
         setLoading(false);
       }
