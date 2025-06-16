@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube, User } from 'lucide-react';
+import VisitorCounter from './VisitorCounter';
 
 const Footer = () => {
   const currentYear = 2024;
@@ -151,19 +152,22 @@ const Footer = () => {
             <div className="text-sm text-gray-400">
               <p>&copy; {currentYear} Airbnb Clone+. All rights reserved.</p>
             </div>
-            <div className="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6 text-xs text-gray-400">
-              <a href="#" className="hover:text-rose-400 transition-colors">
-                Privacy
-              </a>
-              <a href="#" className="hover:text-rose-400 transition-colors">
-                Terms
-              </a>
-              <a href="#" className="hover:text-rose-400 transition-colors">
-                Cookies
-              </a>
-              <a href="#" className="hover:text-rose-400 transition-colors">
-                Accessibility
-              </a>
+            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
+              <VisitorCounter />
+              <div className="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6 text-xs text-gray-400">
+                <a href="#" className="hover:text-rose-400 transition-colors">
+                  Privacy
+                </a>
+                <a href="#" className="hover:text-rose-400 transition-colors">
+                  Terms
+                </a>
+                <a href="#" className="hover:text-rose-400 transition-colors">
+                  Cookies
+                </a>
+                <a href="#" className="hover:text-rose-400 transition-colors">
+                  Accessibility
+                </a>
+              </div>
             </div>
           </div>
         </div>

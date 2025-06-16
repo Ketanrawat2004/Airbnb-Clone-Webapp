@@ -548,6 +548,24 @@ export type Database = {
           },
         ]
       }
+      visitor_counter: {
+        Row: {
+          id: number
+          last_updated: string
+          visit_count: number
+        }
+        Insert: {
+          id?: number
+          last_updated?: string
+          visit_count?: number
+        }
+        Update: {
+          id?: number
+          last_updated?: string
+          visit_count?: number
+        }
+        Relationships: []
+      }
       wishlists: {
         Row: {
           created_at: string
@@ -606,6 +624,12 @@ export type Database = {
           max_occupancy: number
           price_per_night: number
           amenities: string[]
+        }[]
+      }
+      increment_visitor_count: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          visit_count: number
         }[]
       }
       search_hotels: {
