@@ -1,10 +1,12 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, Loader2, AlertCircle, Home, Search, User } from 'lucide-react';
+import { CheckCircle, Loader2, AlertCircle, Home, Search, User, Laptop, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const AuthConfirm = () => {
   const [loading, setLoading] = useState(true);
@@ -13,6 +15,7 @@ const AuthConfirm = () => {
   const [autoRedirecting, setAutoRedirecting] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleEmailConfirmation = async () => {
@@ -151,15 +154,15 @@ const AuthConfirm = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50">
-        <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md border border-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50 p-4">
+        <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl text-center max-w-md w-full border border-gray-100">
           <div className="flex items-center justify-center space-x-3 mb-6">
             <Logo />
-            <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
           </div>
           <Loader2 className="h-12 w-12 animate-spin mx-auto mb-6 text-rose-500" />
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">Confirming your email...</h2>
-          <p className="text-gray-600">Please wait while we verify your account</p>
+          <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-2">Confirming your email...</h2>
+          <p className="text-sm md:text-base text-gray-600">Please wait while we verify your account</p>
         </div>
       </div>
     );
@@ -167,26 +170,40 @@ const AuthConfirm = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50">
-        <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md border border-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50 p-4">
+        <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl text-center max-w-md w-full border border-gray-100">
           <div className="flex items-center justify-center space-x-3 mb-6">
             <Logo />
-            <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
           </div>
           
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-6" />
+          <AlertCircle className="h-12 md:h-16 w-12 md:w-16 text-red-500 mx-auto mb-6" />
           
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+          <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">
             Email Confirmation Issue
           </h2>
           
           <p className="text-red-600 mb-6 text-sm leading-relaxed">{error}</p>
           
+          {/* Mobile-specific note */}
+          {isMobile && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center justify-center mb-2">
+                <Laptop className="h-5 w-5 text-amber-600 mr-2" />
+                <span className="text-sm font-semibold text-amber-800">Better Experience Note</span>
+              </div>
+              <p className="text-xs text-amber-700 leading-relaxed">
+                For the best experience and to avoid email confirmation issues, we recommend using this website on a laptop or desktop computer. 
+                Mobile email apps sometimes have issues with clickable confirmation links.
+              </p>
+            </div>
+          )}
+          
           <div className="space-y-3">
-            <Button onClick={handleSignUpAgain} className="w-full bg-rose-500 hover:bg-rose-600">
+            <Button onClick={handleSignUpAgain} className="w-full bg-rose-500 hover:bg-rose-600 text-sm md:text-base">
               Try Signing Up Again
             </Button>
-            <Button onClick={handleContinue} variant="outline" className="w-full">
+            <Button onClick={handleContinue} variant="outline" className="w-full text-sm md:text-base">
               Return to Home
             </Button>
           </div>
@@ -196,33 +213,45 @@ const AuthConfirm = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50">
-      <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-lg border border-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50 p-4">
+      <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl text-center max-w-lg w-full border border-gray-100">
         <div className="flex items-center justify-center space-x-3 mb-6">
           <Logo />
-          <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
         </div>
         
-        <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-6" />
+        <CheckCircle className="h-16 md:h-20 w-16 md:w-20 text-green-500 mx-auto mb-6" />
         
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
           Welcome to Airbnb Clone+! 🎉
         </h2>
         
-        <p className="text-gray-600 mb-6 leading-relaxed">
+        <p className="text-gray-600 mb-6 leading-relaxed text-sm md:text-base">
           Thank you for confirming your email! Your account is now ready and you're automatically signed in. 
           You can now access all our enhanced features including improved navigation and personalized experience.
         </p>
 
+        {/* Experience recommendation for all users */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6 border border-blue-200">
+          <div className="flex items-center justify-center mb-2">
+            <Laptop className="h-5 w-5 text-blue-600 mr-2" />
+            <span className="text-sm font-semibold text-blue-800">💡 Recommendation</span>
+          </div>
+          <p className="text-xs text-blue-700 leading-relaxed">
+            For the best browsing experience and seamless email confirmations, we recommend using this website on a laptop or desktop. 
+            Our platform is optimized for larger screens and some mobile email apps may have compatibility issues.
+          </p>
+        </div>
+
         {/* Enhanced Navigation Options */}
         <div className="bg-gray-50 rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-gray-900 mb-3">🚀 Ready to explore?</h3>
+          <h3 className="font-semibold text-gray-900 mb-3 text-sm md:text-base">🚀 Ready to explore?</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <Button 
               onClick={handleContinue} 
               variant="outline" 
               size="sm"
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 text-xs md:text-sm"
             >
               <Home className="h-4 w-4" />
               <span>Home</span>
@@ -231,7 +260,7 @@ const AuthConfirm = () => {
               onClick={handleExplore} 
               variant="outline" 
               size="sm"
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 text-xs md:text-sm"
             >
               <Search className="h-4 w-4" />
               <span>Search</span>
@@ -240,7 +269,7 @@ const AuthConfirm = () => {
               onClick={handleProfile} 
               variant="outline" 
               size="sm"
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 text-xs md:text-sm"
             >
               <User className="h-4 w-4" />
               <span>Profile</span>
@@ -252,14 +281,14 @@ const AuthConfirm = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-center space-x-2">
               <Loader2 className="h-4 w-4 animate-spin text-rose-500" />
-              <span className="text-gray-600">Redirecting you to the main page...</span>
+              <span className="text-gray-600 text-sm md:text-base">Redirecting you to the main page...</span>
             </div>
-            <Button onClick={handleContinue} className="w-full bg-rose-500 hover:bg-rose-600">
+            <Button onClick={handleContinue} className="w-full bg-rose-500 hover:bg-rose-600 text-sm md:text-base">
               Continue Now
             </Button>
           </div>
         ) : (
-          <Button onClick={handleContinue} className="w-full bg-rose-500 hover:bg-rose-600">
+          <Button onClick={handleContinue} className="w-full bg-rose-500 hover:bg-rose-600 text-sm md:text-base">
             Continue to Explore
           </Button>
         )}
