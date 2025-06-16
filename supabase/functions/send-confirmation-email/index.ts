@@ -20,7 +20,7 @@ serve(async (req) => {
     console.log('Sending confirmation email to:', email);
     console.log('Confirmation URL:', confirmationUrl);
 
-    // Enhanced email template with better navigation and confirmation design
+    // Enhanced email template with mobile-specific improvements
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -138,7 +138,7 @@ serve(async (req) => {
         .cta-button {
           display: inline-block;
           background: linear-gradient(135deg, #ff385c 0%, #e91e63 100%);
-          color: white;
+          color: white !important;
           padding: 18px 36px;
           text-decoration: none;
           border-radius: 12px;
@@ -149,6 +149,61 @@ serve(async (req) => {
           transition: all 0.3s ease;
           border: none;
           cursor: pointer;
+          /* Mobile-specific enhancements */
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        .mobile-notice {
+          background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+          border: 2px solid #f59e0b;
+          border-radius: 12px;
+          padding: 24px;
+          margin: 32px 0;
+          text-align: center;
+        }
+        
+        .mobile-notice h4 {
+          color: #92400e;
+          margin-bottom: 12px;
+          font-size: 18px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+        
+        .mobile-notice p {
+          color: #92400e;
+          font-size: 15px;
+          line-height: 1.6;
+          margin-bottom: 16px;
+        }
+        
+        .mobile-steps {
+          background: rgba(255,255,255,0.8);
+          border-radius: 8px;
+          padding: 16px;
+          margin: 16px 0;
+          text-align: left;
+        }
+        
+        .mobile-steps ol {
+          color: #92400e;
+          font-size: 14px;
+          line-height: 1.6;
+          padding-left: 20px;
+        }
+        
+        .mobile-steps li {
+          margin: 8px 0;
+          font-weight: 500;
         }
         
         .navigation-notice {
@@ -194,35 +249,16 @@ serve(async (req) => {
           left: 0;
         }
         
-        .security-notice {
-          background: #fef3c7;
-          border: 1px solid #f59e0b;
-          border-radius: 12px;
-          padding: 20px;
-          margin: 32px 0;
-        }
-        
-        .security-notice h4 {
-          color: #92400e;
-          margin-bottom: 8px;
-          font-size: 16px;
-          font-weight: 600;
-        }
-        
-        .security-notice p {
-          color: #92400e;
-          font-size: 14px;
-          line-height: 1.6;
-        }
-        
         .backup-link {
           background: #f3f4f6;
           border: 1px solid #d1d5db;
           border-radius: 8px;
           padding: 16px;
           margin: 24px 0;
-          font-size: 14px;
+          font-size: 12px;
           word-break: break-all;
+          font-family: monospace;
+          color: #374151;
         }
         
         .footer {
@@ -274,6 +310,13 @@ serve(async (req) => {
           .greeting {
             font-size: 24px;
           }
+          
+          .cta-button {
+            padding: 20px 40px;
+            font-size: 18px;
+            width: 100%;
+            max-width: 320px;
+          }
         }
       </style>
     </head>
@@ -302,9 +345,29 @@ serve(async (req) => {
             </div>
 
             <div class="cta-container">
-              <a href="${confirmationUrl}" class="cta-button">
+              <a href="${confirmationUrl}" class="cta-button" style="color: white !important;">
                 ✅ Confirm Email & Get Started
               </a>
+            </div>
+
+            <!-- Mobile-specific troubleshooting notice -->
+            <div class="mobile-notice">
+              <h4>📱 Using Mobile? Follow These Steps:</h4>
+              <p>
+                <strong>If the button above doesn't work on your mobile device, please try these steps:</strong>
+              </p>
+              <div class="mobile-steps">
+                <ol>
+                  <li><strong>Copy the link below</strong> (long press and select "Copy")</li>
+                  <li><strong>Open your web browser</strong> (Chrome, Safari, etc.)</li>
+                  <li><strong>Paste the link</strong> in the address bar</li>
+                  <li><strong>Press Enter</strong> to confirm your account</li>
+                </ol>
+              </div>
+              <p style="font-size: 13px; font-weight: 600; color: #b45309;">
+                💡 <strong>Best Experience:</strong> For seamless email confirmations and the best browsing experience, 
+                we recommend using this website on a laptop or desktop computer.
+              </p>
             </div>
 
             <!-- Enhanced Navigation Features Notice -->
@@ -325,15 +388,17 @@ serve(async (req) => {
               </p>
             </div>
 
-            <!-- Security Notice -->
-            <div class="security-notice">
-              <h4>🔒 Having trouble with the button?</h4>
-              <p>
-                If the confirmation button doesn't work, copy and paste this secure link into your browser:
-              </p>
+            <!-- Mobile-friendly backup link -->
+            <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin: 32px 0;">
+              <h4 style="color: #92400e; margin-bottom: 8px; font-size: 16px; font-weight: 600;">
+                🔗 Backup Confirmation Link (Copy & Paste):
+              </h4>
               <div class="backup-link">
                 ${confirmationUrl}
               </div>
+              <p style="color: #92400e; font-size: 14px; line-height: 1.6; margin-top: 12px;">
+                <strong>Mobile Users:</strong> Long press the link above, select "Copy", then open your browser and paste it in the address bar.
+              </p>
             </div>
 
             <div class="message">
@@ -365,7 +430,7 @@ serve(async (req) => {
     const emailResponse = await resend.emails.send({
       from: "Airbnb Clone+ <onboarding@resend.dev>",
       to: [email],
-      subject: "🏠 Confirm Your Airbnb Clone+ Account - Enhanced Navigation Awaits!",
+      subject: "🏠 Confirm Your Airbnb Clone+ Account - Mobile-Friendly Instructions Inside!",
       html: htmlContent,
     });
 
@@ -373,7 +438,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true,
-      message: 'Enhanced confirmation email sent successfully',
+      message: 'Mobile-enhanced confirmation email sent successfully',
       emailId: emailResponse.id
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
