@@ -44,7 +44,7 @@ const RazorpayPaymentModal: React.FC<RazorpayPaymentModalProps> = ({
 
   useEffect(() => {
     const loadRazorpayScript = () => {
-      if (window.Razorpay) {
+      if (typeof window !== 'undefined' && window.Razorpay) {
         setScriptLoaded(true);
         return;
       }
@@ -182,16 +182,20 @@ const RazorpayPaymentModal: React.FC<RazorpayPaymentModalProps> = ({
 
       console.log('Opening Razorpay with options:', options);
       
-      const razorpay = new (window as any).Razorpay(options);
-      
-      razorpay.on('payment.failed', function (error: any) {
-        console.error('Payment failed:', error);
-        setPaymentError('Payment failed. Please check your details and try again.');
-        setLoading(false);
-        toast.error('Payment failed. Please try again.');
-      });
-      
-      razorpay.open();
+      if (typeof window !== 'undefined' && window.Razorpay) {
+        const razorpay = new window.Razorpay(options);
+        
+        razorpay.on('payment.failed', function (error: any) {
+          console.error('Payment failed:', error);
+          setPaymentError('Payment failed. Please check your details and try again.');
+          setLoading(false);
+          toast.error('Payment failed. Please try again.');
+        });
+        
+        razorpay.open();
+      } else {
+        throw new Error('Razorpay script not loaded');
+      }
       
     } catch (error: any) {
       console.error('Payment error:', error);
