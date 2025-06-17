@@ -30,6 +30,16 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
     }
   }, [setLoading]);
 
+  const signInWithGoogle = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await authService.signInWithGoogle();
+      return result;
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading]);
+
   const generateOTP = useCallback(async (name: string) => {
     setLoading(true);
     try {
@@ -70,6 +80,7 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
   return {
     signUp,
     signIn,
+    signInWithGoogle,
     generateOTP,
     validateOTP,
     signOut

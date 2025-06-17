@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { SignUpOptions } from '@/types/auth';
 
@@ -55,6 +56,30 @@ export const authService = {
       return { error };
     } catch (error) {
       console.error('Error in signIn:', error);
+      return { error };
+    }
+  },
+
+  async signInWithGoogle() {
+    try {
+      console.log('Signing in with Google');
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      });
+      
+      if (error) {
+        console.error('Google sign in error:', error);
+        return { error };
+      }
+      
+      console.log('Google sign in initiated:', data);
+      return { error: null };
+    } catch (error) {
+      console.error('Error in signInWithGoogle:', error);
       return { error };
     }
   },

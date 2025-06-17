@@ -7,6 +7,7 @@ export interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   generateOTP: (name: string) => Promise<{ error: any; expiresAt?: string }>;
   validateOTP: (name: string, otpCode: string) => Promise<{ error: any }>;
