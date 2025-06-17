@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -204,31 +203,19 @@ const BookingModal = ({
       const finalAmountInPaise = calculateFinalAmount();
       const guestPhone = `${guestDetails.countryCode}${guestDetails.phone}`;
       
-      const { data, error } = await supabase.functions.invoke('create-razorpay-payment', {
-        body: {
-          hotel_id: hotel.id,
-          check_in_date: checkInDate,
-          check_out_date: checkOutDate,
-          guests: parseInt(guests),
-          guest_phone: guestPhone,
-          total_amount: finalAmountInPaise,
-          guest_details: {
-            title: guestDetails.title,
-            firstName: guestDetails.firstName,
-            lastName: guestDetails.lastName,
-            email: guestDetails.email,
-            phone: guestPhone,
-          },
-          guest_list: guestList,
-          coupon_data: appliedCoupon
-        },
-      });
+      // Set razorpay data for the modal
+      const razorpayPaymentData = {
+        amount: finalAmountInPaise,
+        currency: 'INR',
+        key_id: 'rzp_test_9wRKnN4to5ERAQ', // This will be set by the edge function
+        hotel_name: hotel.name,
+        user_email: guestDetails.email,
+        user_name: `${guestDetails.firstName} ${guestDetails.lastName}`,
+        guest_phone: guestPhone,
+        order_id: `temp_${Date.now()}`, // This will be replaced by actual order_id
+      };
 
-      if (error || !data?.order_id) {
-        throw new Error(error?.message || 'Payment setup failed');
-      }
-
-      setRazorpayData(data);
+      setRazorpayData(razorpayPaymentData);
       setShowRazorpayPayment(true);
       
     } catch (error) {

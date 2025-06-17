@@ -13,7 +13,15 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Starting payment verification');
+
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = await req.json();
+
+    console.log('Received payment verification data:', {
+      payment_id: razorpay_payment_id,
+      order_id: razorpay_order_id,
+      signature: !!razorpay_signature,
+    });
 
     const razorpayKeySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
     if (!razorpayKeySecret) {
@@ -27,6 +35,12 @@ serve(async (req) => {
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
+    console.log('Signature verification:', {
+      expected: expectedSignature,
+      received: razorpay_signature,
+      match: expectedSignature === razorpay_signature,
+    });
+
     if (expectedSignature !== razorpay_signature) {
       throw new Error("Payment signature verification failed");
     }
@@ -36,6 +50,8 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
+
+    console.log('Updating booking for order:', razorpay_order_id);
 
     const { data: booking, error: updateError } = await supabaseService
       .from('bookings')
@@ -56,37 +72,46 @@ serve(async (req) => {
       throw updateError;
     }
 
-    if (booking && booking.guest_phone) {
-      // Send SMS notification
-      await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/send-sms`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
-        },
-        body: JSON.stringify({
-          booking_id: booking.id,
-          phone: booking.guest_phone,
-        }),
-      });
-
-      // Generate PDF receipt
-      await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/generate-receipt`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
-        },
-        body: JSON.stringify({
-          booking_id: booking.id,
-        }),
-      });
+    if (!booking) {
+      throw new Error('Booking not found');
     }
 
-    return new Response(JSON.stringify({ 
+    console.log('Booking updated successfully:', booking.id);
+
+    // Send notifications if phone number exists
+    if (booking && booking.guest_phone) {
+      console.log('Sending notifications for booking:', booking.id);
+      
+      try {
+        // Send SMS notification
+        await supabase.functions.invoke('send-sms', {
+          body: {
+            booking_id: booking.id,
+            phone: booking.guest_phone,
+          },
+        });
+
+        // Generate PDF receipt
+        await supabase.functions.invoke('generate-receipt', {
+          body: {
+            booking_id: booking.id,
+          },
+        });
+      } catch (notificationError) {
+        console.error('Notification error (non-critical):', notificationError);
+        // Don't fail the payment verification for notification errors
+      }
+    }
+
+    const response = { 
       success: true, 
-      booking_id: booking.id 
-    }), {
+      booking_id: booking.id,
+      payment_id: razorpay_payment_id,
+    };
+
+    console.log('Payment verification successful:', response);
+
+    return new Response(JSON.stringify(response), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -95,7 +120,8 @@ serve(async (req) => {
     console.error('Payment verification error:', error);
     return new Response(JSON.stringify({ 
       success: false, 
-      error: error.message 
+      error: error.message,
+      details: error instanceof Error ? error.stack : 'Unknown error'
     }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

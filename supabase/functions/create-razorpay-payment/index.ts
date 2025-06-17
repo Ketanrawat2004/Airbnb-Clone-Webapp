@@ -25,12 +25,22 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Starting payment creation process');
+
     // Environment variables check
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const razorpayKeyId = Deno.env.get("RAZORPAY_KEY_ID");
     const razorpayKeySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
+
+    console.log('Environment check:', {
+      supabaseUrl: !!supabaseUrl,
+      supabaseAnonKey: !!supabaseAnonKey,
+      supabaseServiceKey: !!supabaseServiceKey,
+      razorpayKeyId: !!razorpayKeyId,
+      razorpayKeySecret: !!razorpayKeySecret,
+    });
 
     if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
       throw new Error("Missing Supabase configuration");
@@ -40,7 +50,7 @@ serve(async (req) => {
       throw new Error("Razorpay credentials not configured");
     }
 
-    // Fast authentication
+    // Authentication
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       throw new Error("Authentication required");
@@ -51,13 +61,22 @@ serve(async (req) => {
     
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
     if (authError || !user?.email) {
+      console.error('Auth error:', authError);
       throw new Error("Authentication failed");
     }
 
+    console.log('User authenticated:', user.id);
+
     const paymentData: PaymentRequest = await req.json();
+    console.log('Payment data received:', {
+      hotel_id: paymentData.hotel_id,
+      total_amount: paymentData.total_amount,
+      guests: paymentData.guests,
+    });
+
     const finalAmount = paymentData.total_amount;
 
-    // Optimized Razorpay order creation - minimal payload
+    // Create Razorpay order
     const orderData = {
       amount: finalAmount,
       currency: 'INR',
@@ -68,11 +87,12 @@ serve(async (req) => {
       },
     };
 
+    console.log('Creating Razorpay order:', orderData);
+
     const auth = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
     
-    // Create Razorpay order with timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
     const razorpayResponse = await fetch('https://api.razorpay.com/v1/orders', {
       method: 'POST',
@@ -86,14 +106,18 @@ serve(async (req) => {
 
     clearTimeout(timeoutId);
 
+    console.log('Razorpay response status:', razorpayResponse.status);
+
     if (!razorpayResponse.ok) {
       const errorText = await razorpayResponse.text();
+      console.error('Razorpay error:', errorText);
       throw new Error(`Razorpay error: ${errorText}`);
     }
 
     const razorpayOrder = await razorpayResponse.json();
+    console.log('Razorpay order created:', razorpayOrder.id);
 
-    // Store minimal booking data using service role
+    // Store booking data using service role
     const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
     
     const bookingData = {
@@ -113,6 +137,8 @@ serve(async (req) => {
       coupon_code: paymentData.coupon_data?.code || null,
     };
 
+    console.log('Creating booking with data:', bookingData);
+
     const { error: bookingError } = await supabaseService
       .from('bookings')
       .insert(bookingData);
@@ -122,14 +148,15 @@ serve(async (req) => {
       throw new Error('Booking creation failed');
     }
 
-    // Get hotel name quickly - only name needed
+    console.log('Booking created successfully');
+
+    // Get hotel name
     const { data: hotel } = await supabaseClient
       .from('hotels')
       .select('name')
       .eq('id', paymentData.hotel_id)
       .single();
 
-    // Return minimal response for faster processing
     const response = { 
       order_id: razorpayOrder.id,
       amount: razorpayOrder.amount,
@@ -141,6 +168,8 @@ serve(async (req) => {
       guest_phone: paymentData.guest_phone,
     };
 
+    console.log('Returning response:', response);
+
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
@@ -151,7 +180,8 @@ serve(async (req) => {
     const errorMessage = error instanceof Error ? error.message : 'Payment setup failed';
     
     return new Response(JSON.stringify({ 
-      error: errorMessage
+      error: errorMessage,
+      details: error instanceof Error ? error.stack : 'Unknown error'
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
