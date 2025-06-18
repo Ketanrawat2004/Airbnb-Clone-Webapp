@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube, User } from 'lucide-react';
 import VisitorCounter from './VisitorCounter';
@@ -13,8 +14,8 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-lg md:text-xl font-bold text-rose-400">Airbnb Clone+</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Discover unique accommodations around the world. From cozy apartments to luxury villas, 
-              find your perfect stay with us.
+              Discover unique accommodations and flights around the world. From cozy apartments to luxury villas, 
+              find your perfect journey with us.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-rose-400 transition-colors">
@@ -47,6 +48,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/about" className="text-gray-300 hover:text-rose-400 transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
                 <Link to="/profile" className="text-gray-300 hover:text-rose-400 transition-colors">
                   My Profile
                 </Link>
@@ -56,27 +62,22 @@ const Footer = () => {
                   Become a Host
                 </a>
               </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-rose-400 transition-colors">
-                  Help Center
-                </a>
-              </li>
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Help Center */}
           <div className="space-y-4">
-            <h4 className="text-base md:text-lg font-semibold">Support</h4>
+            <h4 className="text-base md:text-lg font-semibold">Help Center</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-gray-300 hover:text-rose-400 transition-colors">
+                <Link to="/help/customer-service" className="text-gray-300 hover:text-rose-400 transition-colors">
                   Customer Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-rose-400 transition-colors">
+                <Link to="/help/safety-security" className="text-gray-300 hover:text-rose-400 transition-colors">
                   Safety & Security
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-rose-400 transition-colors">
@@ -89,9 +90,9 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-rose-400 transition-colors">
+                <Link to="/privacy" className="text-gray-300 hover:text-rose-400 transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -154,9 +155,9 @@ const Footer = () => {
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
               <VisitorCounter />
               <div className="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6 text-xs text-gray-400">
-                <a href="#" className="hover:text-rose-400 transition-colors">
+                <Link to="/privacy" className="hover:text-rose-400 transition-colors">
                   Privacy
-                </a>
+                </Link>
                 <a href="#" className="hover:text-rose-400 transition-colors">
                   Terms
                 </a>

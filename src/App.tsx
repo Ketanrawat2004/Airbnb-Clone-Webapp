@@ -16,6 +16,9 @@ import TicketPage from "./pages/TicketPage";
 import TicketDownloadPage from "./pages/TicketDownloadPage";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
+import AboutUs from "./pages/AboutUs";
+import CustomerService from "./pages/help/CustomerService";
+import SafetySecurity from "./pages/help/SafetySecurity";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +33,10 @@ const App = () => (
           <Route path="/search" element={<SearchResults />} />
           <Route path="/hotel/:id" element={<HotelDetail />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/about" element={<AboutUs />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/help/customer-service" element={<CustomerService />} />
+          <Route path="/help/safety-security" element={<SafetySecurity />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-canceled" element={<PaymentCanceled />} />
           <Route path="/ticket/:bookingId" element={<TicketPage />} />
