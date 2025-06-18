@@ -13,6 +13,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 import AuthConfirm from "./pages/AuthConfirm";
 import TicketPage from "./pages/TicketPage";
+import TicketDownloadPage from "./pages/TicketDownloadPage";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-canceled" element={<PaymentCanceled />} />
           <Route path="/ticket/:bookingId" element={<TicketPage />} />
+          <Route path="/download-ticket/:bookingId" element={<TicketDownloadPage />} />
           {/* Handle both /auth/confirm and /confirm for email confirmation */}
           <Route path="/auth/confirm" element={<AuthConfirm />} />
           <Route path="/confirm" element={<AuthConfirm />} />
