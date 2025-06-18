@@ -71,7 +71,8 @@ const ReviewForm = ({ onReviewSubmitted }: ReviewFormProps) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      const reviewData = {
+      // First, insert into user_reviews table
+      const userReviewData = {
         ...data,
         user_id: session?.user?.id || null,
         hotel_id: data.hotel_id || null,
@@ -80,21 +81,49 @@ const ReviewForm = ({ onReviewSubmitted }: ReviewFormProps) => {
         is_featured: false,
       };
 
-      const { error } = await supabase
+      const { error: userReviewError } = await supabase
         .from('user_reviews')
-        .insert([reviewData]);
+        .insert([userReviewData]);
 
-      if (error) {
-        throw error;
+      if (userReviewError) {
+        throw userReviewError;
+      }
+
+      // Also insert into testimonials table to make it appear in the testimonials section
+      const testimonialData = {
+        guest_name: data.guest_name,
+        guest_location: data.guest_location || null,
+        rating: data.rating,
+        review_text: data.review_text,
+        hotel_id: data.hotel_id || null,
+        room_type: data.room_type || null,
+        stay_date: data.stay_date ? new Date(data.stay_date).toISOString().split('T')[0] : null,
+        is_verified: true, // Mark as verified for display
+        is_featured: true, // Mark as featured to show in testimonials
+      };
+
+      const { error: testimonialError } = await supabase
+        .from('testimonials')
+        .insert([testimonialData]);
+
+      if (testimonialError) {
+        console.error('Error inserting testimonial:', testimonialError);
+        // Don't throw error here as user review was successful
       }
 
       toast({
         title: "Review Submitted Successfully! 🎉",
-        description: "Thank you for sharing your experience. Your review will be reviewed and may appear in our testimonials section.",
+        description: "Thank you for sharing your experience. Your review is now live in our testimonials section!",
       });
 
       form.reset();
       onReviewSubmitted?.();
+      
+      // Refresh the page after a short delay to show the new testimonial
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      
     } catch (error) {
       console.error('Error submitting review:', error);
       toast({
@@ -313,7 +342,7 @@ const ReviewForm = ({ onReviewSubmitted }: ReviewFormProps) => {
             </Button>
 
             <p className="text-xs text-gray-500 text-center">
-              Your review will be moderated before appearing on our website. Thank you for helping other travelers!
+              Your review will appear immediately in our testimonials section. Thank you for helping other travelers!
             </p>
           </form>
         </Form>

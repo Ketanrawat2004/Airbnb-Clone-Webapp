@@ -1,12 +1,8 @@
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { MapPin, Calendar, Users, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
 import { useLocationSuggestions } from '@/hooks/useLocationSuggestions';
 import LocationSuggestions from '@/components/LocationSuggestions';
 
@@ -35,14 +31,6 @@ const SearchBarClassicHero = ({
 }: SearchBarClassicHeroProps) => {
   const { locationSuggestions, showSuggestions, setShowSuggestions, isLoadingSuggestions } = useLocationSuggestions(location);
   const suggestionRef = useRef<HTMLDivElement>(null);
-  const [checkInDate, setCheckInDate] = useState<Date | undefined>(
-    checkIn ? new Date(checkIn) : undefined
-  );
-  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(
-    checkOut ? new Date(checkOut) : undefined
-  );
-  const [checkInOpen, setCheckInOpen] = useState(false);
-  const [checkOutOpen, setCheckOutOpen] = useState(false);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -68,152 +56,99 @@ const SearchBarClassicHero = ({
     }
   };
 
-  const handleCheckInSelect = (date: Date | undefined) => {
-    setCheckInDate(date);
-    if (date) {
-      onCheckInChange(format(date, 'yyyy-MM-dd'));
-      // If check-out date is before check-in date, reset it
-      if (checkOutDate && date >= checkOutDate) {
-        setCheckOutDate(undefined);
-        onCheckOutChange('');
-      }
-    } else {
-      onCheckInChange('');
-    }
-    setCheckInOpen(false);
-  };
-
-  const handleCheckOutSelect = (date: Date | undefined) => {
-    setCheckOutDate(date);
-    if (date) {
-      onCheckOutChange(format(date, 'yyyy-MM-dd'));
-    } else {
-      onCheckOutChange('');
-    }
-    setCheckOutOpen(false);
-  };
-
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
     setShowSuggestions(false);
     onSubmit();
   };
 
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
   return (
-    <form onSubmit={handleSubmitForm} className="flex flex-1 items-center gap-2 w-full">
-      {/* Location */}
-      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 relative" ref={suggestionRef}>
-        <MapPin className="h-5 w-5 text-pink-400" />
-        <Input
-          type="text"
-          placeholder="Where are you"
-          className="rounded-md bg-pink-50 border-0 text-gray-700 placeholder:text-pink-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[100px] max-w-full"
-          value={location}
-          onChange={handleLocationInputChange}
-          onFocus={() => location.length >= 2 && setShowSuggestions(true)}
-        />
-        {showSuggestions && (
-          <div className="absolute top-full left-0 right-0 z-50">
+    <form onSubmit={handleSubmitForm} className="w-full">
+      <div className="flex flex-col sm:flex-row bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-gray-200">
+        {/* Location Input - Full width on mobile */}
+        <div className="flex-1 relative" ref={suggestionRef}>
+          <div className="flex items-center space-x-3 px-4 sm:px-6 py-4 sm:py-5 border-b sm:border-b-0 sm:border-r border-gray-200 min-h-[70px] sm:min-h-[80px]">
+            <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <label className="block text-xs sm:text-sm text-gray-500 mb-1 font-medium">Where</label>
+              <Input
+                type="text"
+                placeholder="Search destinations"
+                value={location}
+                onChange={handleLocationInputChange}
+                onFocus={() => location.length >= 2 && setShowSuggestions(true)}
+                className="border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:text-base font-medium bg-transparent w-full"
+              />
+            </div>
+          </div>
+          {showSuggestions && (
             <LocationSuggestions
               suggestions={locationSuggestions}
               isLoading={isLoadingSuggestions}
               onSelect={handleLocationSelect}
             />
+          )}
+        </div>
+
+        {/* Check-in Date - Full width on mobile */}
+        <div className="flex-1">
+          <div className="flex items-center space-x-3 px-4 sm:px-6 py-4 sm:py-5 border-b sm:border-b-0 sm:border-r border-gray-200 min-h-[70px] sm:min-h-[80px]">
+            <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <label className="block text-xs sm:text-sm text-gray-500 mb-1 font-medium">Check in</label>
+              <Input
+                type="date"
+                value={checkIn}
+                onChange={(e) => onCheckInChange(e.target.value)}
+                className="border-0 p-0 text-gray-900 focus:ring-0 text-sm sm:text-base font-medium bg-transparent w-full"
+              />
+            </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Check-in */}
-      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-pink-200">
-        <Calendar className="h-5 w-5 text-pink-400" />
-        <Popover open={checkInOpen} onOpenChange={setCheckInOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              className={cn(
-                "w-full justify-start text-left font-normal px-3 py-2 h-auto bg-pink-50 hover:bg-white border-0 rounded-md min-w-[90px]",
-                !checkInDate && "text-pink-400"
-              )}
-            >
-              {checkInDate ? format(checkInDate, "dd-MM-yyyy") : "dd-mm-yyyy"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0 bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200" align="start">
-            <CalendarComponent
-              mode="single"
-              selected={checkInDate}
-              onSelect={handleCheckInSelect}
-              disabled={(date) => date < today}
-              initialFocus
-              className="pointer-events-auto bg-white rounded-lg shadow-lg border border-pink-200"
-              classNames={{
-                day_selected: "bg-pink-500 text-white hover:bg-pink-600",
-                day_today: "bg-pink-100 text-pink-900",
-                nav_button: "text-pink-600 hover:text-pink-800",
-                caption_label: "text-pink-800 font-semibold"
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+        {/* Check-out Date - Full width on mobile */}
+        <div className="flex-1">
+          <div className="flex items-center space-x-3 px-4 sm:px-6 py-4 sm:py-5 border-b sm:border-b-0 sm:border-r border-gray-200 min-h-[70px] sm:min-h-[80px]">
+            <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <label className="block text-xs sm:text-sm text-gray-500 mb-1 font-medium">Check out</label>
+              <Input
+                type="date"
+                value={checkOut}
+                onChange={(e) => onCheckOutChange(e.target.value)}
+                className="border-0 p-0 text-gray-900 focus:ring-0 text-sm sm:text-base font-medium bg-transparent w-full"
+              />
+            </div>
+          </div>
+        </div>
 
-      {/* Check-out */}
-      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-pink-200">
-        <Calendar className="h-5 w-5 text-pink-400" />
-        <Popover open={checkOutOpen} onOpenChange={setCheckOutOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              className={cn(
-                "w-full justify-start text-left font-normal px-3 py-2 h-auto bg-pink-50 hover:bg-white border-0 rounded-md min-w-[90px]",
-                !checkOutDate && "text-pink-400"
-              )}
-            >
-              {checkOutDate ? format(checkOutDate, "dd-MM-yyyy") : "dd-mm-yyyy"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0 bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200" align="start">
-            <CalendarComponent
-              mode="single"
-              selected={checkOutDate}
-              onSelect={handleCheckOutSelect}
-              disabled={(date) => date < (checkInDate || tomorrow)}
-              initialFocus
-              className="pointer-events-auto bg-white rounded-lg shadow-lg border border-pink-200"
-              classNames={{
-                day_selected: "bg-pink-500 text-white hover:bg-pink-600",
-                day_today: "bg-pink-100 text-pink-900",
-                nav_button: "text-pink-600 hover:text-pink-800",
-                caption_label: "text-pink-800 font-semibold"
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+        {/* Guests - Full width on mobile */}
+        <div className="flex-1">
+          <div className="flex items-center space-x-3 px-4 sm:px-6 py-4 sm:py-5 border-b sm:border-b-0 sm:border-r border-gray-200 min-h-[70px] sm:min-h-[80px]">
+            <Users className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <label className="block text-xs sm:text-sm text-gray-500 mb-1 font-medium">Guests</label>
+              <Input
+                type="number"
+                placeholder="Add guests"
+                value={guests}
+                onChange={(e) => onGuestsChange(e.target.value)}
+                className="border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:text-base font-medium bg-transparent w-full"
+                min="1"
+              />
+            </div>
+          </div>
+        </div>
 
-      {/* Guests */}
-      <div className="flex-1 flex items-center gap-2 px-2 py-2 sm:py-3 border-l border-pink-200">
-        <Users className="h-5 w-5 text-pink-400" />
-        <Input
-          type="text"
-          placeholder="Guests"
-          className="rounded-md bg-pink-50 border-0 text-gray-700 placeholder:text-pink-400 px-3 py-2 w-full focus:ring-0 focus:outline-none focus:bg-white min-w-[50px] max-w-full"
-          value={guests}
-          onChange={(e) => onGuestsChange(e.target.value)}
-          inputMode="numeric"
-          min="1"
-        />
-      </div>
-
-      {/* Search Button */}
-      <div className="pl-2 flex-shrink-0">
-        <Button type="submit" className="bg-pink-500 hover:bg-pink-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md transition">
-          <Search className="h-5 w-5" />
-        </Button>
+        {/* Search Button - Full width on mobile, right-aligned on desktop */}
+        <div className="flex items-center justify-center sm:justify-end p-4 sm:p-6">
+          <Button 
+            type="submit" 
+            className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 rounded-full p-3 sm:p-4 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+          >
+            <Search className="h-5 w-5 sm:h-6 sm:w-6" />
+          </Button>
+        </div>
       </div>
     </form>
   );

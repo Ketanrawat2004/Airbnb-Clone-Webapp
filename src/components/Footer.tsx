@@ -1,10 +1,9 @@
-
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube, User } from 'lucide-react';
 import VisitorCounter from './VisitorCounter';
 
 const Footer = () => {
-  const currentYear = 2024;
+  const currentYear = 2025;
 
   return (
     <footer className="bg-gray-900 text-white">
