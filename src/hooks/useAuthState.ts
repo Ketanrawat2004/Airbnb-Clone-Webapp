@@ -2,47 +2,57 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useEmailConfirmation } from './useEmailConfirmation';
 
 export const useAuthState = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const { handleEmailConfirmation } = useEmailConfirmation();
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      // Handle email confirmation first
-      const confirmationResult = await handleEmailConfirmation();
-      
-      if (confirmationResult.success && confirmationResult.session) {
-        setSession(confirmationResult.session);
-        setUser(confirmationResult.session?.user ?? null);
-        setLoading(false);
-        return;
-      }
+    let mounted = true;
 
-      // Get initial session if no confirmation happened
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting initial session:', error);
+        }
+        
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     };
 
-    initializeAuth();
-
-    // Listen for auth changes
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session);
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+        }
       }
     );
 
-    return () => subscription.unsubscribe();
-  }, [handleEmailConfirmation]);
+    initializeAuth();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return {
     user,

@@ -1,23 +1,11 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { SignUpOptions } from '@/types/auth';
 
 export const authService = {
   async signUp(email: string, password: string, fullName: string) {
     try {
       console.log('Signing up user:', email);
       
-      // Get the correct redirect URL based on current environment
-      const getRedirectUrl = () => {
-        // Always use the current origin for the redirect URL
-        // This will work in both development and production
-        return `${window.location.origin}/auth/confirm`;
-      };
-      
-      const redirectUrl = getRedirectUrl();
-      console.log('Using redirect URL:', redirectUrl);
-      
-      // Sign up with Supabase - this will automatically send a confirmation email
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -25,7 +13,7 @@ export const authService = {
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: `${window.location.origin}/auth/confirm`,
         },
       });
       
@@ -44,16 +32,20 @@ export const authService = {
 
   async signIn(email: string, password: string) {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log('Signing in user:', email);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
       if (error) {
         console.error('Sign in error:', error);
+        return { error };
       }
       
-      return { error };
+      console.log('Sign in successful:', data);
+      return { error: null };
     } catch (error) {
       console.error('Error in signIn:', error);
       return { error };
@@ -62,7 +54,7 @@ export const authService = {
 
   async signInWithGoogle() {
     try {
-      console.log('Signing in with Google');
+      console.log('Initiating Google sign in');
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -76,7 +68,7 @@ export const authService = {
         return { error };
       }
       
-      console.log('Google sign in initiated:', data);
+      console.log('Google sign in initiated successfully');
       return { error: null };
     } catch (error) {
       console.error('Error in signInWithGoogle:', error);
@@ -135,12 +127,16 @@ export const authService = {
 
   async signOut() {
     try {
+      console.log('Signing out user');
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Sign out error:', error);
+        throw error;
       }
+      console.log('Sign out successful');
     } catch (error) {
       console.error('Error in signOut:', error);
+      throw error;
     }
   }
 };

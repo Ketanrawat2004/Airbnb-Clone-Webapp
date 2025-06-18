@@ -3,161 +3,126 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useIsMobile } from '@/hooks/use-mobile';
-import AuthConfirmLoading from '@/components/auth/AuthConfirmLoading';
-import AuthConfirmError from '@/components/auth/AuthConfirmError';
-import AuthConfirmSuccess from '@/components/auth/AuthConfirmSuccess';
+import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Logo from '@/components/Logo';
 
 const AuthConfirm = () => {
   const [loading, setLoading] = useState(true);
   const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [autoRedirecting, setAutoRedirecting] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
         setLoading(true);
 
-        // Mobile-specific logging
-        console.log('[AuthConfirm] Mobile device detected:', isMobile);
-        console.log('[AuthConfirm] User agent:', navigator.userAgent);
+        // Get tokens from URL parameters
+        const token_hash = searchParams.get('token_hash');
+        const type = searchParams.get('type');
 
-        // First, check URL search parameters (query string with ?)
-        let token_hash = searchParams.get('token_hash');
-        let type = searchParams.get('type');
-        let access_token = searchParams.get('access_token');
-        let refresh_token = searchParams.get('refresh_token');
+        console.log('Email confirmation params:', { token_hash: !!token_hash, type });
 
-        // For debugging: log all search params
-        console.log('[AuthConfirm] Query params:', {
-          token_hash,
-          type,
-          access_token,
-          refresh_token,
-          queryString: window.location.search,
-          hash: window.location.hash,
-          fullUrl: window.location.href
-        });
-
-        // If not found in search params, check URL fragments (hash with #)
-        if (!token_hash && !access_token) {
-          const hash = window.location.hash.substring(1); // Remove the # symbol
-          const hashParams = new URLSearchParams(hash);
-
-          token_hash = hashParams.get('token_hash');
-          type = hashParams.get('type');
-          access_token = hashParams.get('access_token');
-          refresh_token = hashParams.get('refresh_token');
-
-          console.log('[AuthConfirm] Extracted from hash:', {
-            token_hash, type, access_token, refresh_token, fullHash: window.location.hash
-          });
-        }
-
-        console.log('[AuthConfirm] Final params after fragment merge:', {
-          token_hash, type, access_token, refresh_token
-        });
-
-        let sessionSet = false;
-
-        // If we have access_token and refresh_token, set the session directly
-        if (access_token && refresh_token) {
-          console.log('[AuthConfirm] Found access_token/refresh_token, setting session with Supabase');
-          const { data, error: sessionError } = await supabase.auth.setSession({
-            access_token,
-            refresh_token
-          });
-
-          if (sessionError) {
-            console.error('[AuthConfirm] Session error:', sessionError);
-            setError(`Session error: ${sessionError.message}`);
-          } else {
-            console.log('[AuthConfirm] Session set successfully:', data);
-            sessionSet = true;
-            setConfirmed(true);
-
-            // Clear the URL hash to remove sensitive tokens
-            window.history.replaceState(null, '', window.location.pathname);
-          }
-        }
-        // If we have token_hash and type, verify with OTP
-        else if (token_hash && type) {
-          console.log('[AuthConfirm] Attempting OTP verification');
+        if (token_hash && type) {
+          console.log('Attempting email verification with OTP');
+          
           const { data, error: verifyError } = await supabase.auth.verifyOtp({
             token_hash,
             type: type as any
           });
 
           if (verifyError) {
-            console.error('[AuthConfirm] OTP verification error:', verifyError);
-            if (verifyError.message.includes('expired') || verifyError.message.includes('invalid')) {
-              setError('This confirmation link has expired or is invalid. Please try signing up again to receive a new confirmation email.');
-            } else {
-              setError(`Verification failed: ${verifyError.message}`);
-            }
+            console.error('Email verification error:', verifyError);
+            setError('Email confirmation failed. The link may be expired or invalid.');
           } else {
-            console.log('[AuthConfirm] Email verified successfully:', data);
-            sessionSet = true;
+            console.log('Email verified successfully:', data);
             setConfirmed(true);
+            toast.success('Email confirmed successfully! Welcome to Airbnb Clone+! 🎉');
+            
+            // Redirect after 2 seconds
+            setTimeout(() => {
+              navigate('/');
+            }, 2000);
           }
-        }
-        // Check if user is already authenticated
-        else {
-          console.log('[AuthConfirm] No tokens found, checking existing session...');
+        } else {
+          // Check if user is already authenticated
           const { data: sessionData } = await supabase.auth.getSession();
-
+          
           if (sessionData.session) {
-            console.log('[AuthConfirm] Already authenticated session:', sessionData.session);
-            sessionSet = true;
+            console.log('User already authenticated');
             setConfirmed(true);
-          } else {
-            console.log('[AuthConfirm] No valid confirmation parameters found, sessionData:', sessionData);
-            if (isMobile) {
-              setError('Mobile email confirmation issue detected. Please try opening this link in your mobile browser directly, or use a desktop/laptop for the best experience.');
-            } else {
-              setError('Invalid confirmation link. Please check your email for a valid confirmation link or try signing up again.');
-            }
-          }
-        }
-
-        // If session was set successfully, auto-redirect after a short delay
-        if (sessionSet) {
-          toast.success('Email confirmed successfully! Welcome to Airbnb Clone+! 🎉');
-          setAutoRedirecting(true);
-
-          // Wait 3 seconds to show the success message, then redirect
-          setTimeout(() => {
             navigate('/');
-          }, 3000);
+          } else {
+            setError('Invalid confirmation link. Please check your email or try signing up again.');
+          }
         }
       } catch (err) {
-        console.error('[AuthConfirm] Unexpected error during confirmation:', err);
-        setError('An unexpected error occurred. Please try signing up again.');
+        console.error('Unexpected error during confirmation:', err);
+        setError('An unexpected error occurred. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
     handleEmailConfirmation();
-  }, [searchParams, navigate, isMobile]);
+  }, [searchParams, navigate]);
 
   if (loading) {
-    return <AuthConfirmLoading isMobile={isMobile} />;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50 p-4">
+        <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md w-full">
+          <div className="flex items-center justify-center space-x-3 mb-6">
+            <Logo />
+            <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
+          </div>
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-6 text-rose-500" />
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Confirming your email...</h2>
+          <p className="text-gray-600">Please wait while we verify your account</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <AuthConfirmError error={error} isMobile={isMobile} />;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50 p-4">
+        <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md w-full">
+          <div className="flex items-center justify-center space-x-3 mb-6">
+            <Logo />
+            <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
+          </div>
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-6" />
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Email Confirmation Failed</h2>
+          <p className="text-red-600 mb-6">{error}</p>
+          <div className="space-y-3">
+            <Button onClick={() => navigate('/')} className="w-full bg-rose-500 hover:bg-rose-600">
+              Return to Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <AuthConfirmSuccess 
-      isMobile={isMobile} 
-      autoRedirecting={autoRedirecting} 
-    />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50 p-4">
+      <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md w-full">
+        <div className="flex items-center justify-center space-x-3 mb-6">
+          <Logo />
+          <h1 className="text-2xl font-bold text-rose-500">Airbnb Clone+</h1>
+        </div>
+        <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Welcome to Airbnb Clone+! 🎉</h2>
+        <p className="text-gray-600 mb-6">
+          Your email has been confirmed successfully! You're now signed in and ready to explore.
+        </p>
+        <Button onClick={() => navigate('/')} className="w-full bg-rose-500 hover:bg-rose-600">
+          Continue to Explore
+        </Button>
+      </div>
+    </div>
   );
 };
 

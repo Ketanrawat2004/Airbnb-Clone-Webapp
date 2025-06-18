@@ -56,7 +56,6 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
       const result = await authService.validateOTP(name, otpCode);
       
       if (!result.error) {
-        // Set the user state to simulate being logged in
         const { user: mockUser, session: mockSession } = createMockSession(name);
         setUser(mockUser);
         setSession(mockSession);
@@ -72,10 +71,17 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
     setLoading(true);
     try {
       await authService.signOut();
+      setUser(null);
+      setSession(null);
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // Still clear local state even if signout fails
+      setUser(null);
+      setSession(null);
     } finally {
       setLoading(false);
     }
-  }, [setLoading]);
+  }, [setLoading, setUser, setSession]);
 
   return {
     signUp,
