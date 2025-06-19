@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Home, Search, User, Heart, HelpCircle, MapPin } from 'lucide-react';
+import { Menu, Home, Search, User, Heart, HelpCircle, MapPin, Info, Plane } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const NavigationMenu = () => {
@@ -19,10 +19,22 @@ const NavigationMenu = () => {
       description: 'Discover amazing places'
     },
     { 
-      name: 'Search', 
+      name: 'Hotels', 
       path: '/search', 
       icon: Search,
       description: 'Find your perfect stay'
+    },
+    { 
+      name: 'Flights', 
+      path: '/flights', 
+      icon: Plane,
+      description: 'Book amazing flights'
+    },
+    { 
+      name: 'About', 
+      path: '/about', 
+      icon: Info,
+      description: 'Learn about our platform'
     },
     { 
       name: 'Profile', 

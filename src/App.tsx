@@ -17,6 +17,8 @@ import TicketDownloadPage from "./pages/TicketDownloadPage";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUs";
+import FlightSearch from "./pages/FlightSearch";
+import FlightDetail from "./pages/FlightDetail";
 import CustomerService from "./pages/help/CustomerService";
 import SafetySecurity from "./pages/help/SafetySecurity";
 
@@ -31,6 +33,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/flights" element={<FlightSearch />} />
+          <Route path="/flight/:flightId" element={<FlightDetail />} />
           <Route path="/hotel/:id" element={<HotelDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<AboutUs />} />
