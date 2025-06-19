@@ -1,9 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plane, Clock, MapPin, Users, Calendar, Filter, SortAsc } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import FlightSearchForm from '@/components/flight/FlightSearchForm';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,87 +13,62 @@ import { useNavigate } from 'react-router-dom';
 
 const FlightSearch = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [sortBy, setSortBy] = useState('price');
   const [filterBy, setFilterBy] = useState('all');
+  const [showSearchForm, setShowSearchForm] = useState(false);
 
-  // Demo flight data
-  const flights = [
-    {
-      id: 'AI101',
-      airline: 'Air India',
-      logo: '🇮🇳',
-      from: 'Delhi (DEL)',
-      to: 'Mumbai (BOM)',
-      departure: '06:00',
-      arrival: '08:30',
-      duration: '2h 30m',
-      price: 4500,
-      type: 'Non-stop',
-      aircraft: 'Boeing 737',
-      class: 'Economy',
-      seats: 45
-    },
-    {
-      id: 'SG205',
-      airline: 'SpiceJet',
-      logo: '🌶️',
-      from: 'Delhi (DEL)',
-      to: 'Mumbai (BOM)',
-      departure: '09:15',
-      arrival: '11:45',
-      duration: '2h 30m',
-      price: 3800,
-      type: 'Non-stop',
-      aircraft: 'Boeing 737 MAX',
-      class: 'Economy',
-      seats: 32
-    },
-    {
-      id: 'IN301',
-      airline: 'IndiGo',
-      logo: '💙',
-      from: 'Delhi (DEL)',
-      to: 'Mumbai (BOM)',
-      departure: '14:20',
-      arrival: '16:50',
-      duration: '2h 30m',
-      price: 4200,
-      type: 'Non-stop',
-      aircraft: 'Airbus A320',
-      class: 'Economy',
-      seats: 28
-    },
-    {
-      id: 'UK505',
-      airline: 'Vistara',
-      logo: '✈️',
-      from: 'Delhi (DEL)',
-      to: 'Mumbai (BOM)',
-      departure: '18:30',
-      arrival: '21:00',
-      duration: '2h 30m',
-      price: 5200,
-      type: 'Non-stop',
-      aircraft: 'Airbus A321',
-      class: 'Premium Economy',
-      seats: 18
-    },
-    {
-      id: 'AI203',
-      airline: 'Air India',
-      logo: '🇮🇳',
-      from: 'Delhi (DEL)',
-      to: 'Mumbai (BOM)',
-      departure: '21:45',
-      arrival: '00:15+1',
-      duration: '2h 30m',
-      price: 4100,
-      type: 'Non-stop',
-      aircraft: 'Boeing 787',
-      class: 'Economy',
-      seats: 52
+  // Get search parameters
+  const fromLocation = searchParams.get('from') || '';
+  const toLocation = searchParams.get('to') || '';
+  const departureDate = searchParams.get('departure') || '';
+  const passengers = searchParams.get('passengers') || '1';
+
+  // Show search form if no search parameters
+  useEffect(() => {
+    if (!fromLocation || !toLocation || !departureDate) {
+      setShowSearchForm(true);
     }
-  ];
+  }, [fromLocation, toLocation, departureDate]);
+
+  // Generate demo flights based on search parameters
+  const generateFlights = () => {
+    const airlines = [
+      { name: 'Air India', logo: '🇮🇳', code: 'AI' },
+      { name: 'SpiceJet', logo: '🌶️', code: 'SG' },
+      { name: 'IndiGo', logo: '💙', code: 'IN' },
+      { name: 'Vistara', logo: '✈️', code: 'UK' },
+      { name: 'GoAir', logo: '🔵', code: 'GO' }
+    ];
+
+    const aircraft = ['Boeing 737', 'Airbus A320', 'Boeing 777', 'Airbus A350'];
+    
+    return airlines.map((airline, index) => {
+      const basePrice = 3500 + (index * 500) + Math.floor(Math.random() * 2000);
+      const departureHour = 6 + (index * 3);
+      const arrivalHour = departureHour + 2 + Math.floor(Math.random() * 2);
+      
+      return {
+        id: `${airline.code}${100 + index}`,
+        airline: airline.name,
+        logo: airline.logo,
+        from: fromLocation || 'Delhi (DEL)',
+        to: toLocation || 'Mumbai (BOM)',
+        departure: `${String(departureHour).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
+        arrival: `${String(arrivalHour).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
+        duration: `${2 + Math.floor(Math.random() * 2)}h ${Math.floor(Math.random() * 60)}m`,
+        price: basePrice,
+        type: Math.random() > 0.3 ? 'Non-stop' : '1 Stop',
+        aircraft: aircraft[Math.floor(Math.random() * aircraft.length)],
+        class: index === 3 ? 'Premium Economy' : 'Economy',
+        seats: Math.floor(Math.random() * 50) + 10,
+        departureDate,
+        passengers
+      };
+    });
+  };
+
+  const flights = generateFlights();
 
   const sortedFlights = [...flights].sort((a, b) => {
     if (sortBy === 'price') return a.price - b.price;
@@ -100,9 +77,54 @@ const FlightSearch = () => {
     return 0;
   });
 
-  const handleFlightSelect = (flightId: string) => {
-    navigate(`/flight/${flightId}`);
+  const handleFlightSelect = (flight: any) => {
+    navigate('/flight-booking', { state: { flightData: flight } });
   };
+
+  if (showSearchForm) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-25 to-blue-50">
+        <Header />
+        
+        <main className="pt-20">
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative py-20 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500"></div>
+            <div className="absolute inset-0 bg-black/20"></div>
+            
+            <div className="container mx-auto px-4 relative z-10">
+              <div className="text-center text-white max-w-4xl mx-auto mb-12">
+                <motion.h1 
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
+                  className="text-3xl md:text-5xl font-bold mb-4"
+                >
+                  Search Flights
+                </motion.h1>
+                <motion.p 
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="text-lg md:text-xl"
+                >
+                  Find the best deals on flights worldwide
+                </motion.p>
+              </div>
+              
+              <FlightSearchForm />
+            </div>
+          </motion.section>
+        </main>
+
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-25 to-blue-50">
@@ -135,7 +157,7 @@ const FlightSearch = () => {
                 transition={{ delay: 0.4, duration: 0.8 }}
                 className="text-lg md:text-xl"
               >
-                Delhi → Mumbai • Today • 1 Passenger
+                {fromLocation} → {toLocation} • {departureDate} • {passengers} Passenger{parseInt(passengers) > 1 ? 's' : ''}
               </motion.p>
             </div>
           </div>
@@ -198,7 +220,7 @@ const FlightSearch = () => {
                   transition={{ delay: index * 0.1, duration: 0.6 }}
                 >
                   <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-                        onClick={() => handleFlightSelect(flight.id)}>
+                        onClick={() => handleFlightSelect(flight)}>
                     <CardContent className="p-0">
                       <div className="flex flex-col lg:flex-row">
                         {/* Flight Info */}
@@ -263,9 +285,9 @@ const FlightSearch = () => {
                           </div>
                           <Button 
                             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
-                            onClick={() => handleFlightSelect(flight.id)}
+                            onClick={() => handleFlightSelect(flight)}
                           >
-                            Select Flight
+                            Book Now
                           </Button>
                         </div>
                       </div>

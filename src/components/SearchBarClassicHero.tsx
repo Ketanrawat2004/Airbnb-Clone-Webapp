@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TabNavigation from '@/components/search/TabNavigation';
 import LocationInput from '@/components/search/LocationInput';
 import DateInput from '@/components/search/DateInput';
@@ -29,12 +30,27 @@ const SearchBarClassicHero = ({
   onGuestsChange,
   onSubmit
 }: SearchBarClassicHeroProps) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'hotels' | 'flights'>('hotels');
   const [destination, setDestination] = useState('');
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
+    
+    if (activeTab === 'flights') {
+      // Navigate to flight search with parameters
+      const searchParams = new URLSearchParams();
+      if (location) searchParams.set('from', location);
+      if (destination) searchParams.set('to', destination);
+      if (checkIn) searchParams.set('departure', checkIn);
+      if (checkOut) searchParams.set('return', checkOut);
+      if (guests) searchParams.set('passengers', guests);
+      
+      navigate(`/flights?${searchParams.toString()}`);
+    } else {
+      // Handle hotel search
+      onSubmit();
+    }
   };
 
   return (
@@ -77,7 +93,7 @@ const SearchBarClassicHero = ({
           placeholder={activeTab === 'hotels' ? 'Add guests' : 'Add passengers'}
         />
 
-        <SearchButton onSubmit={onSubmit} />
+        <SearchButton onSubmit={() => handleSubmitForm(new Event('submit') as any)} />
       </div>
     </form>
   );

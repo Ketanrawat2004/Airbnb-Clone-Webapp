@@ -1,6 +1,7 @@
 
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
+import AdvertisementBanner from '@/components/AdvertisementBanner';
 import CheapRatesSection from '@/components/CheapRatesSection';
 import HotelsSection from '@/components/HotelsSection';
 import ReviewAndTestimonialsSection from '@/components/ReviewAndTestimonialsSection';
@@ -18,6 +19,7 @@ const Index = () => {
   return (
     <div className="bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50">
       <Header />
+      <AdvertisementBanner />
       <HeroSection onSearch={handleSearch} />
       <CheapRatesSection />
       <HotelsSection />
