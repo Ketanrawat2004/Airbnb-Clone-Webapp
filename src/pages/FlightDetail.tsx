@@ -1,11 +1,10 @@
-
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Plane, Clock, MapPin, Users, Calendar, Wifi, Coffee, 
   Monitor, Utensils, ArrowRight, Check, Shield, CreditCard,
-  Luggage, Seat, Info
+  Luggage, Armchair, Info
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -50,7 +49,7 @@ const FlightDetail = () => {
     { icon: Utensils, name: 'Meals', available: true },
     { icon: Coffee, name: 'Beverages', available: true },
     { icon: Luggage, name: '20kg Baggage', available: true },
-    { icon: Seat, name: 'Reclining Seats', available: true }
+    { icon: Armchair, name: 'Reclining Seats', available: true }
   ];
 
   const seatOptions = [
