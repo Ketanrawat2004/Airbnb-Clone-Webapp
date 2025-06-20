@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import PassengerInformationForm from '@/components/flight/PassengerInformationForm';
+import EnhancedPassengerForm from '@/components/flight/EnhancedPassengerForm';
 import FlightPaymentPage from '@/components/flight/FlightPaymentPage';
 import { ArrowLeft, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ const FlightBooking = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [passengerData, setPassengerData] = useState<any[]>([]);
+  const [contactInfo, setContactInfo] = useState<any>(null);
   
   const { flightData } = location.state || {};
 
@@ -27,8 +28,9 @@ const FlightBooking = () => {
     return null;
   }
 
-  const handlePassengerSubmit = (passengers: any[]) => {
+  const handlePassengerSubmit = (passengers: any[], contact: any) => {
     setPassengerData(passengers);
+    setContactInfo(contact);
     setCurrentStep(2);
   };
 
@@ -100,14 +102,16 @@ const FlightBooking = () => {
         <section className="py-12">
           <div className="container mx-auto px-4">
             {currentStep === 1 ? (
-              <PassengerInformationForm
+              <EnhancedPassengerForm
                 passengerCount={parseInt(flightData.passengers) || 1}
+                flightData={flightData}
                 onSubmit={handlePassengerSubmit}
               />
             ) : (
               <FlightPaymentPage
                 flightData={flightData}
                 passengerData={passengerData}
+                contactInfo={contactInfo}
                 totalAmount={totalAmount}
               />
             )}
