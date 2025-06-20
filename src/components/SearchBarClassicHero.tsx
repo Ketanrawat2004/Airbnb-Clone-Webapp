@@ -58,7 +58,8 @@ const SearchBarClassicHero = ({
             value={location}
             onChange={onLocationChange}
             label="Where"
-            placeholder="Search destinations"
+            placeholder="Search hotels or destinations"
+            variant="hotel"
           />
 
           <DateInput
