@@ -6,6 +6,7 @@ import LocationInput from '@/components/search/LocationInput';
 import DateInput from '@/components/search/DateInput';
 import GuestInput from '@/components/search/GuestInput';
 import SearchButton from '@/components/search/SearchButton';
+import FlightSearchHome from '@/components/flight/FlightSearchHome';
 
 interface SearchBarClassicHeroProps {
   location: string;
@@ -32,21 +33,13 @@ const SearchBarClassicHero = ({
 }: SearchBarClassicHeroProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'hotels' | 'flights'>('hotels');
-  const [destination, setDestination] = useState('');
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (activeTab === 'flights') {
-      // Navigate to flight search with parameters
-      const searchParams = new URLSearchParams();
-      if (location) searchParams.set('from', location);
-      if (destination) searchParams.set('to', destination);
-      if (checkIn) searchParams.set('departure', checkIn);
-      if (checkOut) searchParams.set('return', checkOut);
-      if (guests) searchParams.set('passengers', guests);
-      
-      navigate(`/flights?${searchParams.toString()}`);
+      // Don't navigate anywhere for flights, let FlightSearchHome handle it
+      return;
     } else {
       // Handle hotel search
       onSubmit();
@@ -57,44 +50,39 @@ const SearchBarClassicHero = ({
     <form onSubmit={handleSubmitForm} className="w-full">
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="flex flex-col sm:flex-row bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-gray-200">
-        <LocationInput
-          value={location}
-          onChange={onLocationChange}
-          label={activeTab === 'hotels' ? 'Where' : 'From'}
-          placeholder={activeTab === 'hotels' ? 'Search destinations' : 'Departure city'}
-        />
-
-        {activeTab === 'flights' && (
+      {activeTab === 'flights' ? (
+        <FlightSearchHome />
+      ) : (
+        <div className="flex flex-col sm:flex-row bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-gray-200">
           <LocationInput
-            value={destination}
-            onChange={setDestination}
-            label="To"
-            placeholder="Destination city"
+            value={location}
+            onChange={onLocationChange}
+            label="Where"
+            placeholder="Search destinations"
           />
-        )}
 
-        <DateInput
-          value={checkIn}
-          onChange={onCheckInChange}
-          label={activeTab === 'hotels' ? 'Check in' : 'Departure'}
-        />
+          <DateInput
+            value={checkIn}
+            onChange={onCheckInChange}
+            label="Check in"
+          />
 
-        <DateInput
-          value={checkOut}
-          onChange={onCheckOutChange}
-          label={activeTab === 'hotels' ? 'Check out' : 'Return'}
-        />
+          <DateInput
+            value={checkOut}
+            onChange={onCheckOutChange}
+            label="Check out"
+          />
 
-        <GuestInput
-          value={guests}
-          onChange={onGuestsChange}
-          label={activeTab === 'hotels' ? 'Guests' : 'Passengers'}
-          placeholder={activeTab === 'hotels' ? 'Add guests' : 'Add passengers'}
-        />
+          <GuestInput
+            value={guests}
+            onChange={onGuestsChange}
+            label="Guests"
+            placeholder="Add guests"
+          />
 
-        <SearchButton onSubmit={() => handleSubmitForm(new Event('submit') as any)} />
-      </div>
+          <SearchButton onSubmit={() => handleSubmitForm(new Event('submit') as any)} />
+        </div>
+      )}
     </form>
   );
 };

@@ -20,6 +20,11 @@ import AboutUs from "./pages/AboutUs";
 import FlightSearch from "./pages/FlightSearch";
 import FlightDetail from "./pages/FlightDetail";
 import FlightBooking from "./pages/FlightBooking";
+import FlightResults from "./pages/FlightResults";
+import CancellationPolicy from "./pages/CancellationPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import CookiesPolicy from "./pages/CookiesPolicy";
+import Accessibility from "./pages/Accessibility";
 import CustomerService from "./pages/help/CustomerService";
 import SafetySecurity from "./pages/help/SafetySecurity";
 
@@ -35,12 +40,17 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/flights" element={<FlightSearch />} />
+          <Route path="/flight-results" element={<FlightResults />} />
           <Route path="/flight/:flightId" element={<FlightDetail />} />
           <Route path="/flight-booking" element={<FlightBooking />} />
           <Route path="/hotel/:id" element={<HotelDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/cookies-policy" element={<CookiesPolicy />} />
+          <Route path="/accessibility" element={<Accessibility />} />
           <Route path="/help/customer-service" element={<CustomerService />} />
           <Route path="/help/safety-security" element={<SafetySecurity />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
