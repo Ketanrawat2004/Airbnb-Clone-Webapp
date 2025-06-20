@@ -8,7 +8,7 @@ interface Hotel {
   id: string;
   name: string;
   location: string;
-  city: string;
+  city?: string; // Make city optional since we're not selecting it from the database
   rating: number;
   image_url: string;
 }
