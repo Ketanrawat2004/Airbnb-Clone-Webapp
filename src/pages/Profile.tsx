@@ -8,12 +8,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { User, Mail, Phone, Save, Download, Calendar, X, Eye, Trash2, Heart, Star, MapPin, Users, CheckCircle, Clock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { User, Mail, Phone, Save, Download, Calendar, X, Eye, Trash2, Heart, Star, MapPin, Users, CheckCircle, Clock, Plane } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import { Link } from 'react-router-dom';
 import CancelBookingDialog from '@/components/CancelBookingDialog';
 import PaymentSuccessToast from '@/components/PaymentSuccessToast';
+import FlightTicketGenerator from '@/components/FlightTicketGenerator';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,18 +51,34 @@ interface Booking {
   };
 }
 
+interface FlightBooking {
+  id: string;
+  flight_data: any;
+  passenger_data: any[];
+  contact_info: any;
+  total_amount: number;
+  payment_status: string;
+  status: string;
+  razorpay_payment_id: string;
+  created_at: string;
+}
+
 const Profile = () => {
   const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [flightBookings, setFlightBookings] = useState<FlightBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState<Booking | null>(null);
+  const [flightDeleteDialogOpen, setFlightDeleteDialogOpen] = useState(false);
+  const [flightToDelete, setFlightToDelete] = useState<FlightBooking | null>(null);
   const [clearHistoryDialogOpen, setClearHistoryDialogOpen] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [selectedFlightForTicket, setSelectedFlightForTicket] = useState<FlightBooking | null>(null);
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
@@ -70,6 +88,7 @@ const Profile = () => {
     if (user) {
       fetchProfile();
       fetchBookings();
+      fetchFlightBookings();
     }
   }, [user]);
 
@@ -138,6 +157,28 @@ const Profile = () => {
 
       console.log('Fetched bookings:', data);
       setBookings(data || []);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const fetchFlightBookings = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('flight_bookings')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching flight bookings:', error);
+        return;
+      }
+
+      console.log('Fetched flight bookings:', data);
+      setFlightBookings(data || []);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -229,6 +270,11 @@ const Profile = () => {
     setDeleteDialogOpen(true);
   };
 
+  const handleDeleteFlightBooking = (flightBooking: FlightBooking) => {
+    setFlightToDelete(flightBooking);
+    setFlightDeleteDialogOpen(true);
+  };
+
   const confirmDeleteBooking = async () => {
     if (!bookingToDelete) return;
 
@@ -239,7 +285,7 @@ const Profile = () => {
         .from('bookings')
         .delete()
         .eq('id', bookingToDelete.id)
-        .eq('user_id', user?.id); // Add user_id check for security
+        .eq('user_id', user?.id);
 
       if (error) {
         console.error('Error deleting booking:', error);
@@ -252,14 +298,42 @@ const Profile = () => {
       setDeleteDialogOpen(false);
       setBookingToDelete(null);
       
-      // Immediately update the bookings state
       setBookings(prev => prev.filter(booking => booking.id !== bookingToDelete.id));
-      
-      // Also fetch fresh data
       fetchBookings();
     } catch (error) {
       console.error('Error:', error);
       toast.error('Failed to delete booking');
+    }
+  };
+
+  const confirmDeleteFlightBooking = async () => {
+    if (!flightToDelete) return;
+
+    try {
+      console.log('Deleting flight booking:', flightToDelete.id);
+      
+      const { error } = await supabase
+        .from('flight_bookings')
+        .delete()
+        .eq('id', flightToDelete.id)
+        .eq('user_id', user?.id);
+
+      if (error) {
+        console.error('Error deleting flight booking:', error);
+        toast.error('Failed to delete flight booking');
+        return;
+      }
+
+      console.log('Flight booking deleted successfully');
+      toast.success('Flight booking deleted successfully');
+      setFlightDeleteDialogOpen(false);
+      setFlightToDelete(null);
+      
+      setFlightBookings(prev => prev.filter(booking => booking.id !== flightToDelete.id));
+      fetchFlightBookings();
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Failed to delete flight booking');
     }
   };
 
@@ -269,13 +343,18 @@ const Profile = () => {
     try {
       console.log('Clearing all bookings for user:', user.id);
       
-      const { error } = await supabase
+      const { error: hotelError } = await supabase
         .from('bookings')
         .delete()
         .eq('user_id', user.id);
 
-      if (error) {
-        console.error('Error clearing bookings:', error);
+      const { error: flightError } = await supabase
+        .from('flight_bookings')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (hotelError || flightError) {
+        console.error('Error clearing bookings:', hotelError || flightError);
         toast.error('Failed to clear booking history');
         return;
       }
@@ -284,11 +363,10 @@ const Profile = () => {
       toast.success('All bookings cleared successfully');
       setClearHistoryDialogOpen(false);
       
-      // Immediately update the bookings state to empty array
       setBookings([]);
-      
-      // Also fetch fresh data to ensure UI is in sync
+      setFlightBookings([]);
       fetchBookings();
+      fetchFlightBookings();
     } catch (error) {
       console.error('Error:', error);
       toast.error('Failed to clear booking history');
@@ -308,6 +386,42 @@ const Profile = () => {
     return checkInDate.getTime() >= today.getTime() && 
            booking.status !== 'cancelled' && 
            booking.payment_status !== 'refunded';
+  };
+
+  const generateFlightTicketData = (flightBooking: FlightBooking) => {
+    const passenger = flightBooking.passenger_data[0];
+    return {
+      bookingReference: `FL${flightBooking.id.slice(-8).toUpperCase()}`,
+      passengerName: `${passenger.firstName} ${passenger.lastName}`,
+      flightNumber: flightBooking.flight_data.flightNumber || 'AI 2809',
+      airline: flightBooking.flight_data.airline,
+      departure: {
+        city: flightBooking.flight_data.from.split(' (')[0],
+        airport: flightBooking.flight_data.from,
+        code: flightBooking.flight_data.from.match(/\(([^)]+)\)/)?.[1] || 'DEP',
+        time: flightBooking.flight_data.departure || '20:00',
+        date: flightBooking.flight_data.departureDate,
+        terminal: 'T2',
+        gate: 'A12'
+      },
+      arrival: {
+        city: flightBooking.flight_data.to.split(' (')[0],
+        airport: flightBooking.flight_data.to,
+        code: flightBooking.flight_data.to.match(/\(([^)]+)\)/)?.[1] || 'ARR',
+        time: flightBooking.flight_data.arrival || '23:00',
+        date: flightBooking.flight_data.departureDate,
+        terminal: 'T1',
+        gate: 'B5'
+      },
+      seatNumber: '12A',
+      class: flightBooking.flight_data.class || 'Economy',
+      duration: flightBooking.flight_data.duration || '3h 0m',
+      aircraft: flightBooking.flight_data.aircraft || 'Boeing 737',
+      totalAmount: flightBooking.total_amount,
+      bookingDate: new Date(flightBooking.created_at).toLocaleDateString(),
+      passengerPhone: passenger.phone,
+      passengerEmail: passenger.email
+    };
   };
 
   // Get display name for personalization
@@ -330,6 +444,16 @@ const Profile = () => {
       return <Badge variant="destructive" className="text-xs">Cancelled</Badge>;
     }
     if (booking.payment_status === 'paid') {
+      return <Badge className="bg-green-500 hover:bg-green-600 text-xs">Confirmed</Badge>;
+    }
+    return <Badge variant="secondary" className="text-xs">Pending</Badge>;
+  };
+
+  const getFlightStatusBadge = (flightBooking: FlightBooking) => {
+    if (flightBooking.status === 'cancelled') {
+      return <Badge variant="destructive" className="text-xs">Cancelled</Badge>;
+    }
+    if (flightBooking.payment_status === 'paid') {
       return <Badge className="bg-green-500 hover:bg-green-600 text-xs">Confirmed</Badge>;
     }
     return <Badge variant="secondary" className="text-xs">Pending</Badge>;
@@ -383,6 +507,8 @@ const Profile = () => {
     );
   }
 
+  const totalBookings = bookings.length + flightBookings.length;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       <Header />
@@ -390,6 +516,27 @@ const Profile = () => {
       {/* Payment Success Toast */}
       {showPaymentSuccess && (
         <PaymentSuccessToast onShow={() => setShowPaymentSuccess(false)} />
+      )}
+
+      {/* Flight Ticket Modal */}
+      {selectedFlightForTicket && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h2 className="text-xl font-bold">Flight Ticket</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedFlightForTicket(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="p-4">
+              <FlightTicketGenerator flightData={generateFlightTicketData(selectedFlightForTicket)} />
+            </div>
+          </div>
+        </div>
       )}
       
       <div className="container mx-auto px-4 py-8">
@@ -428,7 +575,7 @@ const Profile = () => {
               <span>•</span>
               <span className="flex items-center space-x-1">
                 <Calendar className="h-4 w-4 text-blue-500" />
-                <span>{bookings.length} {bookings.length === 1 ? 'Booking' : 'Bookings'}</span>
+                <span>{totalBookings} {totalBookings === 1 ? 'Booking' : 'Bookings'}</span>
               </span>
             </div>
           </div>
@@ -526,7 +673,7 @@ const Profile = () => {
                         Track your bookings and manage your reservations
                       </CardDescription>
                     </div>
-                    {bookings.length > 0 && (
+                    {totalBookings > 0 && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -540,7 +687,7 @@ const Profile = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {bookings.length === 0 ? (
+                  {totalBookings === 0 ? (
                     <div className="text-center py-12">
                       <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-100 to-pink-100 rounded-full flex items-center justify-center">
                         <Calendar className="h-10 w-10 text-rose-500" />
@@ -554,108 +701,217 @@ const Profile = () => {
                       </Link>
                     </div>
                   ) : (
-                    <div className="space-y-6">
-                      {bookings.map((booking) => {
-                        const nights = calculateNights(booking.check_in_date, booking.check_out_date);
-                        return (
-                          <div key={booking.id} className="bg-gradient-to-r from-gray-50 to-gray-50/50 rounded-xl p-6 border border-gray-100 hover:shadow-lg transition-all duration-200">
-                            <div className="flex justify-between items-start mb-4">
-                              <div className="space-y-2">
-                                <div className="flex items-center space-x-3">
-                                  <h3 className="font-bold text-xl text-gray-900">{booking.hotels.name}</h3>
-                                  {getStatusBadge(booking)}
+                    <Tabs defaultValue="hotels" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="hotels" className="flex items-center space-x-2">
+                          <MapPin className="h-4 w-4" />
+                          <span>Hotels ({bookings.length})</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="flights" className="flex items-center space-x-2">
+                          <Plane className="h-4 w-4" />
+                          <span>Flights ({flightBookings.length})</span>
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="hotels" className="space-y-6 mt-6">
+                        {bookings.length === 0 ? (
+                          <div className="text-center py-8">
+                            <MapPin className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                            <p className="text-gray-600">No hotel bookings yet</p>
+                          </div>
+                        ) : (
+                          bookings.map((booking) => {
+                            const nights = calculateNights(booking.check_in_date, booking.check_out_date);
+                            return (
+                              <div key={booking.id} className="bg-gradient-to-r from-gray-50 to-gray-50/50 rounded-xl p-6 border border-gray-100 hover:shadow-lg transition-all duration-200">
+                                <div className="flex justify-between items-start mb-4">
+                                  <div className="space-y-2">
+                                    <div className="flex items-center space-x-3">
+                                      <h3 className="font-bold text-xl text-gray-900">{booking.hotels.name}</h3>
+                                      {getStatusBadge(booking)}
+                                    </div>
+                                    <p className="text-gray-600 flex items-center">
+                                      <MapPin className="h-4 w-4 mr-1" />
+                                      {booking.hotels.location}
+                                    </p>
+                                  </div>
+                                  <div className="text-right space-y-1">
+                                    <p className="font-bold text-2xl text-rose-600">
+                                      ₹{(booking.total_amount / 100).toLocaleString('en-IN')}
+                                    </p>
+                                    <p className="text-sm text-gray-500">for {nights} {nights === 1 ? 'night' : 'nights'}</p>
+                                  </div>
                                 </div>
-                                <p className="text-gray-600 flex items-center">
-                                  <MapPin className="h-4 w-4 mr-1" />
-                                  {booking.hotels.location}
-                                </p>
-                              </div>
-                              <div className="text-right space-y-1">
-                                <p className="font-bold text-2xl text-rose-600">
-                                  ₹{(booking.total_amount / 100).toLocaleString('en-IN')}
-                                </p>
-                                <p className="text-sm text-gray-500">for {nights} {nights === 1 ? 'night' : 'nights'}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                              <div className="flex items-center space-x-2 text-gray-600">
-                                <Calendar className="h-4 w-4" />
-                                <div>
-                                  <p className="text-xs text-gray-500">Check-in</p>
-                                  <p className="font-medium">{new Date(booking.check_in_date).toLocaleDateString()}</p>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                  <div className="flex items-center space-x-2 text-gray-600">
+                                    <Calendar className="h-4 w-4" />
+                                    <div>
+                                      <p className="text-xs text-gray-500">Check-in</p>
+                                      <p className="font-medium">{new Date(booking.check_in_date).toLocaleDateString()}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center space-x-2 text-gray-600">
+                                    <Calendar className="h-4 w-4" />
+                                    <div>
+                                      <p className="text-xs text-gray-500">Check-out</p>
+                                      <p className="font-medium">{new Date(booking.check_out_date).toLocaleDateString()}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center space-x-2 text-gray-600">
+                                    <Users className="h-4 w-4" />
+                                    <div>
+                                      <p className="text-xs text-gray-500">Guests</p>
+                                      <p className="font-medium">{booking.guests} {booking.guests === 1 ? 'Guest' : 'Guests'}</p>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="flex items-center space-x-2 text-gray-600">
-                                <Calendar className="h-4 w-4" />
-                                <div>
-                                  <p className="text-xs text-gray-500">Check-out</p>
-                                  <p className="font-medium">{new Date(booking.check_out_date).toLocaleDateString()}</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center space-x-2 text-gray-600">
-                                <Users className="h-4 w-4" />
-                                <div>
-                                  <p className="text-xs text-gray-500">Guests</p>
-                                  <p className="font-medium">{booking.guests} {booking.guests === 1 ? 'Guest' : 'Guests'}</p>
-                                </div>
-                              </div>
-                            </div>
 
-                            <Separator className="my-4" />
-                            
-                            <div className="flex flex-wrap gap-2">
-                              {booking.payment_status === 'paid' && booking.status !== 'cancelled' && (
-                                <>
+                                <Separator className="my-4" />
+                                
+                                <div className="flex flex-wrap gap-2">
+                                  {booking.payment_status === 'paid' && booking.status !== 'cancelled' && (
+                                    <>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => downloadTicket(booking.id)}
+                                        className="hover:bg-blue-50 border-blue-200 text-blue-700"
+                                      >
+                                        <Download className="h-4 w-4 mr-1" />
+                                        Download
+                                      </Button>
+                                      <Link to={`/ticket/${booking.id}`}>
+                                        <Button variant="outline" size="sm" className="hover:bg-green-50 border-green-200 text-green-700">
+                                          <Eye className="h-4 w-4 mr-1" />
+                                          View Ticket
+                                        </Button>
+                                      </Link>
+                                    </>
+                                  )}
+                                  
+                                  {canCancelBooking(booking) && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleCancelBooking(booking)}
+                                      className="hover:bg-red-50 border-red-200 text-red-700"
+                                    >
+                                      <X className="h-4 w-4 mr-1" />
+                                      Cancel
+                                    </Button>
+                                  )}
+
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => downloadTicket(booking.id)}
+                                    onClick={() => handleDeleteBooking(booking)}
+                                    className="hover:bg-gray-50 border-gray-200 text-gray-600"
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    Delete
+                                  </Button>
+                                </div>
+                                
+                                <div className="mt-3 text-xs text-gray-500 flex items-center">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  Booked on {new Date(booking.created_at).toLocaleDateString()}
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </TabsContent>
+                      
+                      <TabsContent value="flights" className="space-y-6 mt-6">
+                        {flightBookings.length === 0 ? (
+                          <div className="text-center py-8">
+                            <Plane className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                            <p className="text-gray-600">No flight bookings yet</p>
+                          </div>
+                        ) : (
+                          flightBookings.map((flightBooking) => (
+                            <div key={flightBooking.id} className="bg-gradient-to-r from-blue-50 to-blue-50/50 rounded-xl p-6 border border-blue-100 hover:shadow-lg transition-all duration-200">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className="space-y-2">
+                                  <div className="flex items-center space-x-3">
+                                    <h3 className="font-bold text-xl text-gray-900">
+                                      {flightBooking.flight_data.from} → {flightBooking.flight_data.to}
+                                    </h3>
+                                    {getFlightStatusBadge(flightBooking)}
+                                  </div>
+                                  <p className="text-gray-600 flex items-center">
+                                    <Plane className="h-4 w-4 mr-1" />
+                                    {flightBooking.flight_data.airline} - {flightBooking.flight_data.flightNumber || 'AI 2809'}
+                                  </p>
+                                </div>
+                                <div className="text-right space-y-1">
+                                  <p className="font-bold text-2xl text-blue-600">
+                                    ₹{flightBooking.total_amount.toLocaleString('en-IN')}
+                                  </p>
+                                  <p className="text-sm text-gray-500">{flightBooking.passenger_data.length} passenger{flightBooking.passenger_data.length > 1 ? 's' : ''}</p>
+                                </div>
+                              </div>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                  <Calendar className="h-4 w-4" />
+                                  <div>
+                                    <p className="text-xs text-gray-500">Departure</p>
+                                    <p className="font-medium">{new Date(flightBooking.flight_data.departureDate).toLocaleDateString()}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                  <Clock className="h-4 w-4" />
+                                  <div>
+                                    <p className="text-xs text-gray-500">Time</p>
+                                    <p className="font-medium">{flightBooking.flight_data.departure || '20:00'}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                  <Users className="h-4 w-4" />
+                                  <div>
+                                    <p className="text-xs text-gray-500">Duration</p>
+                                    <p className="font-medium">{flightBooking.flight_data.duration || '3h 0m'}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <Separator className="my-4" />
+                              
+                              <div className="flex flex-wrap gap-2">
+                                {flightBooking.payment_status === 'paid' && flightBooking.status !== 'cancelled' && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setSelectedFlightForTicket(flightBooking)}
                                     className="hover:bg-blue-50 border-blue-200 text-blue-700"
                                   >
                                     <Download className="h-4 w-4 mr-1" />
-                                    Download
+                                    View Ticket
                                   </Button>
-                                  <Link to={`/ticket/${booking.id}`}>
-                                    <Button variant="outline" size="sm" className="hover:bg-green-50 border-green-200 text-green-700">
-                                      <Eye className="h-4 w-4 mr-1" />
-                                      View Ticket
-                                    </Button>
-                                  </Link>
-                                </>
-                              )}
-                              
-                              {canCancelBooking(booking) && (
+                                )}
+
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => handleCancelBooking(booking)}
-                                  className="hover:bg-red-50 border-red-200 text-red-700"
+                                  onClick={() => handleDeleteFlightBooking(flightBooking)}
+                                  className="hover:bg-gray-50 border-gray-200 text-gray-600"
                                 >
-                                  <X className="h-4 w-4 mr-1" />
-                                  Cancel
+                                  <Trash2 className="h-4 w-4 mr-1" />
+                                  Delete
                                 </Button>
-                              )}
-
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleDeleteBooking(booking)}
-                                className="hover:bg-gray-50 border-gray-200 text-gray-600"
-                              >
-                                <Trash2 className="h-4 w-4 mr-1" />
-                                Delete
-                              </Button>
+                              </div>
+                              
+                              <div className="mt-3 text-xs text-gray-500 flex items-center">
+                                <Clock className="h-3 w-3 mr-1" />
+                                Booked on {new Date(flightBooking.created_at).toLocaleDateString()}
+                              </div>
                             </div>
-                            
-                            <div className="mt-3 text-xs text-gray-500 flex items-center">
-                              <Clock className="h-3 w-3 mr-1" />
-                              Booked on {new Date(booking.created_at).toLocaleDateString()}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                          ))
+                        )}
+                      </TabsContent>
+                    </Tabs>
                   )}
                 </CardContent>
               </Card>
@@ -674,7 +930,7 @@ const Profile = () => {
         />
       )}
 
-      {/* Delete Booking Dialog */}
+      {/* Delete Hotel Booking Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -696,13 +952,35 @@ const Profile = () => {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Delete Flight Booking Dialog */}
+      <AlertDialog open={flightDeleteDialogOpen} onOpenChange={setFlightDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Flight Booking</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this flight booking from {flightToDelete?.flight_data.from} to {flightToDelete?.flight_data.to}? 
+              This action cannot be undone and will permanently remove the booking from your history.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDeleteFlightBooking} 
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete Booking
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Clear All Bookings Dialog */}
       <AlertDialog open={clearHistoryDialogOpen} onOpenChange={setClearHistoryDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Clear All Bookings</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to clear your entire booking history? This will permanently delete all your bookings and cannot be undone.
+              Are you sure you want to clear your entire booking history? This will permanently delete all your hotel and flight bookings and cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -7,13 +7,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface FlightPaymentRequest {
-  flight_data: any;
-  passenger_data: any[];
-  contact_info: any;
-  total_amount: number;
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -22,153 +15,131 @@ serve(async (req) => {
   try {
     console.log('Starting flight payment creation process');
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    const razorpayKeyId = Deno.env.get("RAZORPAY_KEY_ID");
-    const razorpayKeySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
 
-    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
-      throw new Error("Missing Supabase configuration");
-    }
-
-    if (!razorpayKeyId || !razorpayKeySecret) {
-      throw new Error("Razorpay credentials not configured");
-    }
-
-    // Authentication
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("Authentication required");
-    }
-
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    // Get the authenticated user
+    const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
-    if (authError || !user?.email) {
-      console.error('Auth error:', authError);
-      throw new Error("Authentication failed");
+    const { data } = await supabaseClient.auth.getUser(token);
+    const user = data.user;
+
+    if (!user) {
+      throw new Error("User not authenticated");
     }
 
     console.log('User authenticated:', user.id);
 
-    const paymentData: FlightPaymentRequest = await req.json();
+    const { flight_data, passenger_data, contact_info, total_amount } = await req.json();
+
     console.log('Flight payment data received:', {
-      flight_route: `${paymentData.flight_data.from} → ${paymentData.flight_data.to}`,
-      total_amount: paymentData.total_amount,
-      passengers: paymentData.passenger_data.length,
+      flight_route: `${flight_data.from} → ${flight_data.to}`,
+      total_amount,
+      passengers: passenger_data.length
     });
 
+    const razorpayKeyId = Deno.env.get("RAZORPAY_KEY_ID");
+    const razorpayKeySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
+
+    if (!razorpayKeyId || !razorpayKeySecret) {
+      throw new Error("Razorpay keys not configured");
+    }
+
     // Create Razorpay order
+    const receipt = `flight_${Date.now()}`;
+    const amount = total_amount * 100; // Convert to paise
+
     const orderData = {
-      amount: paymentData.total_amount * 100, // Convert to paise
-      currency: 'INR',
-      receipt: `flight_${Date.now()}`,
+      amount: amount,
+      currency: "INR",
+      receipt: receipt,
       notes: {
-        flight_from: paymentData.flight_data.from,
-        flight_to: paymentData.flight_data.to,
+        flight_from: flight_data.from,
+        flight_to: flight_data.to,
         user_id: user.id,
-        booking_type: 'flight'
-      },
+        booking_type: "flight"
+      }
     };
 
     console.log('Creating Razorpay order:', orderData);
 
-    const auth = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
+    const authString = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
     
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-    const razorpayResponse = await fetch('https://api.razorpay.com/v1/orders', {
-      method: 'POST',
+    const razorpayResponse = await fetch("https://api.razorpay.com/v1/orders", {
+      method: "POST",
       headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/json',
+        "Authorization": `Basic ${authString}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(orderData),
-      signal: controller.signal,
     });
-
-    clearTimeout(timeoutId);
 
     if (!razorpayResponse.ok) {
       const errorText = await razorpayResponse.text();
-      console.error('Razorpay error:', errorText);
-      throw new Error(`Razorpay error: ${errorText}`);
+      console.error('Razorpay API error:', errorText);
+      throw new Error(`Razorpay API error: ${errorText}`);
     }
 
-    const razorpayOrder = await razorpayResponse.json();
-    console.log('Razorpay order created:', razorpayOrder.id);
+    const order = await razorpayResponse.json();
+    console.log('Razorpay order created:', order.id);
 
-    // Store flight booking data
-    const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
-    
-    const bookingData = {
+    // Use service role key to bypass RLS for creating flight booking
+    const supabaseService = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const flightBookingData = {
       user_id: user.id,
-      booking_type: 'flight',
-      flight_data: paymentData.flight_data,
-      passenger_data: paymentData.passenger_data,
-      contact_info: paymentData.contact_info,
-      total_amount: paymentData.total_amount,
-      razorpay_order_id: razorpayOrder.id,
-      payment_status: 'pending',
-      status: 'pending',
+      booking_type: "flight",
+      flight_data: flight_data,
+      passenger_data: passenger_data,
+      contact_info: contact_info,
+      total_amount: total_amount,
+      razorpay_order_id: order.id,
+      payment_status: "pending",
+      status: "pending",
       created_at: new Date().toISOString()
     };
 
-    console.log('Creating flight booking with data:', bookingData);
+    console.log('Creating flight booking with data:', flightBookingData);
 
-    const { error: bookingError } = await supabaseService
+    const { data: bookingData, error: bookingError } = await supabaseService
       .from('flight_bookings')
-      .insert(bookingData);
+      .insert([flightBookingData])
+      .select()
+      .single();
 
     if (bookingError) {
       console.error('Flight booking creation error:', bookingError);
-      // Try to create table if it doesn't exist
-      const { error: createTableError } = await supabaseService.rpc('create_flight_bookings_table');
-      if (!createTableError) {
-        // Retry insert
-        const { error: retryError } = await supabaseService
-          .from('flight_bookings')
-          .insert(bookingData);
-        if (retryError) {
-          throw new Error('Flight booking creation failed');
-        }
-      } else {
-        throw new Error('Flight booking creation failed');
-      }
+      throw new Error('Flight booking creation failed');
     }
 
-    console.log('Flight booking created successfully');
+    console.log('Flight booking created successfully:', bookingData.id);
 
-    const response = { 
-      order_id: razorpayOrder.id,
-      amount: razorpayOrder.amount,
-      currency: razorpayOrder.currency,
+    const response = {
+      order_id: order.id,
+      amount: order.amount,
+      currency: order.currency,
       key_id: razorpayKeyId,
-      user_email: user.email,
-      user_name: `${paymentData.passenger_data[0]?.firstName || ''} ${paymentData.passenger_data[0]?.lastName || ''}`.trim() || 'Passenger',
-      contact_phone: paymentData.contact_info.phone,
+      flight_booking_id: bookingData.id
     };
 
-    console.log('Returning flight payment response');
-
     return new Response(JSON.stringify(response), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
   } catch (error) {
     console.error('Flight payment creation error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Flight payment setup failed';
-    
     return new Response(JSON.stringify({ 
-      error: errorMessage,
-      details: error instanceof Error ? error.stack : 'Unknown error'
+      success: false, 
+      error: error.message 
     }), {
+      status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
     });
   }
 });

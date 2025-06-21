@@ -185,6 +185,54 @@ export type Database = {
         }
         Relationships: []
       }
+      flight_bookings: {
+        Row: {
+          booking_type: string
+          contact_info: Json
+          created_at: string
+          flight_data: Json
+          id: string
+          passenger_data: Json
+          payment_status: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_type?: string
+          contact_info: Json
+          created_at?: string
+          flight_data: Json
+          id?: string
+          passenger_data: Json
+          payment_status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_type?: string
+          contact_info?: Json
+          created_at?: string
+          flight_data?: Json
+          id?: string
+          passenger_data?: Json
+          payment_status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       hotels: {
         Row: {
           address: string | null

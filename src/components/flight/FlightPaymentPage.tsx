@@ -111,6 +111,34 @@ const FlightPaymentPage = ({ flightData, passengerData, contactInfo, totalAmount
     setIsProcessing(true);
     
     try {
+      if (!user) {
+        alert('Please login to continue with demo payment');
+        return;
+      }
+
+      // Create flight booking record for demo payment
+      const { data: bookingData, error: bookingError } = await supabase
+        .from('flight_bookings')
+        .insert([{
+          user_id: user.id,
+          booking_type: 'flight',
+          flight_data: flightData,
+          passenger_data: passengerData,
+          contact_info: contactInfo,
+          total_amount: totalAmount,
+          payment_status: 'paid',
+          status: 'confirmed',
+          razorpay_payment_id: 'DEMO_PAYMENT'
+        }])
+        .select()
+        .single();
+
+      if (bookingError) {
+        console.error('Demo booking creation error:', bookingError);
+        throw bookingError;
+      }
+
+      // Simulate processing delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       const bookingId = `FL${Date.now().toString().slice(-8)}`;
@@ -122,7 +150,8 @@ const FlightPaymentPage = ({ flightData, passengerData, contactInfo, totalAmount
           passengerData,
           contactInfo,
           totalAmount,
-          isDemo: true
+          isDemo: true,
+          flightBookingId: bookingData.id
         }
       });
     } catch (error) {

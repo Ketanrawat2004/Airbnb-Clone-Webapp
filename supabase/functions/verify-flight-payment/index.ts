@@ -59,7 +59,7 @@ serve(async (req) => {
         payment_status: 'paid',
         status: 'confirmed',
         razorpay_payment_id: razorpay_payment_id,
-        confirmed_at: new Date().toISOString()
+        updated_at: new Date().toISOString()
       })
       .eq('razorpay_order_id', razorpay_order_id)
       .select('*')
