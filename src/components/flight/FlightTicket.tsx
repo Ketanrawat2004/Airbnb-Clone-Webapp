@@ -424,7 +424,7 @@ const FlightTicket = ({ bookingId, flightData, passengerData, contactInfo, total
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={ duration: 0.6, delay: 0.1 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
         className="bg-white rounded-xl shadow-2xl overflow-hidden"
       >
         {/* Air India Header */}
