@@ -16,182 +16,385 @@ export const generateTicketHTML = ({
 }: TicketData): string => {
   return `
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
       <head>
         <title>Flight E-Ticket - ${bookingId}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-          * { margin: 0; padding: 0; box-sizing: border-box; }
-          body { 
-            font-family: 'Arial', sans-serif; 
-            background: #f5f5f5;
-            padding: 20px;
+          * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
           }
+          
+          body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+            padding: 1rem;
+            line-height: 1.5;
+            color: #374151;
+          }
+          
           .ticket-container {
-            max-width: 800px;
+            max-width: 64rem;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
+            border-radius: 0.75rem;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
           }
+          
+          /* Header Section */
           .airline-header {
             background: linear-gradient(135deg, #dc2626, #b91c1c);
             color: white;
-            padding: 20px;
+            padding: 1.5rem 2rem;
             position: relative;
             overflow: hidden;
           }
+          
           .airline-header::before {
             content: '';
             position: absolute;
-            top: -10px;
-            right: -10px;
-            width: 100px;
-            height: 100px;
+            top: -3rem;
+            right: -3rem;
+            width: 6rem;
+            height: 6rem;
             background: rgba(255,255,255,0.1);
             border-radius: 50%;
           }
-          .airline-logo {
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
+          
+          .airline-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 10;
           }
-          .passenger-info {
-            background: #fff3cd;
-            padding: 15px 20px;
-            border-left: 4px solid #ffc107;
-          }
-          .passenger-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-          }
-          .booking-ref {
-            background: #fff3cd;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 5px;
-          }
-          .ticket-number {
-            font-size: 14px;
-            color: #666;
-          }
-          .issuing-office {
-            text-align: right;
-            color: #666;
-          }
-          .itinerary-header {
-            background: #e9ecef;
-            padding: 15px 20px;
-            font-weight: bold;
-            font-size: 16px;
-            color: #333;
-            border-bottom: 2px solid #dee2e6;
-          }
-          .flight-details {
-            padding: 20px;
-            background: #f8f9fa;
-          }
-          .flight-row {
-            display: grid;
-            grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
-            gap: 20px;
+          
+          .header-subtitle {
+            display: flex;
             align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #dee2e6;
+            font-size: 0.875rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 10;
           }
-          .flight-row:last-child {
-            border-bottom: none;
+          
+          .plane-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.5rem;
           }
-          .route-info h3 {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
+          
+          /* Passenger Info Section */
+          .passenger-info {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem 1.5rem;
           }
-          .route-info p {
-            font-size: 14px;
-            color: #666;
-            margin: 2px 0;
-          }
-          .flight-code {
-            font-weight: bold;
-            font-size: 16px;
-          }
-          .time {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-          }
-          .date {
-            font-size: 14px;
-            color: #666;
-          }
-          .barcode-section {
-            text-align: right;
-            padding: 20px;
-          }
-          .barcode-placeholder {
-            width: 120px;
-            height: 60px;
-            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyIiBoZWlnaHQ9IjYwIiBmaWxsPSJibGFjayIvPjxyZWN0IHg9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjYwIiBmaWxsPSJibGFjayIvPjxyZWN0IHg9IjciIHdpZHRoPSIzIiBoZWlnaHQ9IjYwIiBmaWxsPSJibGFjayIvPjxyZWN0IHg9IjEyIiB3aWR0aD0iMSIgaGVpZ2h0PSI2MCIgZmlsbD0iYmxhY2siLz48L3N2Zz4=') repeat-x;
-            margin-left: auto;
-          }
-          .additional-info {
-            padding: 20px;
-            background: #f8f9fa;
-            border-top: 1px solid #dee2e6;
-          }
-          .class-info {
+          
+          .passenger-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr;
+            gap: 1rem;
           }
+          
+          .passenger-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+          }
+          
+          .booking-ref {
+            background: #fde68a;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+          }
+          
+          .ticket-number {
+            font-size: 0.875rem;
+            color: #6b7280;
+          }
+          
+          .issuing-office {
+            text-align: left;
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.4;
+          }
+          
+          /* Flight Details Section */
+          .flight-details {
+            padding: 1.5rem;
+          }
+          
+          .itinerary-header {
+            background: #f3f4f6;
+            padding: 1rem 1.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #374151;
+            text-align: center;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+          }
+          
+          .disclaimer-text {
+            font-size: 0.75rem;
+            color: #6b7280;
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+          }
+          
+          /* Flight Route */
+          .flight-route {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr;
+            gap: 1rem;
+            align-items: center;
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+          }
+          
+          .route-city {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.25rem;
+          }
+          
+          .route-airport {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+          }
+          
+          .route-terminal {
+            font-size: 0.75rem;
+            color: #9ca3af;
+          }
+          
+          .flight-info {
+            text-align: center;
+          }
+          
+          .flight-number {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+          }
+          
+          .plane-graphic {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin: 0 auto;
+            color: #dc2626;
+          }
+          
+          /* Times Section */
+          .times-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+          }
+          
+          .time-block {
+            padding: 1rem;
+            background: #fafafa;
+            border-radius: 0.5rem;
+          }
+          
+          .time {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.25rem;
+          }
+          
+          .date {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+          }
+          
+          .time-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            font-weight: 600;
+          }
+          
+          /* Additional Info Section */
+          .additional-info {
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+          }
+          
+          .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+          }
+          
+          .info-column {
+            space-y: 0.75rem;
+          }
+          
           .info-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
           }
+          
           .info-item:last-child {
             border-bottom: none;
           }
+          
+          .info-label {
+            font-weight: 500;
+            color: #374151;
+          }
+          
+          .info-value {
+            font-weight: 600;
+            color: #111827;
+          }
+          
+          .status-confirmed {
+            color: #059669;
+          }
+          
+          .total-amount {
+            color: #059669;
+            font-size: 1.125rem;
+          }
+          
+          /* Important Notes */
           .important-notes {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 6px;
-            padding: 15px;
-            margin-top: 20px;
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1.5rem;
           }
-          .important-notes h4 {
-            color: #856404;
-            margin-bottom: 10px;
-            font-size: 14px;
+          
+          .notes-title {
+            color: #92400e;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
           }
-          .important-notes p {
-            font-size: 12px;
-            color: #856404;
-            line-height: 1.5;
+          
+          .notes-list {
+            font-size: 0.75rem;
+            color: #92400e;
+            line-height: 1.6;
           }
+          
+          .notes-list p {
+            margin-bottom: 0.25rem;
+          }
+          
+          /* Mobile Responsive */
           @media (max-width: 768px) {
-            body { padding: 10px; }
-            .flight-row {
-              grid-template-columns: 1fr;
-              gap: 10px;
-              text-align: center;
+            body {
+              padding: 0.5rem;
             }
-            .class-info {
-              grid-template-columns: 1fr;
+            
+            .ticket-container {
+              border-radius: 0.5rem;
             }
-            .airline-logo {
-              font-size: 24px;
+            
+            .airline-header {
+              padding: 1rem 1.5rem;
+            }
+            
+            .airline-header h1 {
+              font-size: 1.5rem;
+            }
+            
+            .passenger-info {
+              padding: 1rem;
+            }
+            
+            .passenger-grid {
+              grid-template-columns: 1fr;
+              text-align: left;
+            }
+            
+            .issuing-office {
+              text-align: left;
+              margin-top: 1rem;
+            }
+            
+            .flight-details {
+              padding: 1rem;
+            }
+            
+            .flight-route {
+              grid-template-columns: 1fr;
+              gap: 1rem;
+              padding: 1rem;
+            }
+            
+            .times-section {
+              grid-template-columns: 1fr;
+              gap: 1rem;
+            }
+            
+            .info-grid {
+              grid-template-columns: 1fr;
+              gap: 1rem;
+            }
+            
+            .additional-info {
+              padding: 1rem;
+            }
+          }
+          
+          @media (min-width: 769px) {
+            .passenger-grid {
+              grid-template-columns: 2fr 1fr;
+              align-items: start;
+            }
+            
+            .issuing-office {
+              text-align: right;
+            }
+          }
+          
+          /* Print Styles */
+          @media print {
+            body {
+              background: white;
+              padding: 0;
+            }
+            
+            .ticket-container {
+              box-shadow: none;
+              max-width: none;
+            }
+            
+            .airline-header::before {
+              display: none;
             }
           }
         </style>
@@ -200,127 +403,145 @@ export const generateTicketHTML = ({
         <div class="ticket-container">
           <!-- Airline Header -->
           <div class="airline-header">
-            <div class="airline-logo">AIR INDIA</div>
+            <h1>AIR INDIA</h1>
+            <div class="header-subtitle">
+              <svg class="plane-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+              </svg>
+              Electronic Ticket
+            </div>
           </div>
           
           <!-- Passenger Information -->
           <div class="passenger-info">
-            <div class="passenger-name">
-              PASSENGER: ${passengerData[0]?.firstName?.toUpperCase() || 'PASSENGER'} ${passengerData[0]?.lastName?.toUpperCase() || 'NAME'} ${passengerData[0]?.title?.toUpperCase() || 'MR'} (ADT)
+            <div class="passenger-grid">
+              <div>
+                <div class="passenger-name">
+                  PASSENGER: ${passengerData[0]?.firstName?.toUpperCase() || 'PASSENGER'} ${passengerData[0]?.lastName?.toUpperCase() || 'NAME'} ${passengerData[0]?.title?.toUpperCase() || 'MR'} (ADT)
+                </div>
+                <div class="booking-ref">BOOKING REFERENCE: ${bookingId.toUpperCase()}</div>
+                <div class="ticket-number">TICKET NUMBER: ${Math.random().toString().slice(2, 15)}</div>
+              </div>
+              <div class="issuing-office">
+                <strong>Issuing office:</strong><br>
+                STAFF ON DUTY DEL OFFICE, TR220123680,<br>
+                DELHI<br>
+                <strong>Date of issue:</strong> ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+              </div>
             </div>
-            <div class="booking-ref">BOOKING REFERENCE: ${bookingId.toUpperCase()}</div>
-            <div class="ticket-number">TICKET NUMBER: ${Math.random().toString().slice(2, 15)}</div>
-            <div class="issuing-office">
-              <strong>Issuing office:</strong><br>
-              STAFF ON DUTY DEL OFFICE, TR220123680,<br>
-              DELHI<br>
-              <strong>Date of issue:</strong> ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\\s/g, '')}
-            </div>
-          </div>
-
-          <!-- Itinerary Header -->
-          <div class="itinerary-header">
-            ELECTRONIC TICKET ITINERARY / RECEIPT
-          </div>
-          
-          <div class="additional-info">
-            <p style="font-size: 12px; margin-bottom: 15px; line-height: 1.4;">
-              You must present this receipt along with a valid photo identification, mentioned at the time of booking, to enter the airport. We seek your attention to make a note of our Terms and Conditions of Contract at www.airindia.com
-            </p>
-            <p style="font-size: 12px; margin-bottom: 20px; line-height: 1.4;">
-              Web check-in is not permitted for Air India codeshare flight segments operated by Air Asia. Passenger has to get the check-in done for such flights at the Air Asia airport check-in counters.
-            </p>
           </div>
 
           <!-- Flight Details -->
           <div class="flight-details">
-            <div class="flight-row" style="background: #e9ecef; font-weight: bold; padding: 10px 0;">
-              <div>From</div>
-              <div>To</div>
-              <div>Flight</div>
-              <div>Departure</div>
-              <div>Arrival</div>
+            <div class="itinerary-header">
+              ELECTRONIC TICKET ITINERARY / RECEIPT
             </div>
             
-            <div class="flight-row">
-              <div class="route-info">
-                <h3>${flightData.from} ${flightData.from === 'Delhi' ? 'INDIRA GANDHI INTL' : 'INTERNATIONAL'}</h3>
-                <p>Terminal: ${Math.floor(Math.random() * 3) + 1}</p>
-              </div>
-              <div class="route-info">
-                <h3>${flightData.to} ${flightData.to === 'Frankfurt' ? 'FRANKFURT INTL' : 'INTERNATIONAL'}</h3>
-                <p>Terminal: ${Math.floor(Math.random() * 3) + 1}</p>
-              </div>
-              <div class="flight-code">
-                ${flightData.flightNumber || 'AI121'}
-              </div>
+            <div class="disclaimer-text">
+              You must present this receipt along with a valid photo identification, mentioned at the time of booking, to enter the airport. 
+              We seek your attention to make a note of our Terms and Conditions of Contract at www.airindia.com
+            </div>
+
+            <!-- Flight Route -->
+            <div class="flight-route">
               <div>
+                <div class="route-city">${flightData.from || 'Delhi'}</div>
+                <div class="route-airport">${flightData.from === 'Delhi' ? 'INDIRA GANDHI INTL' : 'INTERNATIONAL'}</div>
+                <div class="route-terminal">Terminal: ${Math.floor(Math.random() * 3) + 1}</div>
+              </div>
+              
+              <div class="flight-info">
+                <div class="flight-number">${flightData.flightNumber || 'AI121'}</div>
+                <svg class="plane-graphic" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                </svg>
+              </div>
+              
+              <div>
+                <div class="route-city">${flightData.to || 'Mumbai'}</div>
+                <div class="route-airport">${flightData.to === 'Frankfurt' ? 'FRANKFURT INTL' : 'INTERNATIONAL'}</div>
+                <div class="route-terminal">Terminal: ${Math.floor(Math.random() * 3) + 1}</div>
+              </div>
+            </div>
+
+            <!-- Times -->
+            <div class="times-section">
+              <div class="time-block">
                 <div class="time">${flightData.departureTime || '14:00'}</div>
-                <div class="date">${new Date(flightData.departureDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\\s/g, '')}</div>
+                <div class="date">
+                  ${new Date(flightData.departureDate).toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                  })}
+                </div>
+                <div class="time-label">Departure</div>
               </div>
-              <div>
+              <div class="time-block">
                 <div class="time">${flightData.arrivalTime || '18:00'}</div>
-                <div class="date">${new Date(flightData.departureDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\\s/g, '')}</div>
+                <div class="date">
+                  ${new Date(flightData.departureDate).toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                  })}
+                </div>
+                <div class="time-label">Arrival</div>
               </div>
             </div>
           </div>
 
-          <!-- Class and Booking Information -->
+          <!-- Additional Information -->
           <div class="additional-info">
-            <div class="class-info">
-              <div>
+            <div class="info-grid">
+              <div class="info-column">
                 <div class="info-item">
-                  <span><strong>Class:</strong></span>
-                  <span>Y</span>
+                  <span class="info-label">Class:</span>
+                  <span class="info-value">Y</span>
                 </div>
                 <div class="info-item">
-                  <span><strong>Baggage:</strong></span>
-                  <span>2PC</span>
+                  <span class="info-label">Baggage:</span>
+                  <span class="info-value">2PC</span>
                 </div>
                 <div class="info-item">
-                  <span><strong>Fare basis:</strong></span>
-                  <span>ID00S1</span>
+                  <span class="info-label">Fare basis:</span>
+                  <span class="info-value">ID00S1</span>
                 </div>
                 <div class="info-item">
-                  <span><strong>Flight duration:</strong></span>
-                  <span>${flightData.duration || '08:30'}</span>
+                  <span class="info-label">Flight duration:</span>
+                  <span class="info-value">${flightData.duration || '08:30'}</span>
                 </div>
               </div>
-              <div>
+              <div class="info-column">
                 <div class="info-item">
-                  <span><strong>Operated by:</strong></span>
-                  <span>AIR INDIA</span>
+                  <span class="info-label">Operated by:</span>
+                  <span class="info-value">AIR INDIA</span>
                 </div>
                 <div class="info-item">
-                  <span><strong>Marketed by:</strong></span>
-                  <span>AIR INDIA</span>
+                  <span class="info-label">Marketed by:</span>
+                  <span class="info-value">AIR INDIA</span>
                 </div>
                 <div class="info-item">
-                  <span><strong>Booking status:</strong></span>
-                  <span>RQ</span>
+                  <span class="info-label">Booking status:</span>
+                  <span class="info-value status-confirmed">CONFIRMED</span>
                 </div>
                 <div class="info-item">
-                  <span><strong>Total Amount:</strong></span>
-                  <span>₹${totalAmount.toLocaleString()}</span>
+                  <span class="info-label">Total Amount:</span>
+                  <span class="info-value total-amount">₹${totalAmount.toLocaleString()}</span>
                 </div>
               </div>
             </div>
-            
-            <!-- Barcode Section -->
-            <div class="barcode-section">
-              <div class="barcode-placeholder"></div>
-            </div>
-          </div>
 
-          <!-- Important Information -->
-          <div class="important-notes">
-            <h4>Important Travel Information:</h4>
-            <p>
-              • Please carry a valid photo ID for domestic flights or passport for international flights<br>
-              • Web check-in opens 48 hours before departure<br>
-              • Arrive at airport at least 2 hours before domestic flights, 3 hours for international<br>
-              • Contact: ${contactInfo.phone} | ${contactInfo.email}
-            </p>
+            <!-- Important Information -->
+            <div class="important-notes">
+              <h4 class="notes-title">Important Travel Information:</h4>
+              <div class="notes-list">
+                <p>• Please carry a valid photo ID for domestic flights or passport for international flights</p>
+                <p>• Web check-in opens 48 hours before departure</p>
+                <p>• Arrive at airport at least 2 hours before domestic flights, 3 hours for international</p>
+                <p>• Contact: ${contactInfo.phone} | ${contactInfo.email}</p>
+              </div>
+            </div>
           </div>
         </div>
       </body>

@@ -62,7 +62,7 @@ const CityAutocomplete = ({ value, onChange, placeholder }: CityAutocompleteProp
     const inputValue = e.target.value;
     onChange(inputValue);
 
-    if (inputValue.length >= 2) {
+    if (inputValue.length >= 1) {
       const filtered = cities.filter(
         city =>
           city.name.toLowerCase().includes(inputValue.toLowerCase()) ||
@@ -82,7 +82,18 @@ const CityAutocomplete = ({ value, onChange, placeholder }: CityAutocompleteProp
   };
 
   const handleFocus = () => {
-    if (value.length >= 2) {
+    if (value.length >= 1) {
+      const filtered = cities.filter(
+        city =>
+          city.name.toLowerCase().includes(value.toLowerCase()) ||
+          city.code.toLowerCase().includes(value.toLowerCase()) ||
+          city.airport.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredCities(filtered);
+      setShowSuggestions(true);
+    } else {
+      // Show popular destinations when focused with empty input
+      setFilteredCities(cities.slice(0, 10));
       setShowSuggestions(true);
     }
   };
