@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plane, Clock, MapPin, Users, Calendar, Filter, SortAsc } from 'lucide-react';
@@ -31,39 +30,92 @@ const FlightSearch = () => {
     }
   }, [fromLocation, toLocation, departureDate]);
 
-  // Generate demo flights based on search parameters
+  // Enhanced flight data generation with more realistic random data
   const generateFlights = () => {
     const airlines = [
-      { name: 'Air India', logo: '🇮🇳', code: 'AI' },
-      { name: 'SpiceJet', logo: '🌶️', code: 'SG' },
-      { name: 'IndiGo', logo: '💙', code: 'IN' },
-      { name: 'Vistara', logo: '✈️', code: 'UK' },
-      { name: 'GoAir', logo: '🔵', code: 'GO' }
+      { name: 'Air India', logo: '🇮🇳', code: 'AI', baseMultiplier: 1.2 },
+      { name: 'SpiceJet', logo: '🌶️', code: 'SG', baseMultiplier: 0.8 },
+      { name: 'IndiGo', logo: '💙', code: 'IN', baseMultiplier: 0.9 },
+      { name: 'Vistara', logo: '✈️', code: 'UK', baseMultiplier: 1.4 },
+      { name: 'GoAir', logo: '🔵', code: 'GO', baseMultiplier: 0.85 },
+      { name: 'AirAsia India', logo: '🔴', code: 'I5', baseMultiplier: 0.75 },
+      { name: 'Alliance Air', logo: '🟢', code: '9I', baseMultiplier: 0.95 }
     ];
 
-    const aircraft = ['Boeing 737', 'Airbus A320', 'Boeing 777', 'Airbus A350'];
+    const aircraft = [
+      'Boeing 737-800', 'Airbus A320', 'Boeing 777-300', 'Airbus A350', 
+      'Boeing 787', 'Airbus A319', 'ATR 72', 'Embraer E190'
+    ];
+
+    const flightTypes = ['Non-stop', '1 Stop', '2+ Stops'];
+    const cabinClasses = ['Economy', 'Premium Economy', 'Business', 'First'];
+    
+    // Calculate base price based on route distance (rough estimation)
+    const calculateBasePrice = (from: string, to: string) => {
+      const domesticRoutes = ['Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Kolkata', 'Hyderabad', 'Pune', 'Jaipur'];
+      const fromCity = from.split(' ')[0];
+      const toCity = to.split(' ')[0];
+      
+      const isDomestic = domesticRoutes.includes(fromCity) && domesticRoutes.includes(toCity);
+      
+      if (isDomestic) {
+        return 3500 + Math.floor(Math.random() * 4000); // Domestic flights: 3500-7500
+      } else {
+        return 15000 + Math.floor(Math.random() * 35000); // International flights: 15000-50000
+      }
+    };
+
+    const basePrice = calculateBasePrice(fromLocation, toLocation);
     
     return airlines.map((airline, index) => {
-      const basePrice = 3500 + (index * 500) + Math.floor(Math.random() * 2000);
-      const departureHour = 6 + (index * 3);
-      const arrivalHour = departureHour + 2 + Math.floor(Math.random() * 2);
+      const flightNumber = `${airline.code}${100 + Math.floor(Math.random() * 900)}`;
+      const adjustedPrice = Math.floor(basePrice * airline.baseMultiplier);
+      const finalPrice = adjustedPrice + (index * 500) + Math.floor(Math.random() * 2000);
+      
+      // Generate realistic departure times
+      const departureHour = 6 + (index * 2.5) + Math.floor(Math.random() * 2);
+      const departureMinute = Math.floor(Math.random() * 60);
+      
+      // Calculate arrival based on flight type and distance
+      const flightType = flightTypes[Math.floor(Math.random() * flightTypes.length)];
+      let baseDuration = 2; // hours
+      
+      if (flightType === '1 Stop') baseDuration += 2;
+      if (flightType === '2+ Stops') baseDuration += 4;
+      if (!fromLocation.includes('India') || !toLocation.includes('India')) baseDuration += 6;
+      
+      const totalMinutes = (baseDuration * 60) + Math.floor(Math.random() * 120);
+      const arrivalTime = new Date();
+      arrivalTime.setHours(departureHour, departureMinute);
+      arrivalTime.setMinutes(arrivalTime.getMinutes() + totalMinutes);
+      
+      const cabinClass = cabinClasses[Math.floor(Math.random() * cabinClasses.length)];
+      const seatCount = Math.floor(Math.random() * 50) + 5;
       
       return {
-        id: `${airline.code}${100 + index}`,
+        id: flightNumber,
         airline: airline.name,
         logo: airline.logo,
         from: fromLocation || 'Delhi (DEL)',
         to: toLocation || 'Mumbai (BOM)',
-        departure: `${String(departureHour).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-        arrival: `${String(arrivalHour).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-        duration: `${2 + Math.floor(Math.random() * 2)}h ${Math.floor(Math.random() * 60)}m`,
-        price: basePrice,
-        type: Math.random() > 0.3 ? 'Non-stop' : '1 Stop',
+        departure: `${String(departureHour).padStart(2, '0')}:${String(departureMinute).padStart(2, '0')}`,
+        arrival: `${String(arrivalTime.getHours()).padStart(2, '0')}:${String(arrivalTime.getMinutes()).padStart(2, '0')}`,
+        duration: `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m`,
+        price: finalPrice,
+        type: flightType,
         aircraft: aircraft[Math.floor(Math.random() * aircraft.length)],
-        class: index === 3 ? 'Premium Economy' : 'Economy',
-        seats: Math.floor(Math.random() * 50) + 10,
+        class: cabinClass,
+        seats: seatCount,
         departureDate,
-        passengers
+        passengers,
+        // Additional random data
+        baggage: `${15 + Math.floor(Math.random() * 15)}kg`,
+        meal: Math.random() > 0.5 ? 'Included' : 'Available for purchase',
+        wifi: Math.random() > 0.6,
+        entertainment: Math.random() > 0.4,
+        powerOutlets: Math.random() > 0.7,
+        rating: (3.5 + Math.random() * 1.5).toFixed(1),
+        onTimePerformance: Math.floor(75 + Math.random() * 20) + '%'
       };
     });
   };
@@ -74,6 +126,7 @@ const FlightSearch = () => {
     if (sortBy === 'price') return a.price - b.price;
     if (sortBy === 'duration') return a.duration.localeCompare(b.duration);
     if (sortBy === 'departure') return a.departure.localeCompare(b.departure);
+    if (sortBy === 'rating') return parseFloat(b.rating) - parseFloat(a.rating);
     return 0;
   });
 
@@ -81,6 +134,7 @@ const FlightSearch = () => {
     navigate('/flight-booking', { state: { flightData: flight } });
   };
 
+  
   if (showSearchForm) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-25 to-blue-50">
@@ -196,6 +250,7 @@ const FlightSearch = () => {
                   <option value="price">Price</option>
                   <option value="duration">Duration</option>
                   <option value="departure">Departure Time</option>
+                  <option value="rating">Rating</option>
                 </select>
               </div>
             </div>
@@ -233,9 +288,10 @@ const FlightSearch = () => {
                                 <p className="text-sm text-gray-600">{flight.id} • {flight.aircraft}</p>
                               </div>
                             </div>
-                            <Badge variant="secondary" className="self-start sm:self-center">
-                              {flight.type}
-                            </Badge>
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="secondary">{flight.type}</Badge>
+                              <Badge variant="outline">★ {flight.rating}</Badge>
+                            </div>
                           </div>
                           
                           {/* Route and Time */}
@@ -273,6 +329,9 @@ const FlightSearch = () => {
                             </div>
                             <div className="flex items-center space-x-1">
                               <Badge variant="outline">{flight.class}</Badge>
+                            </div>
+                            <div className="text-xs">
+                              Baggage: {flight.baggage} • {flight.meal} • On-time: {flight.onTimePerformance}
                             </div>
                           </div>
                         </div>

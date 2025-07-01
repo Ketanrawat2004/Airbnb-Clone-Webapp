@@ -2,11 +2,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { MapPin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { supabase } from '@/integrations/supabase/client';
 
 interface HotelLocation {
   name: string;
   type: string;
   hotels: number;
+  id?: string;
 }
 
 interface HotelAutocompleteProps {
@@ -18,32 +20,78 @@ interface HotelAutocompleteProps {
 const HotelAutocomplete = ({ value, onChange, placeholder }: HotelAutocompleteProps) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredLocations, setFilteredLocations] = useState<HotelLocation[]>([]);
+  const [availableProperties, setAvailableProperties] = useState<HotelLocation[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
-  // Popular hotel destinations
-  const hotelLocations: HotelLocation[] = [
-    { name: 'Mumbai', type: 'City', hotels: 250 },
-    { name: 'Delhi', type: 'City', hotels: 180 },
-    { name: 'Bangalore', type: 'City', hotels: 120 },
-    { name: 'Goa', type: 'State', hotels: 95 },
-    { name: 'Jaipur', type: 'City', hotels: 85 },
-    { name: 'Chennai', type: 'City', hotels: 75 },
-    { name: 'Hyderabad', type: 'City', hotels: 70 },
-    { name: 'Kolkata', type: 'City', hotels: 65 },
-    { name: 'Pune', type: 'City', hotels: 60 },
-    { name: 'Agra', type: 'City', hotels: 55 },
-    { name: 'Udaipur', type: 'City', hotels: 45 },
-    { name: 'Shimla', type: 'City', hotels: 40 },
-    { name: 'Manali', type: 'City', hotels: 38 },
-    { name: 'Rishikesh', type: 'City', hotels: 35 },
-    { name: 'Varanasi', type: 'City', hotels: 32 },
-    { name: 'Amritsar', type: 'City', hotels: 30 },
-    { name: 'Kochi', type: 'City', hotels: 28 },
-    { name: 'Mysore', type: 'City', hotels: 25 },
-    { name: 'Jodhpur', type: 'City', hotels: 22 },
-    { name: 'Darjeeling', type: 'City', hotels: 20 },
-  ];
+  // Load available properties from database
+  useEffect(() => {
+    const loadAvailableProperties = async () => {
+      try {
+        const { data: hotels, error } = await supabase
+          .from('hotels')
+          .select('id, name, location')
+          .limit(50);
+
+        if (error) {
+          console.error('Error loading hotels:', error);
+          return;
+        }
+
+        // Create location map with hotel counts
+        const locationMap = new Map<string, { count: number; hotels: string[] }>();
+        const hotelMap = new Map<string, { location: string; id: string }>();
+
+        hotels?.forEach(hotel => {
+          // Add to location map
+          if (!locationMap.has(hotel.location)) {
+            locationMap.set(hotel.location, { count: 0, hotels: [] });
+          }
+          const locationData = locationMap.get(hotel.location)!;
+          locationData.count++;
+          locationData.hotels.push(hotel.name);
+
+          // Add to hotel map
+          hotelMap.set(hotel.name, { location: hotel.location, id: hotel.id });
+        });
+
+        const properties: HotelLocation[] = [];
+
+        // Add locations
+        locationMap.forEach((data, location) => {
+          properties.push({
+            name: location,
+            type: 'City',
+            hotels: data.count
+          });
+        });
+
+        // Add individual hotels
+        hotelMap.forEach((data, hotelName) => {
+          properties.push({
+            name: hotelName,
+            type: 'Hotel',
+            hotels: 1,
+            id: data.id
+          });
+        });
+
+        setAvailableProperties(properties);
+      } catch (error) {
+        console.error('Error loading available properties:', error);
+        // Fallback to static data
+        setAvailableProperties([
+          { name: 'Mumbai', type: 'City', hotels: 25 },
+          { name: 'Delhi', type: 'City', hotels: 18 },
+          { name: 'Bangalore', type: 'City', hotels: 12 },
+          { name: 'Goa', type: 'State', hotels: 9 },
+          { name: 'Jaipur', type: 'City', hotels: 8 },
+        ]);
+      }
+    };
+
+    loadAvailableProperties();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -60,13 +108,28 @@ const HotelAutocomplete = ({ value, onChange, placeholder }: HotelAutocompletePr
     const inputValue = e.target.value;
     onChange(inputValue);
 
-    if (inputValue.length >= 1) {
-      const filtered = hotelLocations.filter(
-        location =>
-          location.name.toLowerCase().includes(inputValue.toLowerCase())
-      );
+    if (inputValue.length >= 2) {
+      const filtered = availableProperties.filter(
+        property =>
+          property.name.toLowerCase().includes(inputValue.toLowerCase())
+      ).slice(0, 8);
+      
       setFilteredLocations(filtered);
       setShowSuggestions(true);
+
+      // Auto-select first match if typing 3+ characters and there's an exact match
+      if (inputValue.length >= 3 && filtered.length > 0) {
+        const exactMatch = filtered.find(property => 
+          property.name.toLowerCase().startsWith(inputValue.toLowerCase())
+        );
+        if (exactMatch) {
+          // Small delay to show the suggestion before auto-selecting
+          setTimeout(() => {
+            onChange(exactMatch.name);
+            setShowSuggestions(false);
+          }, 500);
+        }
+      }
     } else {
       setShowSuggestions(false);
     }
@@ -78,16 +141,16 @@ const HotelAutocomplete = ({ value, onChange, placeholder }: HotelAutocompletePr
   };
 
   const handleFocus = () => {
-    if (value.length >= 1) {
-      const filtered = hotelLocations.filter(
-        location =>
-          location.name.toLowerCase().includes(value.toLowerCase())
-      );
+    if (value.length >= 2) {
+      const filtered = availableProperties.filter(
+        property =>
+          property.name.toLowerCase().includes(value.toLowerCase())
+      ).slice(0, 8);
       setFilteredLocations(filtered);
       setShowSuggestions(true);
     } else {
       // Show popular destinations when focused with empty input
-      setFilteredLocations(hotelLocations.slice(0, 8));
+      setFilteredLocations(availableProperties.slice(0, 8));
       setShowSuggestions(true);
     }
   };
@@ -123,7 +186,7 @@ const HotelAutocomplete = ({ value, onChange, placeholder }: HotelAutocompletePr
                   </div>
                 </div>
                 <div className="text-xs text-gray-500">
-                  {location.hotels} hotels
+                  {location.hotels} {location.hotels === 1 ? 'hotel' : 'hotels'}
                 </div>
               </div>
             </div>

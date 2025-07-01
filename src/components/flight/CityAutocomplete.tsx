@@ -22,7 +22,7 @@ const CityAutocomplete = ({ value, onChange, placeholder }: CityAutocompleteProp
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
-  // Popular Indian cities with airports
+  // Enhanced cities data with more airports
   const cities: City[] = [
     { name: 'Mumbai', code: 'BOM', airport: 'Chhatrapati Shivaji International', country: 'India' },
     { name: 'Delhi', code: 'DEL', airport: 'Indira Gandhi International', country: 'India' },
@@ -39,12 +39,22 @@ const CityAutocomplete = ({ value, onChange, placeholder }: CityAutocompleteProp
     { name: 'Chandigarh', code: 'IXC', airport: 'Chandigarh Airport', country: 'India' },
     { name: 'Thiruvananthapuram', code: 'TRV', airport: 'Trivandrum International', country: 'India' },
     { name: 'Bhubaneswar', code: 'BBI', airport: 'Biju Patnaik International', country: 'India' },
+    { name: 'Indore', code: 'IDR', airport: 'Devi Ahilyabai Holkar Airport', country: 'India' },
+    { name: 'Nagpur', code: 'NAG', airport: 'Dr. Babasaheb Ambedkar International', country: 'India' },
+    { name: 'Surat', code: 'STV', airport: 'Surat Airport', country: 'India' },
+    { name: 'Vadodara', code: 'BDQ', airport: 'Vadodara Airport', country: 'India' },
+    { name: 'Coimbatore', code: 'CJB', airport: 'Coimbatore International', country: 'India' },
     // International cities
     { name: 'Dubai', code: 'DXB', airport: 'Dubai International', country: 'UAE' },
     { name: 'Singapore', code: 'SIN', airport: 'Singapore Changi', country: 'Singapore' },
     { name: 'London', code: 'LHR', airport: 'Heathrow Airport', country: 'UK' },
     { name: 'New York', code: 'JFK', airport: 'John F. Kennedy International', country: 'USA' },
     { name: 'Bangkok', code: 'BKK', airport: 'Suvarnabhumi Airport', country: 'Thailand' },
+    { name: 'Tokyo', code: 'NRT', airport: 'Narita International', country: 'Japan' },
+    { name: 'Frankfurt', code: 'FRA', airport: 'Frankfurt Airport', country: 'Germany' },
+    { name: 'Paris', code: 'CDG', airport: 'Charles de Gaulle Airport', country: 'France' },
+    { name: 'Amsterdam', code: 'AMS', airport: 'Amsterdam Airport Schiphol', country: 'Netherlands' },
+    { name: 'Zurich', code: 'ZUR', airport: 'Zurich Airport', country: 'Switzerland' },
   ];
 
   useEffect(() => {
@@ -62,15 +72,31 @@ const CityAutocomplete = ({ value, onChange, placeholder }: CityAutocompleteProp
     const inputValue = e.target.value;
     onChange(inputValue);
 
-    if (inputValue.length >= 1) {
+    if (inputValue.length >= 2) {
       const filtered = cities.filter(
         city =>
           city.name.toLowerCase().includes(inputValue.toLowerCase()) ||
           city.code.toLowerCase().includes(inputValue.toLowerCase()) ||
           city.airport.toLowerCase().includes(inputValue.toLowerCase())
-      );
+      ).slice(0, 10);
+      
       setFilteredCities(filtered);
       setShowSuggestions(true);
+
+      // Auto-select first match if typing 3+ characters and there's a good match
+      if (inputValue.length >= 3 && filtered.length > 0) {
+        const exactMatch = filtered.find(city => 
+          city.name.toLowerCase().startsWith(inputValue.toLowerCase()) ||
+          city.code.toLowerCase() === inputValue.toLowerCase()
+        );
+        if (exactMatch) {
+          // Small delay to show the suggestion before auto-selecting
+          setTimeout(() => {
+            onChange(`${exactMatch.name} (${exactMatch.code})`);
+            setShowSuggestions(false);
+          }, 600);
+        }
+      }
     } else {
       setShowSuggestions(false);
     }
@@ -82,18 +108,18 @@ const CityAutocomplete = ({ value, onChange, placeholder }: CityAutocompleteProp
   };
 
   const handleFocus = () => {
-    if (value.length >= 1) {
+    if (value.length >= 2) {
       const filtered = cities.filter(
         city =>
           city.name.toLowerCase().includes(value.toLowerCase()) ||
           city.code.toLowerCase().includes(value.toLowerCase()) ||
           city.airport.toLowerCase().includes(value.toLowerCase())
-      );
+      ).slice(0, 10);
       setFilteredCities(filtered);
       setShowSuggestions(true);
     } else {
       // Show popular destinations when focused with empty input
-      setFilteredCities(cities.slice(0, 10));
+      setFilteredCities(cities.slice(0, 12));
       setShowSuggestions(true);
     }
   };
