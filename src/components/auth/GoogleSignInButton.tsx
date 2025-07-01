@@ -15,17 +15,21 @@ const GoogleSignInButton = ({ disabled = false }: GoogleSignInButtonProps) => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     
-    const { error } = await signInWithGoogle();
-    
-    if (error) {
-      console.log('Google sign in error:', error);
-      toast.error('Failed to sign in with Google. Please try again.');
-    } else {
-      toast.success('Redirecting to Google sign in...');
-      // Note: The user will be redirected to Google, so we don't close the modal here
+    try {
+      const { error } = await signInWithGoogle();
+      
+      if (error) {
+        console.error('Google sign in error:', error);
+        toast.error('Failed to sign in with Google. Please try again.');
+      } else {
+        toast.success('Redirecting to Google sign in...');
+      }
+    } catch (err) {
+      console.error('Unexpected error during Google sign in:', err);
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -33,10 +37,13 @@ const GoogleSignInButton = ({ disabled = false }: GoogleSignInButtonProps) => {
       onClick={handleGoogleSignIn}
       disabled={loading || disabled}
       variant="outline"
-      className="w-full"
+      className="w-full hover:bg-gray-50 transition-colors duration-200"
     >
       {loading ? (
-        'Redirecting to Google...'
+        <div className="flex items-center">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2"></div>
+          Connecting to Google...
+        </div>
       ) : (
         <>
           <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">

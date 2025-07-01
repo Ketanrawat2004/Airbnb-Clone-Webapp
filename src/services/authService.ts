@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export const authService = {
@@ -56,7 +55,6 @@ export const authService = {
     try {
       console.log('Starting Google sign in process');
       
-      // Get current origin for redirect
       const origin = window.location.origin;
       const redirectTo = `${origin}/`;
       
@@ -68,7 +66,7 @@ export const authService = {
           redirectTo: redirectTo,
           queryParams: {
             access_type: 'offline',
-            prompt: 'consent',
+            prompt: 'select_account',
           },
         },
       });

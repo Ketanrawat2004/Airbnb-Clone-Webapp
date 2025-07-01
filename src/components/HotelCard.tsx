@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -51,6 +50,9 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Convert price from paise to rupees and keep it consistent
+  const pricePerNight = Math.round(hotel.price_per_night / 100);
+
   const toggleWishlist = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isInWishlist(hotel.id)) {
@@ -68,9 +70,6 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
     e.stopPropagation();
     setBookingModalOpen(true);
   };
-
-  // Convert price from paise to rupees
-  const pricePerNight = hotel.price_per_night / 100;
 
   return (
     <>

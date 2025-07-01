@@ -25,14 +25,12 @@ const FlightTicket = ({ bookingId, flightData, passengerData, contactInfo, total
     try {
       toast.loading('Generating your ticket...');
       
-      // Create a printable version
       const printWindow = window.open('', '_blank');
       if (printWindow) {
         const ticketHTML = generateTicketHTML();
         printWindow.document.write(ticketHTML);
         printWindow.document.close();
         
-        // Wait for images and styles to load
         printWindow.onload = () => {
           setTimeout(() => {
             printWindow.print();
@@ -60,7 +58,6 @@ const FlightTicket = ({ bookingId, flightData, passengerData, contactInfo, total
         });
         toast.success('Ticket details shared successfully!');
       } else {
-        // Fallback to clipboard
         await navigator.clipboard.writeText(
           `Flight Ticket ${bookingId}\nFrom: ${flightData.from}\nTo: ${flightData.to}\nDate: ${flightData.departureDate}\nBooking: ${window.location.href}`
         );
@@ -79,233 +76,309 @@ const FlightTicket = ({ bookingId, flightData, passengerData, contactInfo, total
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Flight Ticket - ${bookingId}</title>
+          <title>Flight E-Ticket - ${bookingId}</title>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { 
               font-family: 'Arial', sans-serif; 
-              line-height: 1.6;
-              color: #333;
-              background: #f8fafc;
+              background: #f5f5f5;
               padding: 20px;
             }
-            .ticket { 
-              background: white;
-              border: 2px solid #2563eb; 
-              border-radius: 16px; 
-              padding: 30px; 
-              max-width: 800px; 
+            .ticket-container {
+              max-width: 800px;
               margin: 0 auto;
-              box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+              background: white;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             }
-            .header { 
-              text-align: center; 
-              border-bottom: 2px dashed #2563eb; 
-              padding-bottom: 25px; 
-              margin-bottom: 25px;
-              background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            .airline-header {
+              background: linear-gradient(135deg, #dc2626, #b91c1c);
               color: white;
-              margin: -30px -30px 25px -30px;
-              padding: 30px;
-              border-radius: 14px 14px 0 0;
+              padding: 20px;
+              position: relative;
+              overflow: hidden;
             }
-            .header h1 { font-size: 28px; margin-bottom: 8px; }
-            .header h2 { font-size: 20px; margin-bottom: 5px; }
-            .flight-info { 
+            .airline-header::before {
+              content: '';
+              position: absolute;
+              top: -10px;
+              right: -10px;
+              width: 100px;
+              height: 100px;
+              background: rgba(255,255,255,0.1);
+              border-radius: 50%;
+            }
+            .airline-logo {
+              font-size: 28px;
+              font-weight: bold;
+              letter-spacing: 2px;
+              margin-bottom: 5px;
+            }
+            .passenger-info {
+              background: #fff3cd;
+              padding: 15px 20px;
+              border-left: 4px solid #ffc107;
+            }
+            .passenger-name {
+              font-size: 18px;
+              font-weight: bold;
+              color: #333;
+              margin-bottom: 5px;
+            }
+            .booking-ref {
+              background: #fff3cd;
+              padding: 8px 12px;
+              border-radius: 4px;
+              font-weight: bold;
+              display: inline-block;
+              margin-bottom: 5px;
+            }
+            .ticket-number {
+              font-size: 14px;
+              color: #666;
+            }
+            .issuing-office {
+              text-align: right;
+              color: #666;
+            }
+            .itinerary-header {
+              background: #e9ecef;
+              padding: 15px 20px;
+              font-weight: bold;
+              font-size: 16px;
+              color: #333;
+              border-bottom: 2px solid #dee2e6;
+            }
+            .flight-details {
+              padding: 20px;
+              background: #f8f9fa;
+            }
+            .flight-row {
               display: grid;
-              grid-template-columns: 1fr auto 1fr;
+              grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
               gap: 20px;
               align-items: center;
-              margin: 25px 0;
+              padding: 15px 0;
+              border-bottom: 1px solid #dee2e6;
+            }
+            .flight-row:last-child {
+              border-bottom: none;
+            }
+            .route-info h3 {
+              font-size: 16px;
+              font-weight: bold;
+              margin-bottom: 5px;
+            }
+            .route-info p {
+              font-size: 14px;
+              color: #666;
+              margin: 2px 0;
+            }
+            .flight-code {
+              font-weight: bold;
+              font-size: 16px;
+            }
+            .time {
+              font-size: 18px;
+              font-weight: bold;
+              color: #333;
+            }
+            .date {
+              font-size: 14px;
+              color: #666;
+            }
+            .barcode-section {
+              text-align: right;
               padding: 20px;
-              background: #f8fafc;
-              border-radius: 12px;
             }
-            .flight-location { text-align: center; }
-            .flight-location h3 { font-size: 24px; margin-bottom: 8px; color: #1e40af; }
-            .flight-location p { margin: 4px 0; color: #64748b; }
-            .flight-center { 
-              text-align: center; 
-              padding: 0 20px;
-              border-left: 2px solid #e2e8f0;
-              border-right: 2px solid #e2e8f0;
+            .barcode-placeholder {
+              width: 120px;
+              height: 60px;
+              background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyIiBoZWlnaHQ9IjYwIiBmaWxsPSJibGFjayIvPjxyZWN0IHg9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjYwIiBmaWxsPSJibGFjayIvPjxyZWN0IHg9IjciIHdpZHRoPSIzIiBoZWlnaHQ9IjYwIiBmaWxsPSJibGFjayIvPjxyZWN0IHg9IjEyIiB3aWR0aD0iMSIgaGVpZ2h0PSI2MCIgZmlsbD0iYmxhY2siLz48L3N2Zz4=') repeat-x;
+              margin-left: auto;
             }
-            .flight-center h3 { color: #2563eb; margin-bottom: 5px; }
-            .passenger-info { margin: 25px 0; }
-            .passenger-info h3 { 
-              color: #1e40af; 
-              margin-bottom: 15px; 
-              font-size: 18px;
+            .additional-info {
+              padding: 20px;
+              background: #f8f9fa;
+              border-top: 1px solid #dee2e6;
+            }
+            .class-info {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 15px;
+              margin-bottom: 20px;
+            }
+            .info-item {
               display: flex;
+              justify-content: space-between;
               align-items: center;
-              gap: 8px;
+              padding: 8px 0;
+              border-bottom: 1px solid #eee;
             }
-            .passenger-card { 
-              background: #f1f5f9; 
-              padding: 15px; 
-              border-radius: 8px; 
-              margin: 10px 0;
-              border-left: 4px solid #3b82f6;
+            .info-item:last-child {
+              border-bottom: none;
             }
-            .booking-details { 
-              background: #eff6ff; 
-              padding: 20px; 
-              border-radius: 12px; 
-              margin: 20px 0;
-            }
-            .booking-details h3 { 
-              color: #1e40af; 
-              margin-bottom: 15px;
-              font-size: 18px;
-            }
-            .detail-grid { 
-              display: grid; 
-              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-              gap: 20px; 
-            }
-            .detail-item { display: flex; justify-content: space-between; margin: 8px 0; }
-            .detail-item strong { color: #374151; }
-            .important-notes { 
-              background: #fef3c7; 
-              border: 1px solid #f59e0b;
-              border-radius: 8px; 
-              padding: 20px; 
-              margin: 20px 0; 
-            }
-            .important-notes h4 { color: #92400e; margin-bottom: 12px; }
-            .important-notes ul { padding-left: 20px; }
-            .important-notes li { margin: 8px 0; color: #92400e; }
-            .qr-section { 
-              text-align: center; 
-              border-top: 2px dashed #d1d5db; 
-              padding-top: 20px; 
+            .important-notes {
+              background: #fff3cd;
+              border: 1px solid #ffc107;
+              border-radius: 6px;
+              padding: 15px;
               margin-top: 20px;
             }
-            .status-badge { 
-              background: #10b981; 
-              color: white; 
-              padding: 6px 12px; 
-              border-radius: 20px; 
-              font-size: 14px; 
-              font-weight: bold;
+            .important-notes h4 {
+              color: #856404;
+              margin-bottom: 10px;
+              font-size: 14px;
             }
-            @media print { 
-              body { background: white; padding: 10px; }
-              .ticket { box-shadow: none; border: 1px solid #ccc; }
+            .important-notes p {
+              font-size: 12px;
+              color: #856404;
+              line-height: 1.5;
             }
             @media (max-width: 768px) {
-              .flight-info { grid-template-columns: 1fr; gap: 15px; }
-              .flight-center { border: none; border-top: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0; padding: 15px 0; }
-              .detail-grid { grid-template-columns: 1fr; }
+              body { padding: 10px; }
+              .flight-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: center;
+              }
+              .class-info {
+                grid-template-columns: 1fr;
+              }
+              .airline-logo {
+                font-size: 24px;
+              }
             }
           </style>
         </head>
         <body>
-          <div class="ticket">
-            <div class="header">
-              <h1>✈️ Flight E-Ticket</h1>
-              <h2>Booking ID: ${bookingId}</h2>
-              <p>Issued on: ${new Date().toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}</p>
-              <div style="margin-top: 10px;">
-                <span class="status-badge">Confirmed ✅</span>
-              </div>
+          <div class="ticket-container">
+            <!-- Airline Header -->
+            <div class="airline-header">
+              <div class="airline-logo">AIR INDIA</div>
             </div>
             
-            <div class="flight-info">
-              <div class="flight-location">
-                <h3>📍 ${flightData.from}</h3>
-                <p><strong>Date:</strong> ${flightData.departureDate}</p>
-                <p><strong>Time:</strong> ${flightData.departureTime || '20:00'}</p>
-                <p><strong>Terminal:</strong> T3</p>
-              </div>
-
-              <div class="flight-center">
-                <h3>✈️ ${flightData.airline}</h3>
-                <p><strong>Flight:</strong> ${flightData.flightNumber || 'AI 2809'}</p>
-                <p><strong>Aircraft:</strong> ${flightData.aircraft || 'Boeing 777'}</p>
-                <p><strong>Duration:</strong> ${flightData.duration || '3h 0m'}</p>
-              </div>
-
-              <div class="flight-location">
-                <h3>📍 ${flightData.to}</h3>
-                <p><strong>Date:</strong> ${flightData.departureDate}</p>
-                <p><strong>Time:</strong> ${flightData.arrivalTime || '23:00'}</p>
-                <p><strong>Terminal:</strong> T2</p>
-              </div>
-            </div>
-            
+            <!-- Passenger Information -->
             <div class="passenger-info">
-              <h3>👥 Passenger Details</h3>
-              ${passengerData.map((passenger, index) => `
-                <div class="passenger-card">
-                  <strong>Passenger ${index + 1}:</strong> ${passenger.title} ${passenger.firstName} ${passenger.lastName}<br>
-                  <strong>📧 Email:</strong> ${passenger.email}<br>
-                  <strong>📱 Phone:</strong> ${passenger.phone}<br>
-                  ${passenger.nationality ? `<strong>🌍 Nationality:</strong> ${passenger.nationality}<br>` : ''}
-                  ${passenger.passportNumber ? `<strong>📄 Passport:</strong> ${passenger.passportNumber}` : ''}
-                </div>
-              `).join('')}
+              <div class="passenger-name">
+                PASSENGER: ${passengerData[0]?.firstName?.toUpperCase() || 'PASSENGER'} ${passengerData[0]?.lastName?.toUpperCase() || 'NAME'} ${passengerData[0]?.title?.toUpperCase() || 'MR'} (ADT)
+              </div>
+              <div class="booking-ref">BOOKING REFERENCE: ${bookingId.toUpperCase()}</div>
+              <div class="ticket-number">TICKET NUMBER: ${Math.random().toString().slice(2, 15)}</div>
+              <div class="issuing-office">
+                <strong>Issuing office:</strong><br>
+                STAFF ON DUTY DEL OFFICE, TR220123680,<br>
+                DELHI<br>
+                <strong>Date of issue:</strong> ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\\s/g, '')}
+              </div>
+            </div>
+
+            <!-- Itinerary Header -->
+            <div class="itinerary-header">
+              ELECTRONIC TICKET ITINERARY / RECEIPT
             </div>
             
-            <div class="booking-details">
-              <h3>💳 Payment & Booking Details</h3>
-              <div class="detail-grid">
-                <div>
-                  <div class="detail-item">
-                    <span>Booking Date:</span>
-                    <strong>${new Date().toLocaleDateString('en-IN')}</strong>
-                  </div>
-                  <div class="detail-item">
-                    <span>Contact Phone:</span>
-                    <strong>${contactInfo.phone}</strong>
-                  </div>
-                  <div class="detail-item">
-                    <span>Contact Email:</span>
-                    <strong>${contactInfo.email}</strong>
-                  </div>
+            <div class="additional-info">
+              <p style="font-size: 12px; margin-bottom: 15px; line-height: 1.4;">
+                You must present this receipt along with a valid photo identification, mentioned at the time of booking, to enter the airport. We seek your attention to make a note of our Terms and Conditions of Contract at www.airindia.com
+              </p>
+              <p style="font-size: 12px; margin-bottom: 20px; line-height: 1.4;">
+                Web check-in is not permitted for Air India codeshare flight segments operated by Air Asia. Passenger has to get the check-in done for such flights at the Air Asia airport check-in counters.
+              </p>
+            </div>
+
+            <!-- Flight Details -->
+            <div class="flight-details">
+              <div class="flight-row" style="background: #e9ecef; font-weight: bold; padding: 10px 0;">
+                <div>From</div>
+                <div>To</div>
+                <div>Flight</div>
+                <div>Departure</div>
+                <div>Arrival</div>
+              </div>
+              
+              <div class="flight-row">
+                <div class="route-info">
+                  <h3>${flightData.from} ${flightData.from === 'Delhi' ? 'INDIRA GANDHI INTL' : 'INTERNATIONAL'}</h3>
+                  <p>Terminal: ${Math.floor(Math.random() * 3) + 1}</p>
+                </div>
+                <div class="route-info">
+                  <h3>${flightData.to} ${flightData.to === 'Frankfurt' ? 'FRANKFURT INTL' : 'INTERNATIONAL'}</h3>
+                  <p>Terminal: ${Math.floor(Math.random() * 3) + 1}</p>
+                </div>
+                <div class="flight-code">
+                  ${flightData.flightNumber || 'AI121'}
                 </div>
                 <div>
-                  <div class="detail-item">
-                    <span>Total Amount:</span>
-                    <strong style="color: #059669; font-size: 18px;">₹${totalAmount.toLocaleString()}</strong>
-                  </div>
-                  <div class="detail-item">
-                    <span>Payment ID:</span>
-                    <strong style="font-size: 12px;">${paymentId || 'DEMO_PAYMENT'}</strong>
-                  </div>
-                  <div class="detail-item">
-                    <span>Status:</span>
-                    <strong style="color: #059669;">Confirmed ✅</strong>
-                  </div>
+                  <div class="time">${flightData.departureTime || '14:00'}</div>
+                  <div class="date">${new Date(flightData.departureDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\\s/g, '')}</div>
+                </div>
+                <div>
+                  <div class="time">${flightData.arrivalTime || '18:00'}</div>
+                  <div class="date">${new Date(flightData.departureDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\\s/g, '')}</div>
                 </div>
               </div>
             </div>
 
+            <!-- Class and Booking Information -->
+            <div class="additional-info">
+              <div class="class-info">
+                <div>
+                  <div class="info-item">
+                    <span><strong>Class:</strong></span>
+                    <span>Y</span>
+                  </div>
+                  <div class="info-item">
+                    <span><strong>Baggage:</strong></span>
+                    <span>2PC</span>
+                  </div>
+                  <div class="info-item">
+                    <span><strong>Fare basis:</strong></span>
+                    <span>ID00S1</span>
+                  </div>
+                  <div class="info-item">
+                    <span><strong>Flight duration:</strong></span>
+                    <span>${flightData.duration || '08:30'}</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="info-item">
+                    <span><strong>Operated by:</strong></span>
+                    <span>AIR INDIA</span>
+                  </div>
+                  <div class="info-item">
+                    <span><strong>Marketed by:</strong></span>
+                    <span>AIR INDIA</span>
+                  </div>
+                  <div class="info-item">
+                    <span><strong>Booking status:</strong></span>
+                    <span>RQ</span>
+                  </div>
+                  <div class="info-item">
+                    <span><strong>Total Amount:</strong></span>
+                    <span>₹${totalAmount.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Barcode Section -->
+              <div class="barcode-section">
+                <div class="barcode-placeholder"></div>
+              </div>
+            </div>
+
+            <!-- Important Information -->
             <div class="important-notes">
-              <h4>⚠️ Important Travel Information</h4>
-              <ul>
-                <li>Please carry a valid photo ID for domestic flights or passport for international flights</li>
-                <li>Web check-in opens 48 hours before departure</li>
-                <li>Arrive at airport at least 2 hours before domestic flights, 3 hours for international</li>
-                <li>Baggage allowance: 15kg check-in + 7kg cabin baggage</li>
-                <li>Report to airport at least 45 minutes before domestic flights</li>
-              </ul>
-            </div>
-
-            <div class="qr-section">
-              <div style="font-size: 18px; margin-bottom: 10px;">📱 Show this ticket at airport</div>
-              <div style="color: #6b7280; font-size: 14px;">
-                Booking Reference: <strong>${bookingId}</strong>
-              </div>
-              <div style="margin-top: 15px; color: #6b7280; font-size: 12px;">
-                Generated by Airbnb Clone+ • ${new Date().toLocaleString()}
-              </div>
+              <h4>Important Travel Information:</h4>
+              <p>
+                • Please carry a valid photo ID for domestic flights or passport for international flights<br>
+                • Web check-in opens 48 hours before departure<br>
+                • Arrive at airport at least 2 hours before domestic flights, 3 hours for international<br>
+                • Contact: ${contactInfo.phone} | ${contactInfo.email}
+              </p>
             </div>
           </div>
         </body>
@@ -340,228 +413,171 @@ const FlightTicket = ({ bookingId, flightData, passengerData, contactInfo, total
         <Button
           onClick={handleDownload}
           disabled={isDownloading}
-          className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all duration-200"
+          className="flex items-center space-x-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 shadow-lg hover:shadow-xl transition-all duration-200"
         >
           <Download className="h-4 w-4" />
           <span>{isDownloading ? 'Generating...' : 'Download Ticket'}</span>
         </Button>
       </motion.div>
 
-      {/* Digital Ticket */}
+      {/* Digital Ticket Preview */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        whileHover={{ scale: 1.01 }}
+        transition={ duration: 0.6, delay: 0.1 }}
+        className="bg-white rounded-xl shadow-2xl overflow-hidden"
       >
-        <Card className="border-2 border-blue-200 shadow-2xl bg-gradient-to-br from-white to-blue-50/30 overflow-hidden">
-          <CardContent className="p-0">
-            {/* Header */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 sm:p-8"
-            >
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center space-x-3">
-                  <motion.div
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  >
-                    <Plane className="h-8 w-8" />
-                  </motion.div>
-                  <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold">Flight E-Ticket</h1>
-                    <p className="text-blue-100">Booking Confirmed ✅</p>
-                  </div>
-                </div>
-                <div className="text-center sm:text-right">
-                  <div className="text-lg sm:text-xl font-bold">{bookingId}</div>
-                  <div className="text-sm text-blue-100">Booking ID</div>
-                </div>
+        {/* Air India Header */}
+        <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 sm:p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-white bg-opacity-10 rounded-full -mr-12 -mt-12"></div>
+          <div className="relative z-10">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-wider">AIR INDIA</h1>
+            <div className="flex items-center mt-2">
+              <Plane className="h-5 w-5 mr-2" />
+              <span className="text-sm opacity-90">Electronic Ticket</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Passenger Information */}
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div>
+              <div className="font-bold text-lg text-gray-900 mb-2">
+                PASSENGER: {passengerData[0]?.firstName?.toUpperCase() || 'PASSENGER'} {passengerData[0]?.lastName?.toUpperCase() || 'NAME'} {passengerData[0]?.title?.toUpperCase() || 'MR'} (ADT)
               </div>
-            </motion.div>
-
-            {/* Flight Information */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="p-6 border-b-2 border-dashed border-gray-300"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-center">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                  className="space-y-2"
-                >
-                  <div className="flex items-center justify-center mb-2">
-                    <MapPin className="h-5 w-5 text-blue-600 mr-2" />
-                    <span className="font-semibold text-gray-700">From</span>
-                  </div>
-                  <div className="text-xl sm:text-2xl font-bold text-gray-900">{flightData.from}</div>
-                  <div className="text-sm text-gray-600">{flightData.departureDate}</div>
-                  <div className="text-sm text-gray-600">{flightData.departureTime || '20:00'}</div>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex flex-col items-center justify-center border-l-0 lg:border-l-2 border-r-0 lg:border-r-2 border-t-2 lg:border-t-0 border-b-2 lg:border-b-0 border-gray-200 py-4 lg:py-0"
-                >
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Plane className="h-6 w-6 text-blue-600" />
-                    <div className="font-bold text-lg">{flightData.airline}</div>
-                  </div>
-                  <div className="text-sm text-gray-600">Flight {flightData.flightNumber || 'AI 2809'}</div>
-                  <div className="text-sm text-gray-600">Duration: {flightData.duration || '3h 0m'}</div>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                  className="space-y-2"
-                >
-                  <div className="flex items-center justify-center mb-2">
-                    <MapPin className="h-5 w-5 text-blue-600 mr-2" />
-                    <span className="font-semibold text-gray-700">To</span>
-                  </div>
-                  <div className="text-xl sm:text-2xl font-bold text-gray-900">{flightData.to}</div>
-                  <div className="text-sm text-gray-600">{flightData.departureDate}</div>
-                  <div className="text-sm text-gray-600">{flightData.arrivalTime || '23:00'}</div>
-                </motion.div>
+              <div className="bg-yellow-200 inline-block px-3 py-1 rounded font-bold text-sm mb-2">
+                BOOKING REFERENCE: {bookingId.toUpperCase()}
               </div>
-            </motion.div>
-
-            {/* Passenger Information */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="p-6 border-b border-gray-200"
-            >
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <User className="h-5 w-5 mr-2" />
-                Passenger Details
-              </h3>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <AnimatePresence>
-                  {passengerData.map((passenger, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.1 * index }}
-                      className="bg-gradient-to-r from-gray-50 to-blue-50/50 p-4 rounded-lg border hover:shadow-md transition-all duration-200"
-                    >
-                      <div className="font-semibold text-gray-900 mb-2">
-                        Passenger {index + 1}: {passenger.title} {passenger.firstName} {passenger.lastName}
-                      </div>
-                      <div className="space-y-1 text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <Mail className="h-4 w-4 mr-2" />
-                          {passenger.email}
-                        </div>
-                        <div className="flex items-center">
-                          <Phone className="h-4 w-4 mr-2" />
-                          {passenger.phone}
-                        </div>
-                        {passenger.nationality && (
-                          <div>Nationality: {passenger.nationality}</div>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+              <div className="text-sm text-gray-600">
+                TICKET NUMBER: {Math.random().toString().slice(2, 15)}
               </div>
-            </motion.div>
+            </div>
+            <div className="text-right">
+              <div className="text-sm text-gray-600">
+                <strong>Issuing office:</strong><br />
+                STAFF ON DUTY DEL OFFICE, TR220123680,<br />
+                DELHI<br />
+                <strong>Date of issue:</strong> {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+              </div>
+            </div>
+          </div>
+        </div>
 
-            {/* Booking Details */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="p-6 bg-gradient-to-r from-gray-50 to-blue-50/30"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Booking Information</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Booking Date:</span>
-                      <span>{new Date().toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Contact Phone:</span>
-                      <span>{contactInfo.phone}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Contact Email:</span>
-                      <span className="text-xs">{contactInfo.email}</span>
-                    </div>
-                  </div>
+        {/* Flight Details */}
+        <div className="p-4 sm:p-6">
+          <div className="bg-gray-100 p-4 rounded-lg mb-6">
+            <h2 className="font-bold text-lg mb-4 text-center">ELECTRONIC TICKET ITINERARY / RECEIPT</h2>
+            
+            <div className="text-xs text-gray-600 mb-4 leading-relaxed">
+              You must present this receipt along with a valid photo identification, mentioned at the time of booking, to enter the airport. 
+              We seek your attention to make a note of our Terms and Conditions of Contract at www.airindia.com
+            </div>
+
+            {/* Flight Route */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 text-center border-t border-gray-300 pt-4">
+              <div className="lg:col-span-2">
+                <div className="font-bold text-lg">{flightData.from}</div>
+                <div className="text-sm text-gray-600">
+                  {flightData.from === 'Delhi' ? 'INDIRA GANDHI INTL' : 'INTERNATIONAL'}
                 </div>
-                
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Payment Details</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Total Amount:</span>
-                      <span className="font-bold text-lg text-green-600">₹{totalAmount.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Payment ID:</span>
-                      <span className="text-xs font-mono">{paymentId || 'DEMO_PAYMENT'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Status:</span>
-                      <motion.span
-                        animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="text-green-600 font-semibold"
-                      >
-                        Confirmed ✅
-                      </motion.span>
-                    </div>
-                  </div>
+                <div className="text-xs text-gray-500">Terminal: {Math.floor(Math.random() * 3) + 1}</div>
+              </div>
+              
+              <div className="flex justify-center items-center">
+                <div className="text-center">
+                  <div className="font-bold text-lg">{flightData.flightNumber || 'AI121'}</div>
+                  <Plane className="h-6 w-6 mx-auto text-red-600" />
                 </div>
               </div>
-            </motion.div>
+              
+              <div className="lg:col-span-2">
+                <div className="font-bold text-lg">{flightData.to}</div>
+                <div className="text-sm text-gray-600">
+                  {flightData.to === 'Frankfurt' ? 'FRANKFURT INTL' : 'INTERNATIONAL'}
+                </div>
+                <div className="text-xs text-gray-500">Terminal: {Math.floor(Math.random() * 3) + 1}</div>
+              </div>
+            </div>
 
-            {/* Important Notes */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.7 }}
-              className="p-6 bg-amber-50 border-t"
-            >
-              <h4 className="font-semibold text-amber-900 mb-3">⚠️ Important Information</h4>
-              <div className="text-sm text-amber-800 space-y-2">
-                <p>• Please carry a valid photo ID for domestic flights or passport for international flights</p>
-                <p>• Web check-in opens 48 hours before departure</p>
-                <p>• Arrive at airport at least 2 hours before domestic flights, 3 hours for international</p>
-                <p>• Baggage allowance: 15kg check-in + 7kg cabin baggage</p>
+            {/* Times */}
+            <div className="grid grid-cols-2 gap-4 mt-6 text-center">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{flightData.departureTime || '14:00'}</div>
+                <div className="text-sm text-gray-600">
+                  {new Date(flightData.departureDate).toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                  })}
+                </div>
+                <div className="text-xs text-gray-500">Departure</div>
               </div>
-            </motion.div>
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{flightData.arrivalTime || '18:00'}</div>
+                <div className="text-sm text-gray-600">
+                  {new Date(flightData.departureDate).toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                  })}
+                </div>
+                <div className="text-xs text-gray-500">Arrival</div>
+              </div>
+            </div>
+          </div>
 
-            {/* QR Code Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
-              className="p-4 text-center border-t border-dashed border-gray-300"
-            >
-              <div className="flex items-center justify-center space-x-2 text-gray-600">
-                <QrCode className="h-5 w-5" />
-                <span className="text-sm">Show this ticket at airport for quick check-in</span>
+          {/* Additional Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="space-y-3">
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-medium">Class:</span>
+                <span>Y</span>
               </div>
-              <div className="mt-2 text-xs text-gray-500">
-                Booking Reference: {bookingId}
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-medium">Baggage:</span>
+                <span>2PC</span>
               </div>
-            </motion.div>
-          </CardContent>
-        </Card>
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-medium">Fare basis:</span>
+                <span>ID00S1</span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-medium">Flight duration:</span>
+                <span>{flightData.duration || '08:30'}</span>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-medium">Operated by:</span>
+                <span>AIR INDIA</span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-medium">Marketed by:</span>
+                <span>AIR INDIA</span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-medium">Booking status:</span>
+                <span className="text-green-600 font-semibold">CONFIRMED</span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span className="font-medium">Total Amount:</span>
+                <span className="font-bold text-lg text-green-600">₹{totalAmount.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Important Information */}
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <h4 className="font-semibold text-yellow-800 mb-3">Important Travel Information:</h4>
+            <div className="text-sm text-yellow-700 space-y-1">
+              <p>• Please carry a valid photo ID for domestic flights or passport for international flights</p>
+              <p>• Web check-in opens 48 hours before departure</p>
+              <p>• Arrive at airport at least 2 hours before domestic flights, 3 hours for international</p>
+              <p>• Contact: {contactInfo.phone} | {contactInfo.email}</p>
+            </div>
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );
