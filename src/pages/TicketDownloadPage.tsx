@@ -26,8 +26,11 @@ const TicketDownloadPage = () => {
         return;
       }
 
+      console.log('Fetching booking data for:', bookingId, 'type:', type);
+
       try {
         if (type === 'hotel') {
+          console.log('Fetching hotel booking data...');
           // Fetch hotel booking data
           const { data: booking, error: bookingError } = await supabase
             .from('bookings')
@@ -46,11 +49,20 @@ const TicketDownloadPage = () => {
             .eq('id', bookingId)
             .single();
 
-          if (bookingError) throw bookingError;
+          console.log('Hotel booking query result:', { booking, bookingError });
+
+          if (bookingError) {
+            console.error('Hotel booking error:', bookingError);
+            throw bookingError;
+          }
 
           if (booking) {
+            console.log('Processing hotel booking data:', booking);
             const guestList = booking.guest_list || [];
             const primaryGuest = guestList[0] || {};
+            
+            // Convert total_amount from cents to rupees if needed
+            const totalAmount = booking.total_amount > 100000 ? booking.total_amount / 100 : booking.total_amount;
             
             setHotelData({
               bookingReference: booking.id.slice(0, 8).toUpperCase(),
@@ -80,10 +92,10 @@ const TicketDownloadPage = () => {
               roomType: booking.room_type || 'Standard Room',
               guests: booking.guests,
               nights: Math.ceil((new Date(booking.check_out_date).getTime() - new Date(booking.check_in_date).getTime()) / (1000 * 60 * 60 * 24)),
-              totalAmount: booking.total_amount / 100,
+              totalAmount: totalAmount,
               bookingDate: new Date(booking.created_at).toLocaleDateString('en-US'),
               guestPhone: booking.guest_phone || '+1 (555) 000-0000',
-              guestEmail: primaryGuest.email || 'guest@example.com',
+              guestEmail: primaryGuest.email || booking.guest_email || 'guest@example.com',
               roomNumber: `${Math.floor(Math.random() * 9) + 1}${Math.floor(Math.random() * 90) + 10}`,
               amenities: booking.hotels?.amenities || ['Free WiFi', 'Room Service', 'Air Conditioning'],
               policies: booking.hotels?.rules_and_regulations || [
@@ -93,8 +105,13 @@ const TicketDownloadPage = () => {
                 'No smoking in rooms'
               ]
             });
+            console.log('Hotel data set successfully');
+          } else {
+            console.log('No hotel booking found');
+            setError('Hotel booking not found');
           }
         } else {
+          console.log('Fetching flight booking data...');
           // Fetch flight booking data
           const { data: booking, error: bookingError } = await supabase
             .from('flight_bookings')
@@ -102,15 +119,24 @@ const TicketDownloadPage = () => {
             .eq('id', bookingId)
             .single();
 
-          if (bookingError) throw bookingError;
+          console.log('Flight booking query result:', { booking, bookingError });
+
+          if (bookingError) {
+            console.error('Flight booking error:', bookingError);
+            throw bookingError;
+          }
 
           if (booking) {
+            console.log('Flight booking data found:', booking);
             setFlightBookingData(booking);
+          } else {
+            console.log('No flight booking found');
+            setError('Flight booking not found');
           }
         }
       } catch (err) {
         console.error('Error fetching booking:', err);
-        setError('Failed to load booking information');
+        setError(`Failed to load booking information: ${err.message || 'Unknown error'}`);
       } finally {
         setLoading(false);
       }
@@ -136,7 +162,8 @@ const TicketDownloadPage = () => {
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h1 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Ticket</h1>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <p className="text-gray-600 mb-2">{error}</p>
+          <p className="text-sm text-gray-500 mb-6">Booking ID: {bookingId}</p>
           <Link to="/profile">
             <Button className="bg-rose-500 hover:bg-rose-600">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -171,6 +198,15 @@ const TicketDownloadPage = () => {
         ) : (
           <div className="text-center">
             <p className="text-gray-600">No ticket data available</p>
+            <p className="text-sm text-gray-500 mt-2">
+              Type: {type}, Booking ID: {bookingId}
+            </p>
+            <p className="text-sm text-gray-500">
+              Hotel Data: {hotelData ? 'Available' : 'Not available'}
+            </p>
+            <p className="text-sm text-gray-500">
+              Flight Data: {flightBookingData ? 'Available' : 'Not available'}
+            </p>
           </div>
         )}
       </div>
