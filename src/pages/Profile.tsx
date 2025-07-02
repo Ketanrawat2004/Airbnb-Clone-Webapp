@@ -159,7 +159,7 @@ const Profile = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             {/* Profile Header */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
               <div className="bg-gradient-to-r from-rose-500 to-pink-500 px-6 py-8">
                 <div className="flex items-center space-x-4">
                   <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
@@ -181,7 +181,7 @@ const Profile = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Profile Information */}
               <div className="lg:col-span-1">
-                <Card className="shadow-xl border-gray-100">
+                <Card className="shadow-md">
                   <CardHeader className="bg-gray-50">
                     <CardTitle className="flex items-center">
                       <User className="h-5 w-5 mr-2 text-rose-500" />
@@ -225,7 +225,7 @@ const Profile = () => {
 
               {/* Bookings */}
               <div className="lg:col-span-2">
-                <Card className="shadow-xl border-gray-100">
+                <Card className="shadow-md">
                   <CardHeader className="bg-gray-50">
                     <CardTitle className="flex items-center">
                       <Ticket className="h-5 w-5 mr-2 text-rose-500" />
@@ -271,7 +271,7 @@ const Profile = () => {
                                   onClick={() => downloadTicket(booking.id, 'hotel')}
                                   size="sm"
                                   variant="outline"
-                                  className="ml-4 border-blue-300 text-blue-600 hover:bg-blue-50"
+                                  className="ml-4"
                                 >
                                   <Download className="h-4 w-4 mr-1" />
                                   Download
@@ -318,7 +318,7 @@ const Profile = () => {
                                   onClick={() => downloadTicket(booking.id, 'flight')}
                                   size="sm"
                                   variant="outline"
-                                  className="ml-4 border-sky-300 text-sky-600 hover:bg-sky-50"
+                                  className="ml-4"
                                 >
                                   <Download className="h-4 w-4 mr-1" />
                                   Download
@@ -348,7 +348,6 @@ const Profile = () => {
                           <Button
                             onClick={() => navigate('/flights')}
                             variant="outline"
-                            className="border-blue-300 text-blue-600 hover:bg-blue-50"
                           >
                             <Plane className="h-4 w-4 mr-2" />
                             Book Flights

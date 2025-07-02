@@ -89,21 +89,9 @@ const FlightBooking = () => {
               onBackClick={handleBackClick}
             />
 
-            {/* Enhanced Content Section */}
+            {/* Content Section */}
             <div className="mt-8">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-600 to-sky-600 px-6 py-4">
-                  <h2 className="text-white text-xl font-semibold">
-                    {currentStep === 1 ? 'Passenger Details' : 'Payment & Confirmation'}
-                  </h2>
-                  <p className="text-blue-100 text-sm mt-1">
-                    {currentStep === 1 
-                      ? 'Please provide passenger information for your flight'
-                      : 'Complete your booking with secure payment'
-                    }
-                  </p>
-                </div>
-
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="p-6 lg:p-8">
                   {currentStep === 1 ? (
                     <div className="space-y-6">
