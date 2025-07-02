@@ -58,7 +58,7 @@ const App = () => (
             <Route path="/accessibility" element={<Accessibility />} />
             <Route path="/auth/confirm" element={<AuthConfirm />} />
             <Route path="/ticket/:bookingId" element={<TicketPage />} />
-            <Route path="/ticket-download" element={<TicketDownloadPage />} />
+            <Route path="/ticket-download/:bookingId" element={<TicketDownloadPage />} />
             <Route path="/help/customer-service" element={<CustomerService />} />
             <Route path="/help/safety-security" element={<SafetySecurity />} />
             <Route path="*" element={<NotFound />} />

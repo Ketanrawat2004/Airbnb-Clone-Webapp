@@ -130,7 +130,7 @@ const Profile = () => {
   };
 
   const downloadTicket = (bookingId: string, type: 'hotel' | 'flight') => {
-    const url = `/ticket-download?id=${bookingId}&type=${type}`;
+    const url = `/ticket-download/${bookingId}?type=${type}`;
     window.open(url, '_blank');
   };
 
