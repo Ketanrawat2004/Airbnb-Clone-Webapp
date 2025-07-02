@@ -47,14 +47,16 @@ const FlightBooking = () => {
   // Show authentication required screen if user is not signed in
   if (!loading && !user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-25 to-blue-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-50 to-blue-100">
         <Header />
         
         <main className="pt-20 pb-12 flex items-center justify-center min-h-[80vh]">
-          <AuthRequiredScreen
-            onSignInClick={() => setAuthModalOpen(true)}
-            onBackClick={() => navigate('/flights')}
-          />
+          <div className="max-w-2xl mx-auto p-8">
+            <AuthRequiredScreen
+              onSignInClick={() => setAuthModalOpen(true)}
+              onBackClick={() => navigate('/flights')}
+            />
+          </div>
         </main>
 
         <Footer />
@@ -65,43 +67,83 @@ const FlightBooking = () => {
 
   if (!flightData || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-25 to-blue-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-50 to-blue-100">
         <Header />
-        <LoadingScreen />
+        <div className="pt-20">
+          <LoadingScreen />
+        </div>
         <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-25 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-50 to-blue-100">
       <Header />
       
       <main className="pt-20 pb-12">
-        <FlightBookingHeader 
-          currentStep={currentStep}
-          onBackClick={handleBackClick}
-        />
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <FlightBookingHeader 
+              currentStep={currentStep}
+              onBackClick={handleBackClick}
+            />
 
-        {/* Content */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            {currentStep === 1 ? (
-              <EnhancedPassengerForm
-                passengerCount={parseInt(flightData.passengers) || 1}
-                flightData={flightData}
-                onSubmit={handlePassengerSubmit}
-              />
-            ) : (
-              <FlightPaymentPage
-                flightData={flightData}
-                passengerData={passengerData}
-                contactInfo={contactInfo}
-                totalAmount={totalAmount}
-              />
-            )}
+            {/* Enhanced Content Section */}
+            <div className="mt-8">
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-600 to-sky-600 px-6 py-4">
+                  <h2 className="text-white text-xl font-semibold">
+                    {currentStep === 1 ? 'Passenger Details' : 'Payment & Confirmation'}
+                  </h2>
+                  <p className="text-blue-100 text-sm mt-1">
+                    {currentStep === 1 
+                      ? 'Please provide passenger information for your flight'
+                      : 'Complete your booking with secure payment'
+                    }
+                  </p>
+                </div>
+
+                <div className="p-6 lg:p-8">
+                  {currentStep === 1 ? (
+                    <div className="space-y-6">
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h3 className="font-semibold text-blue-900 mb-2">Flight Summary</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <span className="text-blue-600 font-medium">Route:</span>
+                            <p className="text-gray-700">{flightData.from} → {flightData.to}</p>
+                          </div>
+                          <div>
+                            <span className="text-blue-600 font-medium">Date:</span>
+                            <p className="text-gray-700">{new Date(flightData.departureDate).toLocaleDateString()}</p>
+                          </div>
+                          <div>
+                            <span className="text-blue-600 font-medium">Passengers:</span>
+                            <p className="text-gray-700">{flightData.passengers || 1}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <EnhancedPassengerForm
+                        passengerCount={parseInt(flightData.passengers) || 1}
+                        flightData={flightData}
+                        onSubmit={handlePassengerSubmit}
+                      />
+                    </div>
+                  ) : (
+                    <FlightPaymentPage
+                      flightData={flightData}
+                      passengerData={passengerData}
+                      contactInfo={contactInfo}
+                      totalAmount={totalAmount}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
       </main>
 
       <Footer />

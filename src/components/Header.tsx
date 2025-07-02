@@ -1,17 +1,20 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, User, LogOut, Plane, Building, Home } from 'lucide-react';
+import { Menu, X, User, LogOut, Plane, Building, Home, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Logo from './Logo';
 import AuthModal from './AuthModal';
+import HotelAutocomplete from './hotel/HotelAutocomplete';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,6 +37,13 @@ const Header = () => {
     }
   };
 
+  const handleSearch = () => {
+    if (searchValue.trim()) {
+      navigate(`/search?location=${encodeURIComponent(searchValue)}`);
+      setShowSearch(false);
+    }
+  };
+
   const navItems = [
     { href: '/', label: 'Hotels', icon: Building },
     { href: '/flights', label: 'Flights', icon: Plane },
@@ -53,6 +63,28 @@ const Header = () => {
               <span className="text-xl font-bold text-rose-500 hidden sm:block">Airbnb Clone+</span>
             </Link>
 
+            {/* Search Bar - Desktop */}
+            <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
+              <div className="relative w-full">
+                <div className="flex items-center bg-white rounded-full border border-gray-300 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex-1 px-4 py-2">
+                    <HotelAutocomplete
+                      value={searchValue}
+                      onChange={setSearchValue}
+                      placeholder="Search destinations..."
+                    />
+                  </div>
+                  <Button
+                    onClick={handleSearch}
+                    size="sm"
+                    className="bg-rose-500 hover:bg-rose-600 text-white rounded-full mr-2 p-2 h-8 w-8"
+                  >
+                    <Search className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               {navItems.map((item) => (
@@ -71,6 +103,16 @@ const Header = () => {
 
             {/* User Menu */}
             <div className="flex items-center space-x-4">
+              {/* Mobile Search Toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                onClick={() => setShowSearch(!showSearch)}
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -128,6 +170,28 @@ const Header = () => {
               </Sheet>
             </div>
           </div>
+
+          {/* Mobile Search Bar */}
+          {showSearch && (
+            <div className="lg:hidden mt-4 pb-4">
+              <div className="flex items-center bg-white rounded-full border border-gray-300 shadow-sm">
+                <div className="flex-1 px-4 py-2">
+                  <HotelAutocomplete
+                    value={searchValue}
+                    onChange={setSearchValue}
+                    placeholder="Search destinations..."
+                  />
+                </div>
+                <Button
+                  onClick={handleSearch}
+                  size="sm"
+                  className="bg-rose-500 hover:bg-rose-600 text-white rounded-full mr-2 p-2 h-8 w-8"
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
