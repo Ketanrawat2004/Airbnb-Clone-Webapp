@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import HotelCard from './HotelCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { motion } from 'framer-motion';
 
 interface Hotel {
   id: string;
@@ -72,22 +73,23 @@ const HotelGrid = () => {
     return (
       <div className="relative px-4 sm:px-8 lg:px-16">
         <Carousel className="w-full">
-          <CarouselContent className="-ml-4">
+          <CarouselContent className="-ml-4 md:-ml-6">
             {Array.from({ length: 8 }).map((_, index) => (
-              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                <div className="space-y-4">
-                  <Skeleton className="h-48 sm:h-56 lg:h-64 w-full rounded-xl" />
-                  <div className="space-y-3 px-2">
-                    <Skeleton className="h-5 w-3/4" />
+              <CarouselItem key={index} className="pl-4 md:pl-6 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                <div className="space-y-4 bg-white/50 backdrop-blur-sm rounded-2xl overflow-hidden p-2">
+                  <Skeleton className="h-56 sm:h-64 lg:h-72 w-full rounded-xl" />
+                  <div className="space-y-3 px-4 pb-4">
+                    <Skeleton className="h-6 w-3/4" />
                     <Skeleton className="h-4 w-1/2" />
-                    <Skeleton className="h-4 w-1/4" />
+                    <Skeleton className="h-5 w-1/3" />
+                    <Skeleton className="h-10 w-full rounded-lg" />
                   </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0" />
-          <CarouselNext className="right-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0" />
+          <CarouselPrevious className="left-2 lg:left-4 bg-white/95 backdrop-blur-sm hover:bg-white shadow-2xl border-0 h-12 w-12 hover:scale-110 transition-all duration-300" />
+          <CarouselNext className="right-2 lg:right-4 bg-white/95 backdrop-blur-sm hover:bg-white shadow-2xl border-0 h-12 w-12 hover:scale-110 transition-all duration-300" />
         </Carousel>
       </div>
     );
@@ -100,17 +102,27 @@ const HotelGrid = () => {
         opts={{
           align: "start",
           loop: true,
+          skipSnaps: false,
+          dragFree: true,
         }}
       >
-        <CarouselContent className="-ml-4">
-          {hotels.map((hotel) => (
-            <CarouselItem key={hotel.id} className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-              <HotelCard hotel={hotel} />
+        <CarouselContent className="-ml-4 md:-ml-6">
+          {hotels.map((hotel, index) => (
+            <CarouselItem key={hotel.id} className="pl-4 md:pl-6 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="h-full"
+              >
+                <HotelCard hotel={hotel} />
+              </motion.div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0 hover:shadow-2xl transition-all duration-300" />
-        <CarouselNext className="right-2 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl border-0 hover:shadow-2xl transition-all duration-300" />
+        <CarouselPrevious className="left-2 lg:left-4 bg-white/95 backdrop-blur-sm hover:bg-white shadow-2xl border-0 h-14 w-14 hover:scale-110 hover:shadow-3xl transition-all duration-300 text-gray-700 hover:text-rose-600" />
+        <CarouselNext className="right-2 lg:right-4 bg-white/95 backdrop-blur-sm hover:bg-white shadow-2xl border-0 h-14 w-14 hover:scale-110 hover:shadow-3xl transition-all duration-300 text-gray-700 hover:text-rose-600" />
       </Carousel>
     </div>
   );

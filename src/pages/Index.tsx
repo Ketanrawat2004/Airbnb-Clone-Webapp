@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import CheapRatesSection from '@/components/CheapRatesSection';
 import HotelsSection from '@/components/HotelsSection';
+import FlightSection from '@/components/FlightSection';
 import ReviewAndTestimonialsSection from '@/components/ReviewAndTestimonialsSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import ChatBot from '@/components/ChatBot';
@@ -22,6 +23,7 @@ const Index = () => {
       <HeroSection onSearch={handleSearch} />
       <CheapRatesSection />
       <HotelsSection />
+      <FlightSection />
       <div className="animate-fade-up">
         <ReviewAndTestimonialsSection />
       </div>
