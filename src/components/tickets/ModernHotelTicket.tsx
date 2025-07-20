@@ -364,7 +364,7 @@ const ModernHotelTicket = ({ booking, hotel, showActions = true }: ModernHotelTi
   };
 
   const viewTicket = () => {
-    const newWindow = window.open(`/ticket-download?bookingId=${booking.id}&type=hotel`, '_blank');
+    const newWindow = window.open(`/ticket-download/${booking.id}?type=hotel`, '_blank');
     if (newWindow) {
       newWindow.focus();
     }

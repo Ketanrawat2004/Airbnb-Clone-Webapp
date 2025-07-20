@@ -451,7 +451,7 @@ const ModernFlightTicket = ({ booking, showActions = true }: ModernFlightTicketP
   };
 
   const viewTicket = () => {
-    const newWindow = window.open(`/ticket-download?bookingId=${booking.id}&type=flight`, '_blank');
+    const newWindow = window.open(`/ticket-download/${booking.id}?type=flight`, '_blank');
     if (newWindow) {
       newWindow.focus();
     }

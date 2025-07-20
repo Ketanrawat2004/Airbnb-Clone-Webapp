@@ -28,6 +28,8 @@ import TicketDownloadPage from "./pages/TicketDownloadPage";
 import NotFound from "./pages/NotFound";
 import CustomerService from "./pages/help/CustomerService";
 import SafetySecurity from "./pages/help/SafetySecurity";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,8 @@ const App = () => (
             <Route path="/ticket-download/:bookingId" element={<TicketDownloadPage />} />
             <Route path="/help/customer-service" element={<CustomerService />} />
             <Route path="/help/safety-security" element={<SafetySecurity />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
