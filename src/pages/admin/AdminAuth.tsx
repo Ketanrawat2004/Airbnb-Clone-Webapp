@@ -33,19 +33,28 @@ const AdminAuth = () => {
     setIsLoading(true);
     
     try {
-      // Simulate authentication
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Admin Sign In Successful",
-        description: "Welcome back, Admin!",
-      });
-      
-      navigate('/admin');
+      // Simple admin authentication
+      if (signInData.email === 'admin@hotel.com' && signInData.password === 'admin123') {
+        // Store admin session
+        localStorage.setItem('adminAuth', JSON.stringify({
+          email: signInData.email,
+          isAdmin: true,
+          loginTime: new Date().toISOString()
+        }));
+        
+        toast({
+          title: "Admin Sign In Successful",
+          description: "Welcome back, Admin!",
+        });
+        
+        navigate('/admin');
+      } else {
+        throw new Error('Invalid credentials');
+      }
     } catch (error) {
       toast({
         title: "Sign In Failed",
-        description: "Invalid credentials. Please try again.",
+        description: "Invalid credentials. Use admin@hotel.com / admin123",
         variant: "destructive",
       });
     } finally {
@@ -67,9 +76,25 @@ const AdminAuth = () => {
       return;
     }
 
+    if (signUpData.adminCode !== 'HOTEL2025') {
+      toast({
+        title: "Invalid Admin Code",
+        description: "Use HOTEL2025 as verification code",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      // Simulate registration
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Store admin session
+      localStorage.setItem('adminAuth', JSON.stringify({
+        email: signUpData.email,
+        fullName: signUpData.fullName,
+        hotelName: signUpData.hotelName,
+        isAdmin: true,
+        loginTime: new Date().toISOString()
+      }));
       
       toast({
         title: "Admin Account Created",

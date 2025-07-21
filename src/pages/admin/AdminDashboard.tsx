@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,10 +24,11 @@ import AdminStatsCards from '@/components/admin/AdminStatsCards';
 import AdminBookingsTable from '@/components/admin/AdminBookingsTable';
 import AdminUsersTable from '@/components/admin/AdminUsersTable';
 import AdminHotelsTable from '@/components/admin/AdminHotelsTable';
+import AdminReportGenerator from '@/components/admin/AdminReportGenerator';
 
 const AdminDashboard = () => {
-  const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [adminAuth, setAdminAuth] = useState<any>(null);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalBookings: 0,
@@ -40,16 +40,24 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate('/');
-    }
-  }, [user, loading, navigate]);
+    const checkAdminAuth = () => {
+      const authData = localStorage.getItem('adminAuth');
+      if (!authData) {
+        navigate('/admin/auth');
+        return;
+      }
+      
+      try {
+        const parsedAuth = JSON.parse(authData);
+        setAdminAuth(parsedAuth);
+        loadDashboardData();
+      } catch (error) {
+        navigate('/admin/auth');
+      }
+    };
 
-  useEffect(() => {
-    if (user) {
-      loadDashboardData();
-    }
-  }, [user]);
+    checkAdminAuth();
+  }, [navigate]);
 
   const loadDashboardData = async () => {
     try {
@@ -87,7 +95,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loading || isLoading) {
+  if (isLoading || !adminAuth) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
@@ -100,10 +108,6 @@ const AdminDashboard = () => {
         </div>
       </div>
     );
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (
@@ -149,7 +153,7 @@ const AdminDashboard = () => {
               className="mt-8"
             >
               <Tabs defaultValue="overview" className="space-y-6">
-                <TabsList className="grid grid-cols-2 lg:grid-cols-4 w-full lg:w-auto">
+                <TabsList className="grid grid-cols-3 lg:grid-cols-5 w-full lg:w-auto">
                   <TabsTrigger value="overview" className="flex items-center space-x-2">
                     <BarChart3 className="h-4 w-4" />
                     <span className="hidden sm:inline">Overview</span>
@@ -165,6 +169,10 @@ const AdminDashboard = () => {
                   <TabsTrigger value="hotels" className="flex items-center space-x-2">
                     <Building className="h-4 w-4" />
                     <span className="hidden sm:inline">Hotels</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="reports" className="flex items-center space-x-2">
+                    <TrendingUp className="h-4 w-4" />
+                    <span className="hidden sm:inline">Reports</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -236,6 +244,10 @@ const AdminDashboard = () => {
 
                 <TabsContent value="hotels">
                   <AdminHotelsTable />
+                </TabsContent>
+
+                <TabsContent value="reports">
+                  <AdminReportGenerator stats={stats} />
                 </TabsContent>
               </Tabs>
             </motion.div>

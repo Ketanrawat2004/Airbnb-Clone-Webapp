@@ -25,6 +25,7 @@ const Index = () => {
       <CheapRatesSection />
       <HotelsSection />
       <FlightSection />
+      <AIRecommendations />
       <div className="animate-fade-up">
         <ReviewAndTestimonialsSection />
       </div>
@@ -34,6 +35,7 @@ const Index = () => {
       <Footer />
       <CookieConsent />
       <VideoCallWidget />
+      <CustomerSupportWidget />
     </div>
   );
 };

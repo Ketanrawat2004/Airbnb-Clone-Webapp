@@ -63,9 +63,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-rose-400 transition-colors">
+                <Link to="/become-host" className="text-gray-300 hover:text-rose-400 transition-colors">
                   Become a Host
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -85,14 +85,14 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-rose-400 transition-colors">
+                <Link to="/cancellation-policy" className="text-gray-300 hover:text-rose-400 transition-colors">
                   Cancellation Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-rose-400 transition-colors">
+                <Link to="/terms" className="text-gray-300 hover:text-rose-400 transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
                 <Link to="/privacy" className="text-gray-300 hover:text-rose-400 transition-colors">
@@ -195,15 +195,15 @@ const Footer = () => {
                 <Link to="/privacy" className="hover:text-rose-400 transition-colors">
                   Privacy
                 </Link>
-                <a href="#" className="hover:text-rose-400 transition-colors">
+                <Link to="/terms" className="hover:text-rose-400 transition-colors">
                   Terms
-                </a>
-                <a href="#" className="hover:text-rose-400 transition-colors">
+                </Link>
+                <Link to="/cookies-policy" className="hover:text-rose-400 transition-colors">
                   Cookies
-                </a>
-                <a href="#" className="hover:text-rose-400 transition-colors">
+                </Link>
+                <Link to="/accessibility" className="hover:text-rose-400 transition-colors">
                   Accessibility
-                </a>
+                </Link>
               </div>
             </div>
           </div>
