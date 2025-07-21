@@ -102,7 +102,7 @@ const Header = () => {
             </nav>
 
             {/* User Menu */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Mobile Search Toggle */}
               <Button
                 variant="ghost"
@@ -111,6 +111,16 @@ const Header = () => {
                 onClick={() => setShowSearch(!showSearch)}
               >
                 <Search className="h-5 w-5" />
+              </Button>
+
+              {/* Admin Access Button */}
+              <Button
+                onClick={() => navigate('/admin/auth')}
+                variant="outline"
+                size="sm"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600 hidden sm:flex"
+              >
+                Admin
               </Button>
 
               {user ? (
@@ -165,6 +175,13 @@ const Header = () => {
                         <span>{item.label}</span>
                       </Link>
                     ))}
+                    <Button
+                      onClick={() => navigate('/admin/auth')}
+                      variant="outline"
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600 mt-4"
+                    >
+                      Admin Access
+                    </Button>
                   </div>
                 </SheetContent>
               </Sheet>

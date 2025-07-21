@@ -10,6 +10,7 @@ import ChatBot from '@/components/ChatBot';
 import AdvertisementBanner from '@/components/AdvertisementBanner';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
+import VideoCallWidget from '@/components/VideoCallWidget';
 
 const Index = () => {
   const handleSearch = (location: string) => {
@@ -32,6 +33,7 @@ const Index = () => {
       <AdvertisementBanner />
       <Footer />
       <CookieConsent />
+      <VideoCallWidget />
     </div>
   );
 };

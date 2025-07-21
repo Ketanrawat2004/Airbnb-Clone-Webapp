@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="text-lg md:text-xl font-bold text-rose-400">Airbnb Clone+</h3>
@@ -97,6 +97,38 @@ const Footer = () => {
               <li>
                 <Link to="/privacy" className="text-gray-300 hover:text-rose-400 transition-colors">
                   Privacy Policy
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Analytics & Reports */}
+          <div className="space-y-4">
+            <h4 className="text-base md:text-lg font-semibold">Analytics & Reports</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/website-analysis" className="text-gray-300 hover:text-rose-400 transition-colors">
+                  Website Analysis
+                </Link>
+              </li>
+              <li>
+                <Link to="/website-analysis" className="text-gray-300 hover:text-rose-400 transition-colors">
+                  Performance Report
+                </Link>
+              </li>
+              <li>
+                <Link to="/website-analysis" className="text-gray-300 hover:text-rose-400 transition-colors">
+                  User Insights
+                </Link>
+              </li>
+              <li>
+                <Link to="/website-analysis" className="text-gray-300 hover:text-rose-400 transition-colors">
+                  Traffic Analytics
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin/auth" className="text-gray-300 hover:text-rose-400 transition-colors">
+                  Admin Portal
                 </Link>
               </li>
             </ul>

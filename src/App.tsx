@@ -30,6 +30,8 @@ import CustomerService from "./pages/help/CustomerService";
 import SafetySecurity from "./pages/help/SafetySecurity";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminAuth from "./pages/admin/AdminAuth";
+import WebsiteAnalysis from "./pages/WebsiteAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +67,8 @@ const App = () => (
             <Route path="/help/safety-security" element={<SafetySecurity />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/auth" element={<AdminAuth />} />
+            <Route path="/website-analysis" element={<WebsiteAnalysis />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -7,7 +7,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onSearch }: HeroSectionProps) => {
   return (
-    <section className="relative min-h-[80vh] flex flex-col items-center justify-center text-center overflow-hidden">
+    <section className="relative min-h-[80vh] flex flex-col items-center justify-center text-center overflow-hidden pt-20">
       {/* Enhanced Background with Pink Gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-pink-600 via-rose-600 to-pink-700"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10"></div>
