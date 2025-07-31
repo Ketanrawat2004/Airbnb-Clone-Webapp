@@ -44,9 +44,9 @@ const StorySection = () => {
           >
             <div className="relative overflow-hidden rounded-2xl shadow-2xl">
               <img 
-                src="/lovable-uploads/dd83790d-e088-4930-a32a-3ef4fa9ac0b8.png"
+                src="/lovable-uploads/79212ad3-eaf5-4fb0-a40f-3f05916dba45.png"
                 alt="Our founder and CEO"
-                className="w-full h-[400px] object-contain bg-gray-50"
+                className="w-full h-[400px] object-cover bg-gray-50"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
               <div className="absolute bottom-6 left-6 text-white">

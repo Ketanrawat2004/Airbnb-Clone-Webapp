@@ -172,7 +172,9 @@ const Profile = () => {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full mb-6">
               <User className="h-10 w-10 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">My Profile</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Welcome, {profile?.full_name || fullName || 'Guest'}
+            </h1>
             <p className="text-gray-600 text-lg">Manage your account and view your bookings</p>
           </motion.div>
 

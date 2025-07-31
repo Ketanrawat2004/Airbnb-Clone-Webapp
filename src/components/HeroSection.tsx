@@ -27,8 +27,8 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           </div>
           
           <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-tight mb-4 sm:mb-6 lg:mb-8 tracking-tight px-2">
-            <span className="block sm:inline mr-0 sm:mr-4 mb-2 sm:mb-0">Find your</span>
-            <span className="block sm:inline bg-gradient-to-r from-pink-300 via-rose-300 to-pink-400 text-transparent bg-clip-text px-2 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10 leading-relaxed">
+            <span className="block mb-2 sm:mb-4">Find your</span>
+            <span className="block bg-gradient-to-r from-pink-300 via-rose-300 to-pink-400 text-transparent bg-clip-text px-2 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 rounded-2xl shadow-2xl backdrop-blur-sm border-2 border-white/20 animate-glow bg-white/10 leading-relaxed">
               perfect journey
             </span>
           </h1>
