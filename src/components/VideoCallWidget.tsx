@@ -14,18 +14,18 @@ const VideoCallWidget = () => {
   };
 
   const handlePhoneCall = () => {
-    window.open('tel:+15551234567', '_self');
+    window.open('tel:+917489898361', '_self');
     setIsOpen(false);
   };
 
   const handleChat = () => {
     // You can integrate with actual chat services
-    window.open('https://wa.me/15551234567', '_blank');
+    window.open('https://wa.me/917489898361', '_blank');
     setIsOpen(false);
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-80 md:right-96 lg:right-6 z-50">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button
@@ -80,7 +80,7 @@ const VideoCallWidget = () => {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold">Phone Support</h3>
-                    <p className="text-sm text-gray-600">+1 (555) 123-4567</p>
+                    <p className="text-sm text-gray-600">+91-7489898361</p>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center text-xs text-gray-500">
