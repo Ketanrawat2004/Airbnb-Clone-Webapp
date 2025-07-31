@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Sparkles, 
   MapPin, 
@@ -31,35 +32,73 @@ const AIRecommendations = () => {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const generateRecommendations = () => {
+  const generateRecommendations = async () => {
     setIsLoading(true);
     
-    // Simulate AI-generated recommendations
-    setTimeout(() => {
-      const sampleRecommendations: Recommendation[] = [
-        {
-          id: '1',
-          type: 'hotel',
-          title: 'Luxury Resort Goa',
-          description: 'Beachfront luxury with stunning ocean views. Perfect for romantic getaways.',
-          price: '₹8,500/night',
-          rating: 4.8,
-          location: 'Goa, India',
-          image: '/lovable-uploads/4cf76ed1-188e-407a-a627-7e7f28d404c2.png',
-          badge: 'AI Recommended',
-          savings: 'Save 25%'
-        },
-        {
-          id: '2',
-          type: 'destination',
-          title: 'Trending: Rajasthan',
-          description: 'Experience royal heritage and desert adventures. 78% traveler satisfaction.',
-          location: 'Rajasthan, India',
-          image: '/lovable-uploads/b3051839-645e-4f8b-8045-36ce18dd3695.png',
-          badge: 'Trending Now'
-        },
-        {
-          id: '3',
+    try {
+      // Fetch real hotels from database
+      const { data: hotels, error: hotelsError } = await supabase
+        .from('hotels')
+        .select('*')
+        .limit(2);
+
+      // Fetch flight bookings to suggest destinations
+      const { data: flightBookings, error: flightError } = await supabase
+        .from('flight_bookings')
+        .select('flight_data')
+        .limit(5);
+
+      if (hotelsError) {
+        console.error('Error fetching hotels:', hotelsError);
+      }
+
+      if (flightError) {
+        console.error('Error fetching flight bookings:', flightError);
+      }
+
+      const newRecommendations: Recommendation[] = [];
+
+      // Add real hotels
+      if (hotels && hotels.length > 0) {
+        hotels.forEach((hotel, index) => {
+          newRecommendations.push({
+            id: hotel.id,
+            type: 'hotel',
+            title: hotel.name,
+            description: hotel.description || 'Experience luxury and comfort in this beautiful accommodation.',
+            price: `₹${Math.round(hotel.price_per_night / 100)}/night`,
+            rating: hotel.rating || 4.5,
+            location: hotel.location,
+            image: hotel.images?.[0] || '/lovable-uploads/4cf76ed1-188e-407a-a627-7e7f28d404c2.png',
+            badge: 'AI Recommended',
+            savings: index === 0 ? 'Save 25%' : undefined
+          });
+        });
+      }
+
+      // Add popular destinations based on flight data
+      if (flightBookings && flightBookings.length > 0) {
+        const destinations = new Set();
+        flightBookings.forEach(booking => {
+          if (booking.flight_data?.destination && !destinations.has(booking.flight_data.destination)) {
+            destinations.add(booking.flight_data.destination);
+            newRecommendations.push({
+              id: `dest-${booking.flight_data.destination}`,
+              type: 'destination',
+              title: `Trending: ${booking.flight_data.destination}`,
+              description: 'Popular destination based on recent bookings. Great traveler satisfaction.',
+              location: booking.flight_data.destination,
+              image: '/lovable-uploads/b3051839-645e-4f8b-8045-36ce18dd3695.png',
+              badge: 'Trending Now'
+            });
+          }
+        });
+      }
+
+      // Add a deal if we don't have enough recommendations
+      if (newRecommendations.length < 3) {
+        newRecommendations.push({
+          id: 'deal-1',
           type: 'deal',
           title: 'Weekend Flash Sale',
           description: 'Limited time offer on premium hotels. Book now for exclusive savings.',
@@ -68,12 +107,27 @@ const AIRecommendations = () => {
           image: '/lovable-uploads/dd83790d-e088-4930-a32a-3ef4fa9ac0b8.png',
           badge: 'Flash Deal',
           savings: 'Up to 40% off'
-        }
-      ];
-      
-      setRecommendations(sampleRecommendations);
+        });
+      }
+
+      setRecommendations(newRecommendations.slice(0, 3));
+    } catch (error) {
+      console.error('Error generating recommendations:', error);
+      // Fallback to sample data
+      setRecommendations([{
+        id: 'fallback-1',
+        type: 'deal',
+        title: 'Weekend Flash Sale',
+        description: 'Limited time offer on premium hotels. Book now for exclusive savings.',
+        price: 'From ₹3,999',
+        location: 'Multiple Cities',
+        image: '/lovable-uploads/dd83790d-e088-4930-a32a-3ef4fa9ac0b8.png',
+        badge: 'Flash Deal',
+        savings: 'Up to 40% off'
+      }]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   useEffect(() => {

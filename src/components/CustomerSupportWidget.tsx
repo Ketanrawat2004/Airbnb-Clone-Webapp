@@ -76,7 +76,7 @@ const CustomerSupportWidget = () => {
     } else if (lowerMessage.includes('flight')) {
       return 'Our flight booking service helps you find the best deals! You can search by destination, dates, and preferences. We partner with major airlines to offer competitive prices and flexible booking options.';
     } else {
-      return 'Thank you for your message! For complex inquiries, I recommend contacting our support team directly at support@airbnbclone.com or +1 (555) 123-4567. Our team is available 24/7 to assist you.';
+      return 'Thank you for your message! For complex inquiries, I recommend contacting our support team directly at support@airbnbclone.com or 7489898361. Our team is available 24/7 to assist you.';
     }
   };
 
@@ -258,7 +258,7 @@ const CustomerSupportWidget = () => {
                       <div className="text-center p-3 bg-blue-50 rounded-lg">
                         <Phone className="h-6 w-6 text-blue-600 mx-auto mb-2" />
                         <p className="text-sm font-medium">Call Us</p>
-                        <p className="text-xs text-gray-600">+1 (555) 123-4567</p>
+                        <p className="text-xs text-gray-600">7489898361</p>
                       </div>
                       <div className="text-center p-3 bg-green-50 rounded-lg">
                         <Clock className="h-6 w-6 text-green-600 mx-auto mb-2" />

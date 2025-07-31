@@ -1,5 +1,6 @@
 
-import { Star, MapPin, Clock, Phone } from 'lucide-react';
+import { Star, MapPin, Clock, Phone, Map } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface HotelCardDetailsProps {
   name: string;
@@ -46,9 +47,23 @@ const HotelCardDetails = ({
         </div>
       </div>
       
-      <div className="flex items-center text-gray-600 text-xs sm:text-sm mb-2">
-        <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-        <span className="truncate">{location}</span>
+      <div className="flex items-center justify-between text-gray-600 text-xs sm:text-sm mb-2">
+        <div className="flex items-center flex-1">
+          <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+          <span className="truncate">{location}</span>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            const encodedLocation = encodeURIComponent(location);
+            window.open(`https://maps.google.com/maps?q=${encodedLocation}`, '_blank');
+          }}
+          className="p-1 h-6 w-6 hover:bg-blue-50 text-blue-600"
+        >
+          <Map className="h-3 w-3" />
+        </Button>
       </div>
 
       {/* Additional Info */}

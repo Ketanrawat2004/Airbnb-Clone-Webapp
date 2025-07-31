@@ -16,11 +16,12 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 326 100% 74%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 327 73% 97%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -271,6 +272,23 @@ html {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 30px rgba(147, 51, 234, 0.2);
 }
 
+/* Responsive utilities */
+.responsive-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.responsive-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
+}
+
+.responsive-padding {
+  @apply p-4 sm:p-6 lg:p-8;
+}
+
+.responsive-margin {
+  @apply m-4 sm:m-6 lg:m-8;
+}
+
 /* Responsive typography helpers */
 @media (max-width: 640px) {
   .responsive-text {
@@ -281,5 +299,20 @@ html {
   .responsive-heading {
     font-size: clamp(1.5rem, 8vw, 3rem);
     line-height: 1.2;
+  }
+  
+  .mobile-optimized {
+    @apply text-sm p-2 min-h-[44px] min-w-[44px];
+  }
+}
+
+/* Mobile navigation optimizations */
+@media (max-width: 768px) {
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200;
+  }
+  
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
   }
 }

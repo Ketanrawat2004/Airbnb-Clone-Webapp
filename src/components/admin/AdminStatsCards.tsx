@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, Building, Plane, CreditCard, TrendingUp, Calendar } from 'lucide-react';
+import { Users, Building, Plane, CreditCard, TrendingUp, Calendar, Eye } from 'lucide-react';
 
 interface AdminStatsCardsProps {
   stats: {
@@ -10,6 +10,7 @@ interface AdminStatsCardsProps {
     totalHotels: number;
     flightBookings: number;
     hotelBookings: number;
+    visitorCount: number;
   };
 }
 
@@ -62,11 +63,19 @@ const AdminStatsCards = ({ stats }: AdminStatsCardsProps) => {
       color: 'from-sky-500 to-sky-600',
       bgColor: 'bg-sky-50',
       iconColor: 'text-sky-600'
+    },
+    {
+      title: 'Total Visitors',
+      value: stats.visitorCount.toLocaleString(),
+      icon: Eye,
+      color: 'from-indigo-500 to-indigo-600',
+      bgColor: 'bg-indigo-50',
+      iconColor: 'text-indigo-600'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 lg:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4 lg:gap-6">
       {statCards.map((stat, index) => {
         const Icon = stat.icon;
         return (

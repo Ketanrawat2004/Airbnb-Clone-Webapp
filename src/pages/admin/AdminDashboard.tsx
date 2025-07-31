@@ -35,7 +35,8 @@ const AdminDashboard = () => {
     totalRevenue: 0,
     totalHotels: 0,
     flightBookings: 0,
-    hotelBookings: 0
+    hotelBookings: 0,
+    visitorCount: 0
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -63,22 +64,28 @@ const AdminDashboard = () => {
     try {
       setIsLoading(true);
 
-      // Load basic stats
+      // Load real-time stats
       const [
         { count: usersCount },
         { count: bookingsCount },
         { count: flightBookingsCount },
         { count: hotelsCount },
-        { data: bookingAmounts }
+        { data: bookingAmounts },
+        { data: flightAmounts },
+        { data: visitorData }
       ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }),
         supabase.from('bookings').select('*', { count: 'exact', head: true }),
         supabase.from('flight_bookings').select('*', { count: 'exact', head: true }),
         supabase.from('hotels').select('*', { count: 'exact', head: true }),
-        supabase.from('bookings').select('total_amount')
+        supabase.from('bookings').select('total_amount'),
+        supabase.from('flight_bookings').select('total_amount'),
+        supabase.from('visitor_counter').select('visit_count').eq('id', 1).single()
       ]);
 
-      const totalRevenue = bookingAmounts?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
+      const hotelRevenue = bookingAmounts?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
+      const flightRevenue = flightAmounts?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
+      const totalRevenue = hotelRevenue + flightRevenue;
 
       setStats({
         totalUsers: usersCount || 0,
@@ -86,7 +93,8 @@ const AdminDashboard = () => {
         totalRevenue,
         totalHotels: hotelsCount || 0,
         flightBookings: flightBookingsCount || 0,
-        hotelBookings: bookingsCount || 0
+        hotelBookings: bookingsCount || 0,
+        visitorCount: visitorData?.visit_count || 0
       });
     } catch (error) {
       console.error('Error loading dashboard data:', error);
