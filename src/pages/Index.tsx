@@ -11,6 +11,8 @@ import AdvertisementBanner from '@/components/AdvertisementBanner';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
 import VideoCallWidget from '@/components/VideoCallWidget';
+import AIRecommendations from '@/components/AIRecommendations';
+import CustomerSupportWidget from '@/components/CustomerSupportWidget';
 
 const Index = () => {
   const handleSearch = (location: string) => {
