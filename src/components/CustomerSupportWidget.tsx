@@ -110,7 +110,7 @@ const CustomerSupportWidget = () => {
     <>
       {/* Toggle Button */}
       <motion.div
-        className="fixed bottom-6 right-28 md:right-32 sm:right-20 z-50"
+        className="relative"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.5, type: "spring", stiffness: 260, damping: 20 }}
@@ -118,7 +118,7 @@ const CustomerSupportWidget = () => {
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
-          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full w-16 h-16 shadow-lg hover:shadow-xl transition-all duration-300"
+          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <MessageCircle className="h-8 w-8" />
         </Button>
@@ -131,7 +131,7 @@ const CustomerSupportWidget = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed bottom-6 right-28 md:right-32 sm:right-20 z-50 w-96 max-w-[calc(100vw-2rem)]"
+            className="absolute bottom-16 right-0 w-96 max-w-[calc(100vw-2rem)]"
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}

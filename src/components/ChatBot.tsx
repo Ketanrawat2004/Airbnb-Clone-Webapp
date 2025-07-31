@@ -108,7 +108,7 @@ const ChatBot = () => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-rose-500 hover:bg-rose-600 text-white shadow-lg z-50"
+          className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg"
           size="icon"
         >
           <MessageCircle className="h-6 w-6" />
@@ -117,8 +117,8 @@ const ChatBot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-80 h-96 shadow-xl z-50 flex flex-col">
-          <CardHeader className="flex flex-row items-center justify-between py-3 px-4 bg-rose-500 text-white rounded-t-lg">
+        <Card className="absolute bottom-16 right-0 w-80 h-96 shadow-xl flex flex-col">
+          <CardHeader className="flex flex-row items-center justify-between py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-t-lg">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Bot className="h-4 w-4" />
               Travel Assistant
@@ -127,7 +127,7 @@ const ChatBot = () => {
               variant="ghost"
               size="sm"
               onClick={() => setIsOpen(false)}
-              className="h-6 w-6 p-0 text-white hover:bg-rose-600"
+              className="h-6 w-6 p-0 text-white hover:bg-white/20"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -143,17 +143,17 @@ const ChatBot = () => {
                       message.role === 'user' ? 'justify-end' : 'justify-start'
                     }`}
                   >
-                    {message.role === 'assistant' && (
-                      <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center">
-                        <Bot className="h-3 w-3 text-rose-600" />
-                      </div>
-                    )}
+                     {message.role === 'assistant' && (
+                       <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">
+                         <Bot className="h-3 w-3 text-purple-600" />
+                       </div>
+                     )}
                     <div
-                      className={`max-w-[200px] rounded-lg px-3 py-2 text-sm ${
-                        message.role === 'user'
-                          ? 'bg-rose-500 text-white'
-                          : 'bg-gray-100 text-gray-900'
-                      }`}
+                       className={`max-w-[200px] rounded-lg px-3 py-2 text-sm ${
+                         message.role === 'user'
+                           ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                           : 'bg-gray-100 text-gray-900'
+                       }`}
                     >
                       {message.content}
                     </div>
@@ -164,11 +164,11 @@ const ChatBot = () => {
                     )}
                   </div>
                 ))}
-                {isLoading && (
-                  <div className="flex items-start gap-2">
-                    <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center">
-                      <Bot className="h-3 w-3 text-rose-600" />
-                    </div>
+                 {isLoading && (
+                   <div className="flex items-start gap-2">
+                     <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">
+                       <Bot className="h-3 w-3 text-purple-600" />
+                     </div>
                     <div className="bg-gray-100 rounded-lg px-3 py-2 text-sm">
                       <div className="flex space-x-1">
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
@@ -191,12 +191,12 @@ const ChatBot = () => {
                   disabled={isLoading}
                   className="flex-1"
                 />
-                <Button
-                  onClick={sendMessage}
-                  disabled={!inputMessage.trim() || isLoading}
-                  size="sm"
-                  className="bg-rose-500 hover:bg-rose-600"
-                >
+                 <Button
+                   onClick={sendMessage}
+                   disabled={!inputMessage.trim() || isLoading}
+                   size="sm"
+                   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                 >
                   <Send className="h-4 w-4" />
                 </Button>
               </div>

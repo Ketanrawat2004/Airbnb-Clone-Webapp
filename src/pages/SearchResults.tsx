@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import HotelCard from '@/components/HotelCard';
-import ChatBot from '@/components/ChatBot';
+import SlidingWidgetSidebar from '@/components/SlidingWidgetSidebar';
 import Footer from '@/components/Footer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MapPin, Calendar, Users, Filter, Grid, List } from 'lucide-react';
@@ -262,7 +262,7 @@ const SearchResults = () => {
         </div>
       </section>
 
-      <ChatBot />
+      <SlidingWidgetSidebar />
       <Footer />
     </div>
   );

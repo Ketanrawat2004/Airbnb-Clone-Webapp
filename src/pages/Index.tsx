@@ -6,13 +6,11 @@ import HotelsSection from '@/components/HotelsSection';
 import FlightSection from '@/components/FlightSection';
 import ReviewAndTestimonialsSection from '@/components/ReviewAndTestimonialsSection';
 import FeaturesSection from '@/components/FeaturesSection';
-import ChatBot from '@/components/ChatBot';
+import SlidingWidgetSidebar from '@/components/SlidingWidgetSidebar';
 import AdvertisementBanner from '@/components/AdvertisementBanner';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
-import VideoCallWidget from '@/components/VideoCallWidget';
 import AIRecommendations from '@/components/AIRecommendations';
-import CustomerSupportWidget from '@/components/CustomerSupportWidget';
 
 const Index = () => {
   const handleSearch = (location: string) => {
@@ -32,12 +30,10 @@ const Index = () => {
         <ReviewAndTestimonialsSection />
       </div>
       <FeaturesSection />
-      <ChatBot />
+      <SlidingWidgetSidebar />
       <AdvertisementBanner />
       <Footer />
       <CookieConsent />
-      <VideoCallWidget />
-      <CustomerSupportWidget />
     </div>
   );
 };

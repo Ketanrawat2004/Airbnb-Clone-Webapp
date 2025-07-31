@@ -25,12 +25,12 @@ const VideoCallWidget = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-80 md:right-96 lg:right-6 z-50">
+    <div className="relative">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button
             size="lg"
-            className="rounded-full h-16 w-16 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse"
+            className="rounded-full h-14 w-14 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <Video className="h-6 w-6" />
           </Button>
