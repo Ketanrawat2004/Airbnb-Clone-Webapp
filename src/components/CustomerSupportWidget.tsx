@@ -110,7 +110,7 @@ const CustomerSupportWidget = () => {
     <>
       {/* Toggle Button */}
       <motion.div
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed bottom-6 right-20 md:right-20 sm:right-6 z-50"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.5, type: "spring", stiffness: 260, damping: 20 }}
@@ -131,7 +131,7 @@ const CustomerSupportWidget = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)]"
+            className="fixed bottom-6 right-20 md:right-20 sm:right-6 z-50 w-96 max-w-[calc(100vw-2rem)]"
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}

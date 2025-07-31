@@ -20,13 +20,17 @@ const GoogleSignInButton = ({ disabled = false }: GoogleSignInButtonProps) => {
       
       if (error) {
         console.error('Google sign in error:', error);
-        toast.error('Failed to sign in with Google. Please try again.');
+        if (error.message?.includes('refused to connect') || error.message?.includes('OAuth')) {
+          toast.error('Google OAuth is not properly configured. Please contact the administrator to set up Google authentication in Supabase settings.');
+        } else {
+          toast.error('Failed to sign in with Google. Please try again or use email/password.');
+        }
       } else {
         toast.success('Redirecting to Google sign in...');
       }
     } catch (err) {
       console.error('Unexpected error during Google sign in:', err);
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error('Google authentication is currently unavailable. Please use email/password to sign in.');
     } finally {
       setLoading(false);
     }

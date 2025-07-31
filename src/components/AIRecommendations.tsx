@@ -104,7 +104,7 @@ const AIRecommendations = () => {
           description: 'Limited time offer on premium hotels. Book now for exclusive savings.',
           price: 'From ₹3,999',
           location: 'Multiple Cities',
-          image: '/lovable-uploads/dd83790d-e088-4930-a32a-3ef4fa9ac0b8.png',
+          image: '/src/assets/profile-placeholder.jpg',
           badge: 'Flash Deal',
           savings: 'Up to 40% off'
         });
@@ -121,7 +121,7 @@ const AIRecommendations = () => {
         description: 'Limited time offer on premium hotels. Book now for exclusive savings.',
         price: 'From ₹3,999',
         location: 'Multiple Cities',
-        image: '/lovable-uploads/dd83790d-e088-4930-a32a-3ef4fa9ac0b8.png',
+        image: '/src/assets/profile-placeholder.jpg',
         badge: 'Flash Deal',
         savings: 'Up to 40% off'
       }]);

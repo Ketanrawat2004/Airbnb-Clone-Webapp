@@ -133,16 +133,16 @@ const Profile = () => {
 
   if (loading || isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50">
         <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="animate-pulse space-y-8">
-              <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-8 bg-rose-200 rounded w-1/4"></div>
               <div className="space-y-4">
-                <div className="h-64 bg-gray-200 rounded-xl"></div>
-                <div className="h-32 bg-gray-200 rounded-xl"></div>
-                <div className="h-32 bg-gray-200 rounded-xl"></div>
+                <div className="h-64 bg-rose-100 rounded-xl"></div>
+                <div className="h-32 bg-pink-100 rounded-xl"></div>
+                <div className="h-32 bg-rose-100 rounded-xl"></div>
               </div>
             </div>
           </div>
@@ -157,7 +157,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -169,7 +169,7 @@ const Profile = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full mb-6">
               <User className="h-10 w-10 text-white" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">My Profile</h1>
@@ -185,12 +185,12 @@ const Profile = () => {
               className="lg:col-span-1"
             >
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-                <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-lg">
+                <CardHeader className="bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-t-lg">
                   <CardTitle className="flex items-center space-x-2">
                     <User className="h-5 w-5" />
                     <span>Profile Information</span>
                   </CardTitle>
-                  <CardDescription className="text-blue-100">
+                  <CardDescription className="text-rose-100">
                     Update your personal details
                   </CardDescription>
                 </CardHeader>
@@ -250,7 +250,7 @@ const Profile = () => {
                   <Button
                     onClick={saveProfile}
                     disabled={isSaving}
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-200"
+                    className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 transition-all duration-200"
                   >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                   </Button>
@@ -266,12 +266,12 @@ const Profile = () => {
               className="lg:col-span-2"
             >
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-                <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-t-lg">
+                <CardHeader className="bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-t-lg">
                   <CardTitle className="flex items-center space-x-2">
                     <Ticket className="h-5 w-5" />
                     <span>My Bookings</span>
                   </CardTitle>
-                  <CardDescription className="text-emerald-100">
+                  <CardDescription className="text-pink-100">
                     View and manage your hotel and flight bookings
                   </CardDescription>
                 </CardHeader>
