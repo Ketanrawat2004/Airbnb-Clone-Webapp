@@ -31,24 +31,24 @@ const SlidingWidgetSidebar = () => {
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            className="fixed bottom-16 md:bottom-6 right-2 md:right-20 z-40 flex flex-col-reverse md:flex-row gap-3 md:gap-4 max-w-[calc(100vw-1rem)] md:max-w-none"
+            className="fixed bottom-20 md:bottom-6 right-2 md:right-20 z-40 flex flex-col md:flex-row gap-4 md:gap-6 max-w-[calc(100vw-1rem)] md:max-w-none"
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {/* Chat Bot Widget */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <ChatBot />
             </div>
 
             {/* Video Call Widget */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <VideoCallWidget />
             </div>
 
             {/* Customer Support Widget */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <CustomerSupportWidget />
             </div>
           </motion.div>
