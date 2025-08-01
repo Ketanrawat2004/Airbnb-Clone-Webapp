@@ -21,12 +21,12 @@ const SlidingWidgetSidebar = () => {
         <Button
           onClick={() => setIsExpanded(!isExpanded)}
           size="lg"
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-all duration-300"
+          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 md:w-14 md:h-14 shadow-lg hover:shadow-xl transition-all duration-300"
         >
           {isExpanded ? (
-            <ChevronRight className="h-6 w-6" />
+            <ChevronRight className="h-4 w-4 md:h-6 md:w-6" />
           ) : (
-            <ChevronLeft className="h-6 w-6" />
+            <ChevronLeft className="h-4 w-4 md:h-6 md:w-6" />
           )}
         </Button>
       </motion.div>
@@ -35,7 +35,7 @@ const SlidingWidgetSidebar = () => {
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            className="fixed bottom-6 right-20 z-40 flex space-x-4"
+            className="fixed bottom-20 md:bottom-6 right-2 md:right-20 z-40 flex flex-col md:flex-row gap-2 md:gap-4"
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100 }}

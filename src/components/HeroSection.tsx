@@ -8,35 +8,35 @@ interface HeroSectionProps {
 const HeroSection = ({ onSearch }: HeroSectionProps) => {
   return (
     <section className="relative min-h-[80vh] flex flex-col items-center justify-center text-center overflow-hidden pt-20">
-      {/* Modern Geometric Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-400/20 via-transparent to-transparent"></div>
+      {/* Pinkish Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-rose-400"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-pink-400/30 via-purple-400/20 to-transparent"></div>
       
       {/* Dynamic Floating Elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute bottom-32 right-16 w-96 h-96 bg-gradient-to-r from-purple-400/15 to-pink-400/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-indigo-400/10 to-purple-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
+      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-pink-400/15 to-rose-400/15 rounded-full blur-3xl animate-float"></div>
+      <div className="absolute bottom-32 right-16 w-96 h-96 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-rose-400/15 to-purple-400/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
       
       {/* Geometric Overlay Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-16 left-16 w-32 h-32 border border-white/20 rotate-45 rounded-lg"></div>
-        <div className="absolute top-32 right-24 w-24 h-24 border border-cyan-300/30 rotate-12 rounded-lg"></div>
-        <div className="absolute bottom-32 left-32 w-40 h-40 border border-purple-300/20 -rotate-12 rounded-lg"></div>
+        <div className="absolute top-32 right-24 w-24 h-24 border border-pink-300/30 rotate-12 rounded-lg"></div>
+        <div className="absolute bottom-32 left-32 w-40 h-40 border border-rose-300/20 -rotate-12 rounded-lg"></div>
       </div>
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8 sm:py-12">
         {/* Premium Header Content */}
         <div className="mb-8 sm:mb-12 animate-fade-up">
           <div className="inline-block mb-6 sm:mb-8">
-            <span className="bg-gradient-to-r from-cyan-400/20 to-purple-400/20 backdrop-blur-xl text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-full text-sm sm:text-base font-medium tracking-wide border border-white/30 shadow-2xl whitespace-nowrap">
+            <span className="bg-gradient-to-r from-pink-400/20 to-rose-400/20 backdrop-blur-xl text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-full text-sm sm:text-base font-medium tracking-wide border border-white/30 shadow-2xl whitespace-nowrap">
               🌟 Your Gateway to Extraordinary Travels
             </span>
           </div>
           
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-6 sm:mb-8 lg:mb-10 tracking-tight">
             <span className="block mb-3 sm:mb-4">Unlock Your</span>
-            <span className="block bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 text-transparent bg-clip-text relative">
-              <span className="absolute inset-0 bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 blur-lg opacity-50"></span>
+            <span className="block bg-gradient-to-r from-pink-300 via-rose-300 to-purple-300 text-transparent bg-clip-text relative">
+              <span className="absolute inset-0 bg-gradient-to-r from-pink-300 via-rose-300 to-purple-300 blur-lg opacity-50"></span>
               <span className="relative">Dream Adventure</span>
             </span>
           </h1>
