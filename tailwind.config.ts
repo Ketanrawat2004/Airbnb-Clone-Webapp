@@ -22,6 +22,8 @@ export default {
       fontFamily: {
         playfair: ['Playfair Display', 'serif'],
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
+        display: ['Space Grotesk', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
