@@ -118,7 +118,7 @@ const CustomerSupportWidget = () => {
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
-          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-all duration-300"
+          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
         >
           <MessageCircle className="h-8 w-8" />
         </Button>

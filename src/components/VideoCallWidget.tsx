@@ -30,7 +30,7 @@ const VideoCallWidget = () => {
         <DialogTrigger asChild>
           <Button
             size="lg"
-            className="rounded-full h-14 w-14 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="rounded-full h-14 w-14 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
             <Video className="h-6 w-6" />
           </Button>
