@@ -31,7 +31,7 @@ const SlidingWidgetSidebar = () => {
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            className="fixed bottom-20 md:bottom-6 right-2 md:right-24 lg:right-20 z-40 flex flex-col md:flex-row gap-6 md:gap-16 lg:gap-20 max-w-[calc(100vw-1rem)] md:max-w-none"
+            className="fixed bottom-20 md:bottom-6 right-2 md:right-28 lg:right-24 z-40 flex flex-col md:flex-row gap-8 md:gap-20 lg:gap-24 max-w-[calc(100vw-1rem)] md:max-w-none"
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100 }}
