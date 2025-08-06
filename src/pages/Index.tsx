@@ -19,7 +19,7 @@ const Index = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50">
+    <div className="page-container">
       <Header />
       <HeroSection onSearch={handleSearch} />
       <CheapRatesSection />

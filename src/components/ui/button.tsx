@@ -10,15 +10,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-rose-500 text-white hover:bg-rose-600 focus:bg-rose-700",
+        default: "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 focus:from-purple-800 focus:to-indigo-800 shadow-lg hover:shadow-xl",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-input bg-white hover:bg-accent hover:text-accent-foreground",
+          "border-2 border-purple-300 bg-white hover:bg-purple-50 text-purple-700 hover:text-purple-800",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "underline text-primary hover:text-rose-500 px-2 bg-transparent shadow-none",
+          "bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 shadow-lg hover:shadow-xl",
+        ghost: "hover:bg-purple-100 hover:text-purple-800",
+        link: "underline text-purple-600 hover:text-purple-800 px-2 bg-transparent shadow-none",
+        royal: "bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white hover:from-purple-700 hover:via-indigo-700 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:scale-105"
       },
       size: {
         default: "h-11 rounded-xl px-6 py-2 text-base",

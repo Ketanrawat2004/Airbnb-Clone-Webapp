@@ -74,13 +74,13 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   return (
     <>
       <Card 
-        className="group cursor-pointer transition-all duration-500 border-0 shadow-lg hover:shadow-2xl bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden hover:scale-[1.02] w-full relative"
+        className="group cursor-pointer transition-all duration-500 border-0 shadow-lg hover:shadow-2xl royal-card overflow-hidden hover:scale-[1.02] w-full relative"
         onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Hover Glow Effect */}
-        <div className={`absolute inset-0 bg-gradient-to-r from-teal-400/20 via-cyan-400/20 to-blue-400/20 rounded-3xl transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
+        <div className={`absolute inset-0 bg-gradient-to-r from-purple-400/20 via-amber-400/20 to-blue-400/20 rounded-3xl transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
         
         <CardContent className="p-0 relative">
           <HotelCardImage

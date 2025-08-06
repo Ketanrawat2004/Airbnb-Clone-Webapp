@@ -60,41 +60,42 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 259 100% 8%;  /* Dark royal background */
+    --foreground: 280 100% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 259 100% 12%;  /* Dark royal card */
+    --card-foreground: 280 100% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 259 100% 12%;
+    --popover-foreground: 280 100% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 280 100% 70%;  /* Lighter royal purple for dark mode */
+    --primary-foreground: 259 100% 8%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 45 100% 50%;  /* Royal gold for dark mode */
+    --secondary-foreground: 259 100% 8%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 259 50% 15%;
+    --muted-foreground: 280 20% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 220 100% 60%;  /* Royal blue for dark mode */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 259 50% 20%;
+    --input: 259 50% 20%;
+    --ring: 280 100% 70%;
+    
+    --sidebar-background: 259 100% 8%;
+    --sidebar-foreground: 280 100% 95%;
+    --sidebar-primary: 280 100% 70%;
+    --sidebar-primary-foreground: 259 100% 8%;
+    --sidebar-accent: 259 50% 15%;
+    --sidebar-accent-foreground: 280 100% 95%;
+    --sidebar-border: 259 50% 20%;
+    --sidebar-ring: 280 100% 70%;
   }
 }
 
@@ -135,32 +136,32 @@
   }
   
   .page-container {
-    @apply min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden;
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(260 20% 95%) 50%, hsl(280 30% 90%) 100%);
+    @apply min-h-screen relative overflow-hidden;
   }
   
   .content-section {
-    @apply py-16 sm:py-20 lg:py-24 relative;
+    @apply py-8 sm:py-12 md:py-16 lg:py-20 relative;
   }
   
   .floating-card {
-    @apply bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8;
+    @apply bg-white/95 backdrop-blur-sm rounded-2xl md:rounded-3xl shadow-2xl border border-purple-200/50 p-4 sm:p-6 md:p-8;
+    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(250,245,255,0.9));
   }
 
-  .shadow-3xl {
-    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25), 0 0 50px rgba(147, 51, 234, 0.3);
+  .royal-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(250,245,255,0.9));
+    @apply rounded-2xl md:rounded-3xl shadow-2xl border border-purple-200/50 backdrop-blur-sm;
+    box-shadow: 0 25px 50px -12px rgba(147, 51, 234, 0.25), 0 0 30px rgba(251, 191, 36, 0.1);
   }
 
-  /* Text wrapping and overflow prevention */
-  .text-wrap {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
+  .royal-button {
+    background: var(--gradient-royal-primary);
+    @apply text-white font-semibold py-2 px-4 sm:py-3 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
   }
 
-  .prevent-overflow {
-    min-width: 0;
-    overflow-wrap: break-word;
-    word-break: break-word;
+  .royal-input {
+    @apply bg-white/90 border-2 border-purple-200 rounded-lg px-3 py-2 sm:px-4 sm:py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-300;
   }
 }
 
@@ -284,48 +285,58 @@ html {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 30px rgba(147, 51, 234, 0.2);
 }
 
-/* Responsive utilities */
-.responsive-container {
+/* Royal Responsive utilities */
+.royal-container {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-.responsive-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
+.royal-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8;
 }
 
-.responsive-padding {
-  @apply p-4 sm:p-6 lg:p-8;
+.royal-padding {
+  @apply p-4 sm:p-6 lg:p-8 xl:p-10;
 }
 
-.responsive-margin {
-  @apply m-4 sm:m-6 lg:m-8;
+.royal-margin {
+  @apply m-4 sm:m-6 lg:m-8 xl:m-10;
 }
 
-/* Responsive typography helpers */
+.royal-text {
+  @apply text-slate-700 dark:text-purple-100;
+}
+
+.royal-heading {
+  background: var(--gradient-royal-primary);
+  @apply bg-clip-text text-transparent font-bold;
+}
+
+/* Royal Responsive typography helpers */
 @media (max-width: 640px) {
-  .responsive-text {
+  .royal-text-responsive {
     font-size: clamp(0.875rem, 4vw, 1.125rem);
-    line-height: 1.5;
+    line-height: 1.6;
   }
   
-  .responsive-heading {
+  .royal-heading-responsive {
     font-size: clamp(1.5rem, 8vw, 3rem);
     line-height: 1.2;
   }
   
-  .mobile-optimized {
-    @apply text-sm p-2 min-h-[44px] min-w-[44px];
+  .mobile-royal-optimized {
+    @apply text-sm p-3 min-h-[48px] min-w-[48px] rounded-xl;
   }
 }
 
-/* Mobile navigation optimizations */
+/* Mobile royal navigation optimizations */
 @media (max-width: 768px) {
-  .mobile-nav {
-    @apply fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200;
+  .mobile-royal-nav {
+    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(250,245,255,0.9));
+    @apply fixed bottom-0 left-0 right-0 z-50 backdrop-blur-lg border-t-2 border-purple-200;
   }
   
-  .mobile-touch-target {
-    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  .mobile-royal-touch-target {
+    @apply min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl hover:bg-purple-50 transition-colors duration-200;
   }
 }
 
@@ -367,6 +378,40 @@ html {
   background: inherit;
   filter: blur(20px);
   opacity: 0.6;
+}
+
+/* Royal Mobile Responsive Enhancements */
+@media (max-width: 640px) {
+  .royal-card {
+    @apply rounded-xl;
+    padding: 1rem;
+  }
+  
+  .royal-button {
+    @apply py-2 px-4 text-sm rounded-lg;
+  }
+  
+  .royal-input {
+    @apply py-2 px-3 text-sm rounded-lg;
+  }
+  
+  .royal-heading-responsive {
+    font-size: clamp(1.25rem, 5vw, 2rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .royal-card {
+    padding: 2rem;
+  }
+  
+  .royal-button {
+    @apply py-4 px-8 text-lg rounded-xl;
+  }
+  
+  .royal-input {
+    @apply py-4 px-6 text-lg rounded-xl;
+  }
 }
 
 .text-glow {
