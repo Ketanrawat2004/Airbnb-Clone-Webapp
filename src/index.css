@@ -16,27 +16,38 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 326 100% 74%;
+    /* Royal Color Palette */
+    --primary: 262 83% 58%;  /* Royal Purple */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 327 73% 97%;
+    --primary-glow: 280 100% 85%;  /* Light royal purple */
+    
+    --royal-deep: 259 100% 35%;  /* Deep royal purple */
+    --royal-gold: 45 100% 60%;   /* Royal gold */
+    --royal-blue: 220 100% 50%;  /* Royal blue */
+    --royal-emerald: 160 100% 35%; /* Royal emerald */
 
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
+    --secondary: 259 100% 35%;  /* Deep royal purple */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 260 10% 96%;
+    --muted-foreground: 260 5% 46%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 45 100% 60%;  /* Royal gold */
+    --accent-foreground: 259 100% 35%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 260 20% 88%;
+    --input: 260 20% 88%;
+    --ring: 262 83% 58%;
 
     --radius: 0.5rem;
+
+    /* Royal Gradients */
+    --gradient-royal-primary: linear-gradient(135deg, hsl(var(--royal-deep)), hsl(var(--primary)), hsl(var(--royal-gold)));
+    --gradient-royal-secondary: linear-gradient(120deg, hsl(var(--royal-blue)), hsl(var(--primary)), hsl(var(--royal-emerald)));
+    --gradient-royal-accent: linear-gradient(90deg, hsl(var(--royal-gold)), hsl(45 100% 70%));
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -107,15 +118,16 @@
   }
   
   .gradient-primary {
-    @apply bg-gradient-to-br from-purple-600 via-pink-500 to-rose-500;
+    background: var(--gradient-royal-primary);
   }
   
   .gradient-secondary {
-    @apply bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500;
+    background: var(--gradient-royal-secondary);
   }
   
   .gradient-text {
-    @apply bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent;
+    background: var(--gradient-royal-primary);
+    @apply bg-clip-text text-transparent;
   }
   
   .hover-lift {
