@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Enhanced Design System - All colors, gradients, fonts, etc should be defined here. */
+/* Enhanced Design System - Indian Theme Colors and Design */
 
 @layer base {
   :root {
@@ -16,38 +16,40 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Royal Color Palette */
-    --primary: 262 83% 58%;  /* Royal Purple */
+    /* Indian Color Palette - Inspired by Indian Flag & Culture */
+    --primary: 24 100% 60%;  /* Saffron Orange */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 280 100% 85%;  /* Light royal purple */
+    --primary-glow: 30 100% 80%;  /* Light saffron */
     
-    --royal-deep: 259 100% 35%;  /* Deep royal purple */
-    --royal-gold: 45 100% 60%;   /* Royal gold */
-    --royal-blue: 220 100% 50%;  /* Royal blue */
-    --royal-emerald: 160 100% 35%; /* Royal emerald */
+    --indian-saffron: 24 100% 60%;  /* Indian Saffron */
+    --indian-white: 0 0% 100%;      /* Pure White */
+    --indian-green: 120 100% 25%;   /* Indian Green */
+    --indian-navy: 240 100% 25%;    /* Navy Blue (Chakra) */
+    --indian-turmeric: 45 100% 55%; /* Turmeric Yellow */
+    --indian-terracotta: 15 75% 45%; /* Terracotta Red */
 
-    --secondary: 259 100% 35%;  /* Deep royal purple */
+    --secondary: 120 100% 25%;  /* Indian Green */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 260 10% 96%;
-    --muted-foreground: 260 5% 46%;
+    --muted: 30 20% 96%;
+    --muted-foreground: 30 10% 46%;
 
-    --accent: 45 100% 60%;  /* Royal gold */
-    --accent-foreground: 259 100% 35%;
+    --accent: 45 100% 55%;  /* Turmeric Yellow */
+    --accent-foreground: 240 100% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 260 20% 88%;
-    --input: 260 20% 88%;
-    --ring: 262 83% 58%;
+    --border: 30 30% 88%;
+    --input: 30 30% 88%;
+    --ring: 24 100% 60%;
 
     --radius: 0.5rem;
 
-    /* Royal Gradients */
-    --gradient-royal-primary: linear-gradient(135deg, hsl(var(--royal-deep)), hsl(var(--primary)), hsl(var(--royal-gold)));
-    --gradient-royal-secondary: linear-gradient(120deg, hsl(var(--royal-blue)), hsl(var(--primary)), hsl(var(--royal-emerald)));
-    --gradient-royal-accent: linear-gradient(90deg, hsl(var(--royal-gold)), hsl(45 100% 70%));
+    /* Indian Gradients */
+    --gradient-indian-primary: linear-gradient(135deg, hsl(var(--indian-saffron)), hsl(var(--indian-turmeric)), hsl(var(--indian-green)));
+    --gradient-indian-secondary: linear-gradient(120deg, hsl(var(--indian-green)), hsl(var(--indian-white)), hsl(var(--indian-navy)));
+    --gradient-indian-accent: linear-gradient(90deg, hsl(var(--indian-turmeric)), hsl(45 100% 65%));
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -60,42 +62,42 @@
   }
 
   .dark {
-    --background: 259 100% 8%;  /* Dark royal background */
-    --foreground: 280 100% 95%;
+    --background: 30 20% 8%;  /* Dark Indian background */
+    --foreground: 30 20% 95%;
 
-    --card: 259 100% 12%;  /* Dark royal card */
-    --card-foreground: 280 100% 95%;
+    --card: 30 20% 12%;  /* Dark Indian card */
+    --card-foreground: 30 20% 95%;
 
-    --popover: 259 100% 12%;
-    --popover-foreground: 280 100% 95%;
+    --popover: 30 20% 12%;
+    --popover-foreground: 30 20% 95%;
 
-    --primary: 280 100% 70%;  /* Lighter royal purple for dark mode */
-    --primary-foreground: 259 100% 8%;
+    --primary: 30 100% 75%;  /* Lighter saffron for dark mode */
+    --primary-foreground: 30 20% 8%;
 
-    --secondary: 45 100% 50%;  /* Royal gold for dark mode */
-    --secondary-foreground: 259 100% 8%;
+    --secondary: 120 100% 40%;  /* Indian green for dark mode */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 259 50% 15%;
-    --muted-foreground: 280 20% 70%;
+    --muted: 30 30% 15%;
+    --muted-foreground: 30 20% 70%;
 
-    --accent: 220 100% 60%;  /* Royal blue for dark mode */
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 100% 65%;  /* Turmeric for dark mode */
+    --accent-foreground: 30 20% 8%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 259 50% 20%;
-    --input: 259 50% 20%;
-    --ring: 280 100% 70%;
+    --border: 30 30% 20%;
+    --input: 30 30% 20%;
+    --ring: 30 100% 75%;
     
-    --sidebar-background: 259 100% 8%;
-    --sidebar-foreground: 280 100% 95%;
-    --sidebar-primary: 280 100% 70%;
-    --sidebar-primary-foreground: 259 100% 8%;
-    --sidebar-accent: 259 50% 15%;
-    --sidebar-accent-foreground: 280 100% 95%;
-    --sidebar-border: 259 50% 20%;
-    --sidebar-ring: 280 100% 70%;
+    --sidebar-background: 30 20% 8%;
+    --sidebar-foreground: 30 20% 95%;
+    --sidebar-primary: 30 100% 75%;
+    --sidebar-primary-foreground: 30 20% 8%;
+    --sidebar-accent: 30 30% 15%;
+    --sidebar-accent-foreground: 30 20% 95%;
+    --sidebar-border: 30 30% 20%;
+    --sidebar-ring: 30 100% 75%;
   }
 }
 
@@ -119,15 +121,15 @@
   }
   
   .gradient-primary {
-    background: var(--gradient-royal-primary);
+    background: var(--gradient-indian-primary);
   }
   
   .gradient-secondary {
-    background: var(--gradient-royal-secondary);
+    background: var(--gradient-indian-secondary);
   }
   
   .gradient-text {
-    background: var(--gradient-royal-primary);
+    background: var(--gradient-indian-primary);
     @apply bg-clip-text text-transparent;
   }
   
@@ -136,7 +138,7 @@
   }
   
   .page-container {
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(260 20% 95%) 50%, hsl(280 30% 90%) 100%);
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(30 30% 95%) 50%, hsl(45 40% 90%) 100%);
     @apply min-h-screen relative overflow-hidden;
   }
   
@@ -145,23 +147,23 @@
   }
   
   .floating-card {
-    @apply bg-white/95 backdrop-blur-sm rounded-2xl md:rounded-3xl shadow-2xl border border-purple-200/50 p-4 sm:p-6 md:p-8;
-    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(250,245,255,0.9));
+    @apply bg-white/95 backdrop-blur-sm rounded-2xl md:rounded-3xl shadow-2xl border border-orange-200/50 p-4 sm:p-6 md:p-8;
+    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,247,237,0.9));
   }
 
-  .royal-card {
-    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(250,245,255,0.9));
-    @apply rounded-2xl md:rounded-3xl shadow-2xl border border-purple-200/50 backdrop-blur-sm;
-    box-shadow: 0 25px 50px -12px rgba(147, 51, 234, 0.25), 0 0 30px rgba(251, 191, 36, 0.1);
+  .indian-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,247,237,0.9));
+    @apply rounded-2xl md:rounded-3xl shadow-2xl border border-orange-200/50 backdrop-blur-sm;
+    box-shadow: 0 25px 50px -12px rgba(251, 146, 60, 0.25), 0 0 30px rgba(234, 179, 8, 0.1);
   }
 
-  .royal-button {
-    background: var(--gradient-royal-primary);
+  .indian-button {
+    background: var(--gradient-indian-primary);
     @apply text-white font-semibold py-2 px-4 sm:py-3 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
   }
 
-  .royal-input {
-    @apply bg-white/90 border-2 border-purple-200 rounded-lg px-3 py-2 sm:px-4 sm:py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-300;
+  .indian-input {
+    @apply bg-white/90 border-2 border-orange-200 rounded-lg px-3 py-2 sm:px-4 sm:py-3 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300;
   }
 }
 
@@ -285,58 +287,58 @@ html {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 30px rgba(147, 51, 234, 0.2);
 }
 
-/* Royal Responsive utilities */
-.royal-container {
+/* Indian Responsive utilities */
+.indian-container {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-.royal-grid {
+.indian-grid {
   @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8;
 }
 
-.royal-padding {
+.indian-padding {
   @apply p-4 sm:p-6 lg:p-8 xl:p-10;
 }
 
-.royal-margin {
+.indian-margin {
   @apply m-4 sm:m-6 lg:m-8 xl:m-10;
 }
 
-.royal-text {
-  @apply text-slate-700 dark:text-purple-100;
+.indian-text {
+  @apply text-slate-700 dark:text-orange-100;
 }
 
-.royal-heading {
-  background: var(--gradient-royal-primary);
+.indian-heading {
+  background: var(--gradient-indian-primary);
   @apply bg-clip-text text-transparent font-bold;
 }
 
-/* Royal Responsive typography helpers */
+/* Indian Responsive typography helpers */
 @media (max-width: 640px) {
-  .royal-text-responsive {
+  .indian-text-responsive {
     font-size: clamp(0.875rem, 4vw, 1.125rem);
     line-height: 1.6;
   }
   
-  .royal-heading-responsive {
+  .indian-heading-responsive {
     font-size: clamp(1.5rem, 8vw, 3rem);
     line-height: 1.2;
   }
   
-  .mobile-royal-optimized {
+  .mobile-indian-optimized {
     @apply text-sm p-3 min-h-[48px] min-w-[48px] rounded-xl;
   }
 }
 
-/* Mobile royal navigation optimizations */
+/* Mobile Indian navigation optimizations */
 @media (max-width: 768px) {
-  .mobile-royal-nav {
-    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(250,245,255,0.9));
-    @apply fixed bottom-0 left-0 right-0 z-50 backdrop-blur-lg border-t-2 border-purple-200;
+  .mobile-indian-nav {
+    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,247,237,0.9));
+    @apply fixed bottom-0 left-0 right-0 z-50 backdrop-blur-lg border-t-2 border-orange-200;
   }
   
-  .mobile-royal-touch-target {
-    @apply min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl hover:bg-purple-50 transition-colors duration-200;
+  .mobile-indian-touch-target {
+    @apply min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl hover:bg-orange-50 transition-colors duration-200;
   }
 }
 
@@ -380,36 +382,36 @@ html {
   opacity: 0.6;
 }
 
-/* Royal Mobile Responsive Enhancements */
+/* Indian Mobile Responsive Enhancements */
 @media (max-width: 640px) {
-  .royal-card {
+  .indian-card {
     @apply rounded-xl;
     padding: 1rem;
   }
   
-  .royal-button {
+  .indian-button {
     @apply py-2 px-4 text-sm rounded-lg;
   }
   
-  .royal-input {
+  .indian-input {
     @apply py-2 px-3 text-sm rounded-lg;
   }
   
-  .royal-heading-responsive {
+  .indian-heading-responsive {
     font-size: clamp(1.25rem, 5vw, 2rem);
   }
 }
 
 @media (min-width: 1024px) {
-  .royal-card {
+  .indian-card {
     padding: 2rem;
   }
   
-  .royal-button {
+  .indian-button {
     @apply py-4 px-8 text-lg rounded-xl;
   }
   
-  .royal-input {
+  .indian-input {
     @apply py-4 px-6 text-lg rounded-xl;
   }
 }

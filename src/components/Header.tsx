@@ -53,20 +53,20 @@ const Header = () => {
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-lg shadow-xl border-b border-purple-200/50' : 'bg-transparent'
+        isScrolled ? 'bg-white/95 backdrop-blur-lg shadow-xl border-b border-orange-200/50' : 'bg-transparent'
       }`}>
-        <div className="royal-container py-3 sm:py-4">
+        <div className="indian-container py-3 sm:py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <Logo />
-              <span className="text-xl font-bold royal-heading hidden sm:block">Royal Stay</span>
+              <span className="text-xl font-bold indian-heading hidden sm:block">Airbnb Clone+</span>
             </Link>
 
             {/* Search Bar - Desktop */}
             <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
               <div className="relative w-full">
-                <div className="flex items-center royal-card rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center indian-card rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="flex-1 px-4 py-2">
                     <HotelAutocomplete
                       value={searchValue}
@@ -77,7 +77,7 @@ const Header = () => {
                   <Button
                     onClick={handleSearch}
                     size="sm"
-                    className="royal-button rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
+                    className="indian-button rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
                   >
                     <Search className="h-4 w-4" />
                   </Button>
@@ -91,8 +91,8 @@ const Header = () => {
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`flex items-center space-x-1 text-sm font-medium transition-colors hover:text-purple-600 mobile-royal-touch-target ${
-                    location.pathname === item.href ? 'text-purple-600 font-bold' : 'royal-text'
+                  className={`flex items-center space-x-1 text-sm font-medium transition-colors hover:text-orange-600 mobile-indian-touch-target ${
+                    location.pathname === item.href ? 'text-orange-600 font-bold' : 'indian-text'
                   }`}
                 >
                   <item.icon className="h-4 w-4" />
@@ -118,7 +118,7 @@ const Header = () => {
                 onClick={() => navigate('/admin/auth')}
                 variant="outline"
                 size="sm"
-                className="royal-button border-0 hidden sm:flex text-sm"
+                className="indian-button border-0 hidden sm:flex text-sm"
               >
                 Admin
               </Button>
@@ -148,7 +148,7 @@ const Header = () => {
                 <Button
                   onClick={() => setAuthModalOpen(true)}
                   variant="outline"
-                  className="bg-white/90 hover:bg-white border-purple-300 text-purple-700 hover:text-purple-800 mobile-royal-optimized"
+                  className="bg-white/90 hover:bg-white border-orange-300 text-orange-700 hover:text-orange-800 mobile-indian-optimized"
                 >
                   Sign In
                 </Button>
@@ -167,8 +167,8 @@ const Header = () => {
                       <Link
                         key={item.href}
                         to={item.href}
-                        className={`flex items-center space-x-2 text-lg font-medium transition-colors hover:text-purple-600 mobile-royal-touch-target ${
-                          location.pathname === item.href ? 'text-purple-600 font-bold' : 'royal-text'
+                        className={`flex items-center space-x-2 text-lg font-medium transition-colors hover:text-orange-600 mobile-indian-touch-target ${
+                          location.pathname === item.href ? 'text-orange-600 font-bold' : 'indian-text'
                         }`}
                       >
                         <item.icon className="h-5 w-5" />
@@ -178,7 +178,7 @@ const Header = () => {
                     <Button
                       onClick={() => navigate('/admin/auth')}
                       variant="outline"
-                      className="royal-button border-0 mt-4 w-full"
+                      className="indian-button border-0 mt-4 w-full"
                     >
                       Admin Access
                     </Button>
@@ -191,7 +191,7 @@ const Header = () => {
           {/* Mobile Search Bar */}
           {showSearch && (
             <div className="lg:hidden mt-4 pb-4">
-              <div className="flex items-center royal-card rounded-full shadow-lg">
+              <div className="flex items-center indian-card rounded-full shadow-lg">
                 <div className="flex-1 px-4 py-2">
                   <HotelAutocomplete
                     value={searchValue}
@@ -202,7 +202,7 @@ const Header = () => {
                 <Button
                   onClick={handleSearch}
                   size="sm"
-                  className="royal-button rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
+                  className="indian-button rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
                 >
                   <Search className="h-4 w-4" />
                 </Button>

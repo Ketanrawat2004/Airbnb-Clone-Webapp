@@ -10,16 +10,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 focus:from-purple-800 focus:to-indigo-800 shadow-lg hover:shadow-xl",
+        default: "bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:from-orange-600 hover:to-yellow-600 focus:from-orange-700 focus:to-yellow-700 shadow-lg hover:shadow-xl",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border-2 border-purple-300 bg-white hover:bg-purple-50 text-purple-700 hover:text-purple-800",
+          "border-2 border-orange-300 bg-white hover:bg-orange-50 text-orange-700 hover:text-orange-800",
         secondary:
-          "bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 shadow-lg hover:shadow-xl",
-        ghost: "hover:bg-purple-100 hover:text-purple-800",
-        link: "underline text-purple-600 hover:text-purple-800 px-2 bg-transparent shadow-none",
-        royal: "bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white hover:from-purple-700 hover:via-indigo-700 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:scale-105"
+          "bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl",
+        ghost: "hover:bg-orange-100 hover:text-orange-800",
+        link: "underline text-orange-600 hover:text-orange-800 px-2 bg-transparent shadow-none",
+        indian: "bg-gradient-to-r from-orange-500 via-yellow-500 to-green-500 text-white hover:from-orange-600 hover:via-yellow-600 hover:to-green-600 shadow-lg hover:shadow-xl transform hover:scale-105"
       },
       size: {
         default: "h-11 rounded-xl px-6 py-2 text-base",
