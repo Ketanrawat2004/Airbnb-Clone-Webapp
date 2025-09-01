@@ -64,10 +64,10 @@ const Header = () => {
             </Link>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
+            <div className="hidden lg:flex items-center flex-1 max-w-sm mx-6">
               <div className="relative w-full">
-                <div className="flex items-center indian-card rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
-                  <div className="flex-1 px-4 py-2">
+                <div className="flex items-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200">
+                  <div className="flex-1 px-3 py-1.5">
                     <HotelAutocomplete
                       value={searchValue}
                       onChange={setSearchValue}
@@ -78,9 +78,9 @@ const Header = () => {
                     onClick={handleSearch}
                     size="sm"
                     variant="airbnb"
-                    className="rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
+                    className="rounded-full mr-1.5 p-1.5 h-7 w-7 min-w-[28px]"
                   >
-                    <Search className="h-4 w-4" />
+                    <Search className="h-3.5 w-3.5" />
                   </Button>
                 </div>
               </div>
@@ -191,9 +191,9 @@ const Header = () => {
 
           {/* Mobile Search Bar */}
           {showSearch && (
-            <div className="lg:hidden mt-4 pb-4">
-              <div className="flex items-center indian-card rounded-full shadow-lg">
-                <div className="flex-1 px-4 py-2">
+            <div className="lg:hidden mt-3 pb-3">
+              <div className="flex items-center bg-white rounded-full shadow-md border border-gray-200">
+                <div className="flex-1 px-3 py-1.5">
                   <HotelAutocomplete
                     value={searchValue}
                     onChange={setSearchValue}
@@ -204,9 +204,9 @@ const Header = () => {
                   onClick={handleSearch}
                   size="sm"
                   variant="airbnb"
-                  className="rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
+                  className="rounded-full mr-1.5 p-1.5 h-7 w-7 min-w-[28px]"
                 >
-                  <Search className="h-4 w-4" />
+                  <Search className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>
