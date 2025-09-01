@@ -9,29 +9,29 @@ interface HeroSectionProps {
 const HeroSection = ({ onSearch }: HeroSectionProps) => {
   return (
     <section className="relative min-h-[100vh] flex flex-col items-center justify-center overflow-hidden font-display">
-      {/* Indian Background Layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-yellow-500 to-green-600"></div>
-      <div className="absolute inset-0" style={{ background: 'var(--gradient-indian-primary)', opacity: 0.25 }}></div>
-      <div className="absolute inset-0" style={{ background: 'var(--gradient-indian-secondary)', opacity: 0.2 }}></div>
+      {/* Airbnb Pink Background Layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-500 via-red-500 to-rose-600"></div>
+      <div className="absolute inset-0" style={{ background: 'var(--gradient-airbnb-primary)', opacity: 0.25 }}></div>
+      <div className="absolute inset-0" style={{ background: 'var(--gradient-airbnb-secondary)', opacity: 0.2 }}></div>
       
-      {/* Indian Dynamic Mesh Overlay */}
+      {/* Airbnb Dynamic Mesh Overlay */}
       <div className="absolute inset-0 opacity-40">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/30 via-yellow-600/40 to-green-600/30 animate-pulse-slow"></div>
-        <div className="absolute inset-0 bg-gradient-to-bl from-red-500/20 via-orange-500/25 to-yellow-600/20 animate-float-slow"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-600/30 via-red-600/40 to-rose-600/30 animate-pulse-slow"></div>
+        <div className="absolute inset-0 bg-gradient-to-bl from-pink-500/20 via-red-500/25 to-rose-600/20 animate-float-slow"></div>
       </div>
       
-      {/* Indian Floating Elements */}
-      <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-orange-500/25 to-yellow-600/35 rounded-full blur-3xl animate-float-slow"></div>
-      <div className="absolute bottom-32 right-16 w-[28rem] h-[28rem] bg-gradient-to-r from-green-400/30 to-emerald-500/40 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
-      <div className="absolute top-1/2 left-20 w-80 h-80 bg-gradient-to-r from-red-500/20 to-orange-500/30 rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '6s' }}></div>
-      <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-gradient-to-r from-yellow-600/25 to-amber-500/35 rounded-full blur-3xl animate-float" style={{ animationDelay: '9s' }}></div>
+      {/* Airbnb Floating Elements */}
+      <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-pink-500/25 to-red-600/35 rounded-full blur-3xl animate-float-slow"></div>
+      <div className="absolute bottom-32 right-16 w-[28rem] h-[28rem] bg-gradient-to-r from-rose-400/30 to-pink-500/40 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
+      <div className="absolute top-1/2 left-20 w-80 h-80 bg-gradient-to-r from-red-500/20 to-pink-500/30 rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '6s' }}></div>
+      <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-gradient-to-r from-rose-600/25 to-red-500/35 rounded-full blur-3xl animate-float" style={{ animationDelay: '9s' }}></div>
       
-      {/* Indian Geometric Art */}
+      {/* Airbnb Geometric Art */}
       <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-32 right-24 w-40 h-40 border-2 border-yellow-300/50 rotate-45 rounded-3xl animate-glow"></div>
-        <div className="absolute bottom-40 left-32 w-32 h-32 border border-orange-300/40 rotate-12 rounded-2xl animate-float"></div>
-        <div className="absolute top-1/3 right-1/3 w-48 h-48 border border-green-300/35 -rotate-12 rounded-full animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/3 left-1/4 w-36 h-36 border-2 border-red-300/45 rotate-45 rounded-xl animate-glow" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-32 right-24 w-40 h-40 border-2 border-pink-300/50 rotate-45 rounded-3xl animate-glow"></div>
+        <div className="absolute bottom-40 left-32 w-32 h-32 border border-red-300/40 rotate-12 rounded-2xl animate-float"></div>
+        <div className="absolute top-1/3 right-1/3 w-48 h-48 border border-rose-300/35 -rotate-12 rounded-full animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/3 left-1/4 w-36 h-36 border-2 border-pink-300/45 rotate-45 rounded-xl animate-glow" style={{ animationDelay: '4s' }}></div>
       </div>
 
       <div className="w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8 sm:py-12 lg:py-20">
@@ -40,38 +40,38 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           {/* Enhanced Premium Badge */}
           <div className="inline-block mb-8 sm:mb-10">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-orange-600 via-yellow-500 to-green-600 rounded-full blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-pink-600 via-red-500 to-rose-600 rounded-full blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
               <span className="relative glass-morphism text-white px-8 sm:px-10 lg:px-14 py-4 sm:py-5 lg:py-6 rounded-full text-sm sm:text-base lg:text-lg font-medium tracking-wide shadow-2xl flex items-center gap-3 border border-white/20">
-                <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
-                <span className="text-shimmer">Discover India. Connect Cultures.</span>
-                <Zap className="w-5 h-5 text-green-300 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                <Sparkles className="w-5 h-5 text-pink-300 animate-pulse" />
+                <span className="text-shimmer">Discover Your Perfect Stay</span>
+                <Zap className="w-5 h-5 text-rose-300 animate-pulse" style={{ animationDelay: '0.5s' }} />
               </span>
             </div>
           </div>
           
           {/* Revolutionary Typography */}
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-[0.9] mb-8 sm:mb-10 lg:mb-12 tracking-tight">
-            <span className="block text-white mb-4 sm:mb-6 text-glow">Explore Amazing</span>
+            <span className="block text-white mb-4 sm:mb-6 text-glow">Find your</span>
             <span className="block relative">
-              <span className="bg-gradient-to-r from-yellow-300 via-orange-300 to-green-300 text-transparent bg-clip-text relative z-10 text-glow">
-                India+
+              <span className="bg-gradient-to-r from-pink-300 via-red-300 to-rose-300 text-transparent bg-clip-text relative z-10 text-glow">
+                perfect stay
               </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-400 to-green-400 blur-2xl opacity-60 animate-pulse-slow"></span>
+              <span className="absolute inset-0 bg-gradient-to-r from-pink-400 via-red-400 to-rose-400 blur-2xl opacity-60 animate-pulse-slow"></span>
             </span>
           </h1>
           
           {/* Premium Tagline */}
           <div className="max-w-6xl mx-auto mb-12 sm:mb-16">
             <p className="font-sans text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-relaxed font-light">
-              <span className="bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 text-transparent bg-clip-text font-semibold text-glow">
-                Discover incredible destinations
+              <span className="bg-gradient-to-r from-pink-300 via-red-300 to-rose-300 text-transparent bg-clip-text font-semibold text-glow">
+                Discover extraordinary places to stay
               </span>
-              <span className="text-white/90 block sm:inline"> across vibrant cultures. </span>
+              <span className="text-white/90 block sm:inline"> around the world, </span>
               <br className="hidden md:block" />
-              <span className="bg-gradient-to-r from-green-300 via-emerald-300 to-teal-300 text-transparent bg-clip-text font-semibold text-glow">
-                From heritage havens to modern comfort
+              <span className="bg-gradient-to-r from-rose-300 via-pink-300 to-red-300 text-transparent bg-clip-text font-semibold text-glow">
+                curated for unforgettable experiences
               </span>
-              <span className="text-white/90"> - your perfect stay awaits.</span>
+              <span className="text-white/90"> and lasting memories.</span>
             </p>
           </div>
         </div>
@@ -79,7 +79,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
         {/* Ultra-Premium Search Bar */}
         <div className="w-full max-w-7xl mx-auto animate-fade-up" style={{ animationDelay: '0.3s' }}>
           <div className="relative group floating-card-enhanced">
-            <div className="absolute -inset-2 bg-gradient-to-r from-orange-600 via-yellow-500 to-green-600 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition-all duration-700"></div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-pink-600 via-red-500 to-rose-600 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition-all duration-700"></div>
             <div className="relative glass-morphism rounded-3xl sm:rounded-[2rem] shadow-2xl p-6 sm:p-8 lg:p-10 border border-white/30 hover:border-white/50 transition-all duration-700">
               <SearchBar variant="classic-hero" onSearch={onSearch} />
             </div>
@@ -90,42 +90,42 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
         <div className="mt-16 sm:mt-20 lg:mt-24 grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 max-w-5xl mx-auto animate-fade-up" style={{ animationDelay: '0.6s' }}>
           <div className="text-center group">
             <div className="relative inline-block mb-4">
-              <div className="absolute inset-0 bg-orange-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-              <div className="relative bg-orange-400/10 p-4 rounded-full border border-orange-400/30">
-                <Zap className="w-6 h-6 text-orange-300 mx-auto" />
+              <div className="absolute inset-0 bg-pink-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+              <div className="relative bg-pink-400/10 p-4 rounded-full border border-pink-400/30">
+                <Zap className="w-6 h-6 text-pink-300 mx-auto" />
               </div>
             </div>
-            <p className="text-white/80 font-medium">Smart Search</p>
+            <p className="text-white/80 font-medium">Instant Book</p>
           </div>
           
           <div className="text-center group">
             <div className="relative inline-block mb-4">
-              <div className="absolute inset-0 bg-green-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-              <div className="relative bg-green-400/10 p-4 rounded-full border border-green-400/30">
-                <Globe className="w-6 h-6 text-green-300 mx-auto" />
+              <div className="absolute inset-0 bg-rose-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+              <div className="relative bg-rose-400/10 p-4 rounded-full border border-rose-400/30">
+                <Globe className="w-6 h-6 text-rose-300 mx-auto" />
               </div>
             </div>
-            <p className="text-white/80 font-medium">Nationwide Coverage</p>
-          </div>
-          
-          <div className="text-center group">
-            <div className="relative inline-block mb-4">
-              <div className="absolute inset-0 bg-yellow-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-              <div className="relative bg-yellow-400/10 p-4 rounded-full border border-yellow-400/30">
-                <Sparkles className="w-6 h-6 text-yellow-300 mx-auto" />
-              </div>
-            </div>
-            <p className="text-white/80 font-medium">Best Value Promise</p>
+            <p className="text-white/80 font-medium">Worldwide</p>
           </div>
           
           <div className="text-center group">
             <div className="relative inline-block mb-4">
               <div className="absolute inset-0 bg-red-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500"></div>
               <div className="relative bg-red-400/10 p-4 rounded-full border border-red-400/30">
-                <Users className="w-6 h-6 text-red-300 mx-auto" />
+                <Sparkles className="w-6 h-6 text-red-300 mx-auto" />
               </div>
             </div>
-            <p className="text-white/80 font-medium">24/7 Support</p>
+            <p className="text-white/80 font-medium">Unique Stays</p>
+          </div>
+          
+          <div className="text-center group">
+            <div className="relative inline-block mb-4">
+              <div className="absolute inset-0 bg-pink-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+              <div className="relative bg-pink-400/10 p-4 rounded-full border border-pink-400/30">
+                <Users className="w-6 h-6 text-pink-300 mx-auto" />
+              </div>
+            </div>
+            <p className="text-white/80 font-medium">Host Community</p>
           </div>
         </div>
       </div>
@@ -133,9 +133,9 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
       {/* Premium Scroll Indicator */}
       <div className="absolute bottom-8 sm:bottom-12 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-b from-orange-400/30 to-green-400/30 rounded-full blur-lg"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-pink-400/30 to-rose-400/30 rounded-full blur-lg"></div>
           <div className="relative w-8 h-12 border-2 border-white/30 rounded-full flex justify-center glass-morphism group-hover:border-white/50 transition-colors duration-300">
-            <div className="w-1 h-4 bg-gradient-to-b from-orange-300 to-green-300 rounded-full mt-3 animate-pulse"></div>
+            <div className="w-1 h-4 bg-gradient-to-b from-pink-300 to-rose-300 rounded-full mt-3 animate-pulse"></div>
           </div>
         </div>
       </div>

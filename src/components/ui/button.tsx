@@ -10,16 +10,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:from-orange-600 hover:to-yellow-600 focus:from-orange-700 focus:to-yellow-700 shadow-lg hover:shadow-xl",
+        default: "bg-gradient-to-r from-pink-500 to-red-500 text-white hover:from-pink-600 hover:to-red-600 focus:from-pink-700 focus:to-red-700 shadow-lg hover:shadow-xl",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border-2 border-orange-300 bg-white hover:bg-orange-50 text-orange-700 hover:text-orange-800",
+          "border-2 border-pink-300 bg-white hover:bg-pink-50 text-pink-700 hover:text-pink-800",
         secondary:
-          "bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl",
-        ghost: "hover:bg-orange-100 hover:text-orange-800",
-        link: "underline text-orange-600 hover:text-orange-800 px-2 bg-transparent shadow-none",
-        indian: "bg-gradient-to-r from-orange-500 via-yellow-500 to-green-500 text-white hover:from-orange-600 hover:via-yellow-600 hover:to-green-600 shadow-lg hover:shadow-xl transform hover:scale-105"
+          "bg-gradient-to-r from-pink-600 to-rose-700 text-white hover:from-pink-700 hover:to-rose-800 shadow-lg hover:shadow-xl",
+        ghost: "hover:bg-pink-100 hover:text-pink-800",
+        link: "underline text-pink-600 hover:text-pink-800 px-2 bg-transparent shadow-none",
+        airbnb: "bg-gradient-to-r from-pink-500 via-red-500 to-rose-500 text-white hover:from-pink-600 hover:via-red-600 hover:to-rose-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
       },
       size: {
         default: "h-11 rounded-xl px-6 py-2 text-base",

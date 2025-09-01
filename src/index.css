@@ -16,40 +16,40 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Indian Color Palette - Inspired by Indian Flag & Culture */
-    --primary: 24 100% 60%;  /* Saffron Orange */
+    /* Pink Airbnb Theme - Inspired by modern app design */
+    --primary: 340 89% 60%;  /* Coral Pink */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 30 100% 80%;  /* Light saffron */
+    --primary-glow: 350 100% 80%;  /* Light coral */
     
-    --indian-saffron: 24 100% 60%;  /* Indian Saffron */
-    --indian-white: 0 0% 100%;      /* Pure White */
-    --indian-green: 120 100% 25%;   /* Indian Green */
-    --indian-navy: 240 100% 25%;    /* Navy Blue (Chakra) */
-    --indian-turmeric: 45 100% 55%; /* Turmeric Yellow */
-    --indian-terracotta: 15 75% 45%; /* Terracotta Red */
+    --airbnb-coral: 340 89% 60%;    /* Primary Coral */
+    --airbnb-pink: 330 81% 67%;     /* Soft Pink */
+    --airbnb-red: 348 83% 47%;      /* Deep Red */
+    --airbnb-white: 0 0% 100%;      /* Pure White */
+    --airbnb-rose: 351 91% 84%;     /* Light Rose */
+    --airbnb-magenta: 320 70% 50%;  /* Magenta accent */
 
-    --secondary: 120 100% 25%;  /* Indian Green */
+    --secondary: 330 81% 67%;  /* Soft Pink */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 30 20% 96%;
-    --muted-foreground: 30 10% 46%;
+    --muted: 350 20% 96%;
+    --muted-foreground: 350 10% 46%;
 
-    --accent: 45 100% 55%;  /* Turmeric Yellow */
-    --accent-foreground: 240 100% 25%;
+    --accent: 351 91% 84%;  /* Light Rose */
+    --accent-foreground: 348 83% 47%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 30 30% 88%;
     --input: 30 30% 88%;
-    --ring: 24 100% 60%;
+    --ring: 340 89% 60%;
 
     --radius: 0.5rem;
 
-    /* Indian Gradients */
-    --gradient-indian-primary: linear-gradient(135deg, hsl(var(--indian-saffron)), hsl(var(--indian-turmeric)), hsl(var(--indian-green)));
-    --gradient-indian-secondary: linear-gradient(120deg, hsl(var(--indian-green)), hsl(var(--indian-white)), hsl(var(--indian-navy)));
-    --gradient-indian-accent: linear-gradient(90deg, hsl(var(--indian-turmeric)), hsl(45 100% 65%));
+    /* Airbnb Pink Gradients */
+    --gradient-airbnb-primary: linear-gradient(135deg, hsl(var(--airbnb-coral)), hsl(var(--airbnb-pink)), hsl(var(--airbnb-red)));
+    --gradient-airbnb-secondary: linear-gradient(120deg, hsl(var(--airbnb-pink)), hsl(var(--airbnb-rose)), hsl(var(--airbnb-magenta)));
+    --gradient-airbnb-accent: linear-gradient(90deg, hsl(var(--airbnb-coral)), hsl(350 100% 70%));
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -121,15 +121,15 @@
   }
   
   .gradient-primary {
-    background: var(--gradient-indian-primary);
+    background: var(--gradient-airbnb-primary);
   }
   
   .gradient-secondary {
-    background: var(--gradient-indian-secondary);
+    background: var(--gradient-airbnb-secondary);
   }
   
   .gradient-text {
-    background: var(--gradient-indian-primary);
+    background: var(--gradient-airbnb-primary);
     @apply bg-clip-text text-transparent;
   }
   

@@ -14,7 +14,7 @@ const HotelCardPricing = ({ pricePerNight, onBookClick }: HotelCardPricingProps)
         <span className="indian-text text-xs sm:text-sm ml-1">/ night</span>
       </div>
       <Button 
-        variant="indian"
+        variant="airbnb"
         size="sm" 
         className="text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 mobile-indian-optimized"
         onClick={onBookClick}

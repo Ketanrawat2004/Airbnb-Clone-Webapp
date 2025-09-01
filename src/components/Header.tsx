@@ -53,9 +53,9 @@ const Header = () => {
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-lg shadow-xl border-b border-orange-200/50' : 'bg-transparent'
+        isScrolled ? 'bg-white/95 backdrop-blur-lg shadow-xl border-b border-pink-200/50' : 'bg-transparent'
       }`}>
-        <div className="indian-container py-3 sm:py-4">
+        <div className="indian-container py-2 sm:py-3">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
@@ -77,7 +77,8 @@ const Header = () => {
                   <Button
                     onClick={handleSearch}
                     size="sm"
-                    className="indian-button rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
+                    variant="airbnb"
+                    className="rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
                   >
                     <Search className="h-4 w-4" />
                   </Button>
@@ -91,8 +92,8 @@ const Header = () => {
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`flex items-center space-x-1 text-sm font-medium transition-colors hover:text-orange-600 mobile-indian-touch-target ${
-                    location.pathname === item.href ? 'text-orange-600 font-bold' : 'indian-text'
+                  className={`flex items-center space-x-1 text-sm font-medium transition-colors hover:text-pink-600 mobile-indian-touch-target ${
+                    location.pathname === item.href ? 'text-pink-600 font-bold' : 'indian-text'
                   }`}
                 >
                   <item.icon className="h-4 w-4" />
@@ -114,12 +115,12 @@ const Header = () => {
               </Button>
 
               {/* Admin Access Button */}
-              <Button
-                onClick={() => navigate('/admin/auth')}
-                variant="outline"
-                size="sm"
-                className="indian-button border-0 hidden sm:flex text-sm"
-              >
+                <Button
+                  onClick={() => navigate('/admin/auth')}
+                  variant="airbnb"
+                  size="sm"
+                  className="border-0 hidden sm:flex text-sm"
+                >
                 Admin
               </Button>
 
@@ -148,7 +149,7 @@ const Header = () => {
                 <Button
                   onClick={() => setAuthModalOpen(true)}
                   variant="outline"
-                  className="bg-white/90 hover:bg-white border-orange-300 text-orange-700 hover:text-orange-800 mobile-indian-optimized"
+                  className="bg-white/90 hover:bg-white border-pink-300 text-pink-700 hover:text-pink-800 mobile-indian-optimized"
                 >
                   Sign In
                 </Button>
@@ -167,8 +168,8 @@ const Header = () => {
                       <Link
                         key={item.href}
                         to={item.href}
-                        className={`flex items-center space-x-2 text-lg font-medium transition-colors hover:text-orange-600 mobile-indian-touch-target ${
-                          location.pathname === item.href ? 'text-orange-600 font-bold' : 'indian-text'
+                        className={`flex items-center space-x-2 text-lg font-medium transition-colors hover:text-pink-600 mobile-indian-touch-target ${
+                          location.pathname === item.href ? 'text-pink-600 font-bold' : 'indian-text'
                         }`}
                       >
                         <item.icon className="h-5 w-5" />
@@ -177,8 +178,8 @@ const Header = () => {
                     ))}
                     <Button
                       onClick={() => navigate('/admin/auth')}
-                      variant="outline"
-                      className="indian-button border-0 mt-4 w-full"
+                      variant="airbnb"
+                      className="border-0 mt-4 w-full"
                     >
                       Admin Access
                     </Button>
@@ -202,7 +203,8 @@ const Header = () => {
                 <Button
                   onClick={handleSearch}
                   size="sm"
-                  className="indian-button rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
+                  variant="airbnb"
+                  className="rounded-full mr-2 p-2 h-8 w-8 min-w-[32px]"
                 >
                   <Search className="h-4 w-4" />
                 </Button>
