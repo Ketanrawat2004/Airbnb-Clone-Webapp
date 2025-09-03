@@ -58,7 +58,7 @@ const HotelDetailContent = ({
   onToggleWishlist, 
   onReserveClick 
 }: HotelDetailContentProps) => {
-  const pricePerNight = hotel.price_per_night / 100;
+  const pricePerNight = Math.round(hotel.price_per_night / 100);
 
   return (
     <>

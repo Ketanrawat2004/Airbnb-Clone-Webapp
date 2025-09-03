@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Home, 
   MapPin, 
@@ -123,12 +124,46 @@ const BecomeHost = () => {
     try {
       toast.loading('Submitting your property...');
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error('Please sign in to submit a property');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('host_submissions')
+        .insert({
+          user_id: user.id,
+          property_type: formData.propertyType,
+          property_name: formData.propertyName,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zip_code: formData.zipCode,
+          description: formData.description,
+          bedrooms: formData.bedrooms,
+          bathrooms: formData.bathrooms,
+          max_guests: formData.maxGuests,
+          price_per_night: parseInt(formData.pricePerNight) * 100, // Convert to paise
+          amenities: formData.amenities,
+          images: formData.images.map(file => URL.createObjectURL(file)), // In real app, upload to storage
+          host_name: formData.hostName,
+          host_email: formData.hostEmail,
+          host_phone: formData.hostPhone,
+          status: 'pending'
+        });
+
+      if (error) {
+        console.error('Error submitting property:', error);
+        toast.error('Failed to submit property. Please try again.');
+        return;
+      }
       
       toast.success('Property submitted successfully! We\'ll review it within 24 hours.');
       navigate('/');
     } catch (error) {
+      console.error('Error:', error);
       toast.error('Failed to submit property. Please try again.');
     }
   };

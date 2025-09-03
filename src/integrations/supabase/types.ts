@@ -238,6 +238,84 @@ export type Database = {
         }
         Relationships: []
       }
+      host_submissions: {
+        Row: {
+          address: string
+          amenities: string[] | null
+          bathrooms: string
+          bedrooms: string
+          city: string
+          created_at: string
+          description: string | null
+          host_email: string
+          host_name: string
+          host_phone: string
+          id: string
+          images: string[] | null
+          is_verified: boolean | null
+          max_guests: string
+          price_per_night: number
+          property_name: string
+          property_type: string
+          state: string
+          status: string | null
+          updated_at: string
+          user_id: string | null
+          verification_date: string | null
+          zip_code: string
+        }
+        Insert: {
+          address: string
+          amenities?: string[] | null
+          bathrooms: string
+          bedrooms: string
+          city: string
+          created_at?: string
+          description?: string | null
+          host_email: string
+          host_name: string
+          host_phone: string
+          id?: string
+          images?: string[] | null
+          is_verified?: boolean | null
+          max_guests: string
+          price_per_night: number
+          property_name: string
+          property_type: string
+          state: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+          verification_date?: string | null
+          zip_code: string
+        }
+        Update: {
+          address?: string
+          amenities?: string[] | null
+          bathrooms?: string
+          bedrooms?: string
+          city?: string
+          created_at?: string
+          description?: string | null
+          host_email?: string
+          host_name?: string
+          host_phone?: string
+          id?: string
+          images?: string[] | null
+          is_verified?: boolean | null
+          max_guests?: string
+          price_per_night?: number
+          property_name?: string
+          property_type?: string
+          state?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+          verification_date?: string | null
+          zip_code?: string
+        }
+        Relationships: []
+      }
       hotels: {
         Row: {
           address: string | null

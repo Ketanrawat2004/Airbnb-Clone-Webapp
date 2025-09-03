@@ -8,7 +8,7 @@ interface HotelCardPricingProps {
 
 const HotelCardPricing = ({ pricePerNight, onBookClick }: HotelCardPricingProps) => {
   return (
-    <div className="flex items-center justify-between px-3 sm:px-4 pb-3 sm:pb-4">
+    <div className="flex items-center justify-between px-3 sm:px-4 pb-3 sm:pb-4 border-t border-gray-100">
       <div>
         <span className="text-base sm:text-lg font-semibold indian-heading">₹{pricePerNight.toLocaleString('en-IN')}</span>
         <span className="indian-text text-xs sm:text-sm ml-1">/ night</span>

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import HotelVerificationBadge from './HotelVerificationBadge';
 
 interface HotelCardImageProps {
   images: string[];
@@ -12,6 +13,8 @@ interface HotelCardImageProps {
   isInWishlist: boolean;
   onToggleWishlist: (e: React.MouseEvent) => void;
   onCardClick: () => void;
+  isVerified?: boolean;
+  hotelId?: string;
 }
 
 // Default hotel images using reliable Unsplash photos
@@ -23,14 +26,16 @@ const DEFAULT_HOTEL_IMAGES = [
   "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&h=600&fit=crop"
 ];
 
-const HotelCardImage = ({
-  images,
-  hotelName,
+const HotelCardImage = ({ 
+  images, 
+  hotelName, 
   propertyType,
   availableRooms,
   isInWishlist,
   onToggleWishlist,
-  onCardClick
+  onCardClick,
+  isVerified = true, // Default to verified for existing hotels
+  hotelId
 }: HotelCardImageProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -129,6 +134,17 @@ const HotelCardImage = ({
         <Badge className="absolute top-2 left-2 bg-blue-500 text-white text-xs">
           {propertyType}
         </Badge>
+      )}
+
+      {/* Verification Badge */}
+      {isVerified && hotelId && (
+        <div className="absolute top-10 left-2">
+          <HotelVerificationBadge
+            isVerified={isVerified}
+            hotelName={hotelName}
+            hotelId={hotelId}
+          />
+        </div>
       )}
 
       {/* Availability Badge */}

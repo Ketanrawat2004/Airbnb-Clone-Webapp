@@ -74,15 +74,15 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   return (
     <>
       <Card 
-        className="group cursor-pointer transition-all duration-500 border-0 shadow-lg hover:shadow-2xl indian-card overflow-hidden hover:scale-[1.02] w-full relative"
+        className="group cursor-pointer transition-all duration-500 border-0 shadow-lg hover:shadow-2xl indian-card overflow-hidden hover:scale-[1.02] w-full relative h-full flex flex-col"
         onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Hover Glow Effect */}
-        <div className={`absolute inset-0 bg-gradient-to-r from-orange-400/20 via-yellow-400/20 to-green-400/20 rounded-3xl transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
+        <div className={`absolute inset-0 bg-gradient-to-r from-pink-400/20 via-rose-400/20 to-pink-500/20 rounded-3xl transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
         
-        <CardContent className="p-0 relative">
+        <CardContent className="p-0 relative flex flex-col h-full">
           <HotelCardImage
             images={hotel.images}
             hotelName={hotel.name}
@@ -91,9 +91,11 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
             isInWishlist={isInWishlist(hotel.id)}
             onToggleWishlist={toggleWishlist}
             onCardClick={handleCardClick}
+            isVerified={true} // Default to verified for existing hotels
+            hotelId={hotel.id}
           />
           
-          <div className="p-4 sm:p-5">
+          <div className="flex flex-col flex-1">
             <HotelCardDetails
               name={hotel.name}
               location={hotel.location}
