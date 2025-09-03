@@ -7,10 +7,10 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "12.2.12 (cd3cf9e)"
   }
   public: {
     Tables: {
@@ -660,23 +660,23 @@ export type Database = {
       generate_otp: {
         Args: { user_name: string }
         Returns: {
-          otp_code: string
           expires_at: string
+          otp_code: string
         }[]
       }
       get_available_rooms: {
         Args: {
-          hotel_id_param: string
           check_in_date: string
           check_out_date: string
+          hotel_id_param: string
         }
         Returns: {
+          amenities: string[]
           id: string
-          room_number: string
-          room_type: string
           max_occupancy: number
           price_per_night: number
-          amenities: string[]
+          room_number: string
+          room_type: string
         }[]
       }
       increment_visitor_count: {
@@ -688,34 +688,34 @@ export type Database = {
       search_hotels: {
         Args: { search_location: string }
         Returns: {
-          id: string
-          name: string
-          location: string
-          description: string
-          price_per_night: number
           amenities: string[]
+          available_rooms: number
+          created_at: string
+          description: string
+          id: string
           images: string[]
+          location: string
+          name: string
+          price_per_night: number
           rating: number
           reviews_count: number
           total_rooms: number
-          available_rooms: number
-          created_at: string
         }[]
       }
       validate_coupon: {
-        Args: { coupon_code_param: string; booking_amount_param: number }
+        Args: { booking_amount_param: number; coupon_code_param: string }
         Returns: {
-          valid: boolean
-          discount_amount: number
           coupon_id: string
+          discount_amount: number
           message: string
+          valid: boolean
         }[]
       }
       validate_otp: {
-        Args: { user_name: string; provided_otp: string }
+        Args: { provided_otp: string; user_name: string }
         Returns: {
-          valid: boolean
           message: string
+          valid: boolean
         }[]
       }
     }
