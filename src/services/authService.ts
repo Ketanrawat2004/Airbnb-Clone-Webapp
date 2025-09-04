@@ -67,7 +67,8 @@ export const authService = {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectTo,
+          redirectTo,
+          skipBrowserRedirect: true, // Prevent redirect inside iframe
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account',
@@ -80,8 +81,24 @@ export const authService = {
         return { error };
       }
       
-      console.log('Google sign in initiated successfully:', data);
-      return { error: null };
+      const url = data?.url;
+      if (url) {
+        // Navigate the TOP window to avoid "accounts.google.com refused to connect" in iframes
+        try {
+          if (window.top) {
+            (window.top as Window).location.href = url;
+          } else {
+            window.location.href = url;
+          }
+        } catch (e) {
+          console.warn('Top-level navigation blocked, falling back to same window:', e);
+          window.location.href = url;
+        }
+        return { error: null };
+      }
+      
+      console.warn('No OAuth URL returned from Supabase.');
+      return { error: { message: 'OAuth URL not generated' } } as any;
     } catch (error) {
       console.error('Error in signInWithGoogle:', error);
       return { error };
