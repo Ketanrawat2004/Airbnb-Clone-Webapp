@@ -1,59 +1,43 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Home } from 'lucide-react';
-import ChatBot from './ChatBot';
+import AIRecommendations from './AIRecommendations';
 import VideoCallWidget from './VideoCallWidget';
-import CustomerSupportWidget from './CustomerSupportWidget';
 
 const SlidingWidgetSidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <>
-      {/* Home Button */}
-      <motion.div
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
+      {/* Toggle Button */}
+      <Button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`fixed top-1/2 -translate-y-1/2 z-50 h-12 transition-all duration-300 ${
+          isExpanded ? 'right-80' : 'right-0'
+        } rounded-l-full rounded-r-none shadow-lg`}
+        size="icon"
       >
-        <Button
-          onClick={() => setIsExpanded(!isExpanded)}
-          size="lg"
-          className="bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white rounded-xl w-12 h-12 md:w-14 md:h-14 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/20"
-        >
-          <Home className="h-5 w-5 md:h-6 md:w-6" />
-        </Button>
-      </motion.div>
+        {isExpanded ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+      </Button>
 
-      {/* Sliding Sidebar */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            className="fixed bottom-20 md:bottom-6 right-2 md:right-28 lg:right-24 z-40 flex flex-col md:flex-row gap-8 md:gap-20 lg:gap-24 max-w-[calc(100vw-1rem)] md:max-w-none"
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 100 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            {/* Chat Bot Widget */}
-            <div className="relative flex-shrink-0">
-              <ChatBot />
-            </div>
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 right-0 h-full bg-background/95 backdrop-blur-sm border-l shadow-xl transition-transform duration-300 z-40 overflow-y-auto ${
+          isExpanded ? 'translate-x-0' : 'translate-x-full'
+        } w-80`}
+      >
+        <div className="p-4 space-y-6">
+          <div className="flex items-center gap-2 pb-4 border-b">
+            <Zap className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold text-lg">Smart Features</h2>
+          </div>
 
-            {/* Video Call Widget */}
-            <div className="relative flex-shrink-0">
-              <VideoCallWidget />
-            </div>
-
-            {/* Customer Support Widget */}
-            <div className="relative flex-shrink-0">
-              <CustomerSupportWidget />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <div className="space-y-6">
+            <AIRecommendations />
+            <VideoCallWidget />
+          </div>
+        </div>
+      </div>
     </>
   );
 };
