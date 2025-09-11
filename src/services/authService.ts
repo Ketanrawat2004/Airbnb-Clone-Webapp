@@ -18,24 +18,18 @@ export const authService = {
       
       const otpData = data[0];
       
-      // Send OTP email using edge function
-      const emailResponse = await fetch('https://zobudirnfehkamxgoclg.supabase.co/functions/v1/send-otp-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvYnVkaXJuZmVoa2FteGdvY2xnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MTI5MjksImV4cCI6MjA2NTQ4ODkyOX0.mniJp8lq9wNjYkNx9yK6SXSMDFBraZnBbRcJ4-p1J1A`
-        },
-        body: JSON.stringify({
+      // Send OTP email using edge function - use supabase.functions.invoke instead of fetch
+      const { data: emailData, error: emailError } = await supabase.functions.invoke('send-otp-email', {
+        body: {
           email,
           fullName,
           otpCode: otpData.otp_code,
           expiresAt: otpData.expires_at
-        })
+        }
       });
 
-      if (!emailResponse.ok) {
-        const errorText = await emailResponse.text();
-        console.error('Email sending error:', errorText);
+      if (emailError) {
+        console.error('Email sending error:', emailError);
         return { error: { message: 'Failed to send verification email' } };
       }
       

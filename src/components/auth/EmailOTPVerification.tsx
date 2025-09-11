@@ -113,37 +113,14 @@ const EmailOTPVerification = ({
   const handleResendOTP = async () => {
     setLoading(true);
     try {
-      // Generate new OTP
-      const { data, error } = await supabase.rpc('generate_email_otp', {
-        user_email: email,
-        user_name: fullName
-      });
+      // Use auth service for resending OTP
+      const { generateEmailOTP } = require('@/services/authService').authService;
+      const { error } = await generateEmailOTP(email, fullName);
 
       if (error) {
         console.error('Generate OTP error:', error);
         toast.error('Failed to generate new OTP');
         return;
-      }
-
-      const otpData = data[0];
-      
-      // Send OTP email
-      const response = await fetch('https://zobudirnfehkamxgoclg.supabase.co/functions/v1/send-otp-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvYnVkaXJuZmVoa2FteGdvY2xnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MTI5MjksImV4cCI6MjA2NTQ4ODkyOX0.mniJp8lq9wNjYkNx9yK6SXSMDFBraZnBbRcJ4-p1J1A`
-        },
-        body: JSON.stringify({
-          email,
-          fullName,
-          otpCode: otpData.otp_code,
-          expiresAt: otpData.expires_at
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send OTP email');
       }
 
       toast.success('New OTP sent to your email');
