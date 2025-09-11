@@ -436,6 +436,7 @@ export type Database = {
       otp_codes: {
         Row: {
           created_at: string
+          email: string | null
           expires_at: string
           id: string
           is_used: boolean
@@ -444,6 +445,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          email?: string | null
           expires_at: string
           id?: string
           is_used?: boolean
@@ -452,6 +454,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          email?: string | null
           expires_at?: string
           id?: string
           is_used?: boolean
@@ -735,6 +738,13 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      generate_email_otp: {
+        Args: { user_email: string; user_name: string }
+        Returns: {
+          expires_at: string
+          otp_code: string
+        }[]
+      }
       generate_otp: {
         Args: { user_name: string }
         Returns: {
@@ -785,6 +795,13 @@ export type Database = {
         Returns: {
           coupon_id: string
           discount_amount: number
+          message: string
+          valid: boolean
+        }[]
+      }
+      validate_email_otp: {
+        Args: { provided_otp: string; user_email: string }
+        Returns: {
           message: string
           valid: boolean
         }[]

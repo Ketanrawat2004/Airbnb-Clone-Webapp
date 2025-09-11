@@ -67,6 +67,16 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
     }
   }, [setLoading, setUser, setSession]);
 
+  const generateEmailOTP = useCallback(async (email: string, fullName: string) => {
+    setLoading(true);
+    try {
+      const result = await authService.generateEmailOTP(email, fullName);
+      return result;
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading]);
+
   const signOut = useCallback(async () => {
     setLoading(true);
     try {
@@ -89,6 +99,7 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
     signInWithGoogle,
     generateOTP,
     validateOTP,
+    generateEmailOTP,
     signOut
   };
 };

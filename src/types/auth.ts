@@ -11,6 +11,7 @@ export interface AuthContextType {
   signOut: () => Promise<void>;
   generateOTP: (name: string) => Promise<{ error: any; expiresAt?: string }>;
   validateOTP: (name: string, otpCode: string) => Promise<{ error: any }>;
+  generateEmailOTP: (email: string, fullName: string) => Promise<{ error: any; expiresAt?: string }>;
 }
 
 export interface SignUpOptions {
