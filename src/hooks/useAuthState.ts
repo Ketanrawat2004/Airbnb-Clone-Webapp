@@ -28,6 +28,8 @@ export const useAuthState = () => {
       } catch (error) {
         console.error('Error initializing auth:', error);
         if (mounted) {
+          setSession(null);
+          setUser(null);
           setLoading(false);
         }
       }

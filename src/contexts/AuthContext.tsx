@@ -5,13 +5,23 @@ import { AuthContextType } from '@/types/auth';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useAuthActions } from '@/hooks/useAuthActions';
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const defaultAuthContext: AuthContextType = {
+  user: null,
+  session: null,
+  loading: true,
+  signUp: async () => ({ error: { message: 'Auth not initialized' } }),
+  signIn: async () => ({ error: { message: 'Auth not initialized' } }),
+  signInWithGoogle: async () => ({ error: { message: 'Auth not initialized' } }),
+  signOut: async () => {},
+  generateOTP: async () => ({ error: { message: 'Auth not initialized' } }),
+  validateOTP: async () => ({ error: { message: 'Auth not initialized' } }),
+  generateEmailOTP: async () => ({ error: { message: 'Auth not initialized' } }),
+};
+
+const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
   return context;
 };
 
