@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-
+import { authService } from '@/services/authService';
 interface EmailOTPVerificationProps {
   email: string;
   fullName: string;
@@ -20,6 +21,7 @@ const EmailOTPVerification = ({
   onSuccess, 
   onBack 
 }: EmailOTPVerificationProps) => {
+  const navigate = useNavigate();
   const [otpCode, setOtpCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
@@ -79,7 +81,7 @@ const EmailOTPVerification = ({
         return;
       }
 
-      // Create user account after OTP verification
+      // Try to create account (idempotent)
       const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -93,14 +95,27 @@ const EmailOTPVerification = ({
         },
       });
 
-      if (signUpError) {
+      if (signUpError && !/already|exists/i.test(signUpError.message)) {
         console.error('Sign up error:', signUpError);
         toast.error(signUpError.message || 'Failed to create account');
         return;
       }
 
-      toast.success(`Welcome, ${fullName}! Your account has been created successfully.`);
+      // Sign in immediately after verification (for both new and existing users)
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        console.error('Sign in after OTP error:', signInError);
+        toast.error(signInError.message || 'Failed to sign in');
+        return;
+      }
+
+      toast.success(`Welcome, ${fullName}! You are now signed in.`);
       onSuccess();
+      navigate('/');
 
     } catch (error) {
       console.error('Error verifying OTP:', error);
@@ -113,9 +128,7 @@ const EmailOTPVerification = ({
   const handleResendOTP = async () => {
     setLoading(true);
     try {
-      // Use auth service for resending OTP
-      const { generateEmailOTP } = require('@/services/authService').authService;
-      const { error } = await generateEmailOTP(email, fullName);
+      const { error } = await authService.generateEmailOTP(email, fullName);
 
       if (error) {
         console.error('Generate OTP error:', error);

@@ -24,8 +24,9 @@ export const useVisitorCounter = () => {
           if (!fetchError && countData) {
             setVisitorCount(countData.visit_count);
           }
-        } else if (data && data.length > 0) {
-          setVisitorCount(data[0].visit_count);
+        } else if (data && (Array.isArray(data) ? data.length > 0 : true)) {
+          const count = Array.isArray(data) ? data[0].visit_count : (data as any).visit_count;
+          if (typeof count === 'number') setVisitorCount(count);
         }
       } catch (error) {
         console.error('Error with visitor counter:', error);
@@ -35,6 +36,19 @@ export const useVisitorCounter = () => {
     };
 
     incrementAndFetchCount();
+
+    // Realtime subscription to visitor count updates
+    const channel = supabase
+      .channel('visitor-counter')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'visitor_counter', filter: 'id=eq.1' }, (payload: any) => {
+        const newCount = (payload.new?.visit_count as number) ?? null;
+        if (typeof newCount === 'number') setVisitorCount(newCount);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return { visitorCount, isLoading };

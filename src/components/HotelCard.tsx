@@ -74,7 +74,7 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   return (
     <>
       <Card 
-        className="group cursor-pointer transition-all duration-500 border-0 shadow-lg hover:shadow-2xl indian-card overflow-hidden hover:scale-[1.02] w-full relative h-full flex flex-col"
+        className="group cursor-pointer transition-all duration-500 border-0 shadow-lg hover:shadow-2xl indian-card card-glow overflow-hidden hover:scale-[1.02] w-full relative h-full flex flex-col animate-fade-in-up"
         onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

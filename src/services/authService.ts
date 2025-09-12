@@ -16,7 +16,11 @@ export const authService = {
         return { error };
       }
       
-      const otpData = data[0];
+      const otpData = Array.isArray(data) ? data[0] : data;
+      if (!otpData || !otpData.otp_code) {
+        console.error('Invalid OTP data returned from RPC:', data);
+        return { error: { message: 'Failed to generate OTP' } } as any;
+      }
       
       // Send OTP email using edge function - use supabase.functions.invoke instead of fetch
       const { data: emailData, error: emailError } = await supabase.functions.invoke('send-otp-email', {

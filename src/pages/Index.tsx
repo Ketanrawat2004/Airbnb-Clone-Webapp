@@ -7,11 +7,11 @@ import HostSubmissionsSection from '@/components/HostSubmissionsSection';
 import FlightSection from '@/components/FlightSection';
 import ReviewAndTestimonialsSection from '@/components/ReviewAndTestimonialsSection';
 import FeaturesSection from '@/components/FeaturesSection';
-import SlidingWidgetSidebar from '@/components/SlidingWidgetSidebar';
+
 import AdvertisementBanner from '@/components/AdvertisementBanner';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
-import AIRecommendations from '@/components/AIRecommendations';
+
 import CustomerSupportWidget from '@/components/CustomerSupportWidget';
 
 const Index = () => {
@@ -28,12 +28,12 @@ const Index = () => {
       <HotelsSection />
       <HostSubmissionsSection />
       <FlightSection />
-      <AIRecommendations />
+      
       <div className="animate-fade-up">
         <ReviewAndTestimonialsSection />
       </div>
       <FeaturesSection />
-      <SlidingWidgetSidebar />
+      
       <CustomerSupportWidget />
       <AdvertisementBanner />
       <Footer />
