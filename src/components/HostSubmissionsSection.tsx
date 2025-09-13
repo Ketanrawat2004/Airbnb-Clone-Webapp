@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Users, Bed, Bath, Star, Heart, Phone, Mail } from 'lucide-react';
+import { MapPin, Users, Bed, Bath, Star, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface HostSubmission {
@@ -21,9 +21,6 @@ interface HostSubmission {
   price_per_night: number;
   amenities: string[];
   images: string[];
-  host_name: string;
-  host_email: string;
-  host_phone: string;
   status: string;
   is_verified: boolean;
   created_at: string;
@@ -40,10 +37,7 @@ const HostSubmissionsSection = () => {
   const fetchSubmissions = async () => {
     try {
       const { data, error } = await supabase
-        .from('host_submissions')
-        .select('*')
-        .eq('status', 'approved')
-        .order('created_at', { ascending: false })
+        .rpc('get_public_host_submissions')
         .limit(6);
 
       if (error) {
@@ -255,10 +249,10 @@ const HostSubmissionsSection = () => {
                       </div>
                     )}
 
-                    {/* Host Info & Price */}
+                     {/* Host Info & Price */}
                     <div className="mt-auto">
                       <div className="flex items-center justify-between mb-3 text-sm text-gray-600">
-                        <span>Hosted by <strong>{submission.host_name}</strong></span>
+                        <span>Verified Host Property</span>
                         <div className="flex items-center gap-1">
                           <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                           <span>New</span>
@@ -272,22 +266,13 @@ const HostSubmissionsSection = () => {
                           </span>
                           <span className="text-sm text-gray-600 ml-1">/ night</span>
                         </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                          >
-                            <Phone className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                          >
-                            <Mail className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        >
+                          View Details
+                        </Button>
                       </div>
                     </div>
                   </div>
