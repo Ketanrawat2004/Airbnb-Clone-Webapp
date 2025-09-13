@@ -40,7 +40,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           {/* Enhanced Premium Badge */}
           <div className="inline-block mb-8 sm:mb-10">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-pink-600 via-red-500 to-rose-600 rounded-full blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-pink-600 via-red-500 to-rose-600 rounded-full blur-lg opacity-25 group-hover:opacity-40 transition-opacity duration-500"></div>
               <span className="relative glass-morphism text-white px-8 sm:px-10 lg:px-14 py-4 sm:py-5 lg:py-6 rounded-full text-sm sm:text-base lg:text-lg font-medium tracking-wide shadow-2xl flex items-center gap-3 border border-white/20">
                 <Sparkles className="w-5 h-5 text-pink-300 animate-pulse" />
                 <span className="text-shimmer">Discover Your Perfect Stay</span>
@@ -56,7 +56,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
               <span className="bg-gradient-to-r from-pink-300 via-red-300 to-rose-300 text-transparent bg-clip-text relative z-10 text-glow">
                 perfect stay
               </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-pink-400 via-red-400 to-rose-400 blur-2xl opacity-60 animate-pulse-slow"></span>
+              <span className="absolute inset-0 bg-gradient-to-r from-pink-400 via-red-400 to-rose-400 blur-xl opacity-25"></span>
             </span>
           </h1>
           

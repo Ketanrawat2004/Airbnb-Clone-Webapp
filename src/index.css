@@ -417,7 +417,7 @@ html {
 }
 
 .text-glow {
-  text-shadow: 0 0 20px currentColor;
+  text-shadow: 0 0 8px currentColor;
 }
 
 .animate-float-slow {
