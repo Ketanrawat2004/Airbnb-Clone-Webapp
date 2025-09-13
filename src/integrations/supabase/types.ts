@@ -767,6 +767,27 @@ export type Database = {
           room_type: string
         }[]
       }
+      get_public_host_submissions: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          address: string
+          amenities: string[]
+          bathrooms: string
+          bedrooms: string
+          city: string
+          created_at: string
+          description: string
+          id: string
+          images: string[]
+          is_verified: boolean
+          max_guests: string
+          price_per_night: number
+          property_name: string
+          property_type: string
+          state: string
+          status: string
+        }[]
+      }
       increment_visitor_count: {
         Args: Record<PropertyKey, never>
         Returns: {
