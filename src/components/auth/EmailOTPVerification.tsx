@@ -89,9 +89,7 @@ const EmailOTPVerification = ({
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: window.location.origin.includes('localhost') 
-            ? 'http://localhost:8080/' 
-            : `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}/`,
         },
       });
 

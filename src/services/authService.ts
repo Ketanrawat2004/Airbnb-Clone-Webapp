@@ -56,9 +56,7 @@ export const authService = {
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: window.location.origin.includes('localhost') 
-            ? 'http://localhost:8080/' 
-            : `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}/`,
         },
       });
       
@@ -102,9 +100,7 @@ export const authService = {
       console.log('Starting Google sign in process');
       
       const origin = window.location.origin;
-      const redirectTo = origin.includes('localhost') 
-        ? 'http://localhost:8080/' 
-        : `${origin}/`;
+      const redirectTo = `${origin}/`;
       
       console.log('Google sign in redirect URL:', redirectTo);
       
