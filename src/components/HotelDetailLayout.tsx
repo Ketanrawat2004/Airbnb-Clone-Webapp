@@ -2,6 +2,7 @@
 import { ReactNode } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ChatBot from '@/components/ChatBot';
 import BackButton from '@/components/BackButton';
 
 interface HotelDetailLayoutProps {
@@ -29,6 +30,7 @@ const HotelDetailLayout = ({ children }: HotelDetailLayoutProps) => {
         </div>
       </div>
 
+      <ChatBot />
       <Footer />
     </div>
   );
