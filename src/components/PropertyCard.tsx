@@ -24,14 +24,14 @@ interface PropertyCardProps {
   property: Property;
 }
 
-import hotel1 from '@/assets/hotel-1.jpg';
-import hotel2 from '@/assets/hotel-2.jpg';
-import hotel3 from '@/assets/hotel-3.jpg';
-import hotel4 from '@/assets/hotel-4.jpg';
-import hotel5 from '@/assets/hotel-5.jpg';
-
-// Default property images using generated images
-const DEFAULT_PROPERTY_IMAGES = [hotel1, hotel2, hotel3, hotel4, hotel5];
+// Default property images using reliable Unsplash photos
+const DEFAULT_PROPERTY_IMAGES = [
+  "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+  "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop"
+];
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

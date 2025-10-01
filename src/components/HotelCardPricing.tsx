@@ -8,13 +8,15 @@ interface HotelCardPricingProps {
 
 const HotelCardPricing = ({ pricePerNight, onBookClick }: HotelCardPricingProps) => {
   return (
-    <div className="flex items-center justify-between px-5 pb-5 pt-4 border-t border-gray-100 mt-auto">
-      <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-bold text-gray-900">₹{pricePerNight.toLocaleString('en-IN')}</span>
-        <span className="text-gray-600 text-sm font-medium">/ night</span>
+    <div className="flex items-center justify-between px-3 sm:px-4 pb-3 sm:pb-4 border-t border-gray-100">
+      <div>
+        <span className="text-base sm:text-lg font-semibold indian-heading">₹{pricePerNight.toLocaleString('en-IN')}</span>
+        <span className="indian-text text-xs sm:text-sm ml-1">/ night</span>
       </div>
       <Button 
-        className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+        variant="airbnb"
+        size="sm" 
+        className="text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2 mobile-indian-optimized"
         onClick={onBookClick}
       >
         Book

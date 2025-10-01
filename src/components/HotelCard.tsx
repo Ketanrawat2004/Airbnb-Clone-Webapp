@@ -74,13 +74,13 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
   return (
     <>
       <Card 
-        className="group cursor-pointer transition-all duration-300 border-0 shadow-md hover:shadow-2xl overflow-hidden hover:scale-[1.01] w-full relative h-full flex flex-col animate-fade-in-up bg-white rounded-3xl"
+        className="group cursor-pointer transition-all duration-500 border-0 shadow-lg hover:shadow-2xl indian-card card-glow overflow-hidden hover:scale-[1.02] w-full relative h-full flex flex-col animate-fade-in-up"
         onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Subtle Hover Glow Effect */}
-        <div className={`absolute inset-0 bg-gradient-to-br from-pink-100/50 via-transparent to-rose-100/50 rounded-3xl transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
+        {/* Hover Glow Effect */}
+        <div className={`absolute inset-0 bg-gradient-to-r from-pink-400/20 via-rose-400/20 to-pink-500/20 rounded-3xl transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
         
         <CardContent className="p-0 relative flex flex-col h-full">
           <HotelCardImage
@@ -91,7 +91,7 @@ const HotelCard = ({ hotel, searchParams }: HotelCardProps) => {
             isInWishlist={isInWishlist(hotel.id)}
             onToggleWishlist={toggleWishlist}
             onCardClick={handleCardClick}
-            isVerified={true}
+            isVerified={true} // Default to verified for existing hotels
             hotelId={hotel.id}
           />
           
