@@ -1,13 +1,14 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, User, LogOut, Plane, Building, Home, Search } from 'lucide-react';
+import { Menu, X, User, LogOut, Plane, Building, Home, Search, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Logo from './Logo';
 import AuthModal from './AuthModal';
 import HotelAutocomplete from './hotel/HotelAutocomplete';
+import CoinsDisplay from './CoinsDisplay';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
@@ -47,6 +48,7 @@ const Header = () => {
   const navItems = [
     { href: '/', label: 'Hotels', icon: Building },
     { href: '/flights', label: 'Flights', icon: Plane },
+    { href: '/games', label: 'Games', icon: Gamepad2 },
     { href: '/become-host', label: 'Become a Host', icon: Home },
   ];
 
@@ -113,6 +115,9 @@ const Header = () => {
               >
                 <Search className="h-5 w-5" />
               </Button>
+
+              {/* Coins Display */}
+              {user && <CoinsDisplay />}
 
               {/* Admin Access Button */}
                 <Button

@@ -142,6 +142,60 @@ export type Database = {
           },
         ]
       }
+      bus_bookings: {
+        Row: {
+          actual_amount_paid: number
+          booking_type: string
+          bus_data: Json
+          coins_used: number | null
+          contact_info: Json
+          created_at: string
+          id: string
+          passenger_data: Json
+          payment_status: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_amount_paid: number
+          booking_type?: string
+          bus_data: Json
+          coins_used?: number | null
+          contact_info: Json
+          created_at?: string
+          id?: string
+          passenger_data: Json
+          payment_status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_amount_paid?: number
+          booking_type?: string
+          bus_data?: Json
+          coins_used?: number | null
+          contact_info?: Json
+          created_at?: string
+          id?: string
+          passenger_data?: Json
+          payment_status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           code: string
@@ -234,6 +288,33 @@ export type Database = {
           status?: string
           total_amount?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      game_scores: {
+        Row: {
+          coins_earned: number
+          created_at: string
+          game_name: string
+          id: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          coins_earned: number
+          created_at?: string
+          game_name: string
+          id?: string
+          score: number
+          user_id: string
+        }
+        Update: {
+          coins_earned?: number
+          created_at?: string
+          game_name?: string
+          id?: string
+          score?: number
           user_id?: string
         }
         Relationships: []
@@ -625,6 +706,90 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      train_bookings: {
+        Row: {
+          actual_amount_paid: number
+          booking_type: string
+          coins_used: number | null
+          contact_info: Json
+          created_at: string
+          id: string
+          passenger_data: Json
+          payment_status: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          status: string
+          total_amount: number
+          train_data: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_amount_paid: number
+          booking_type?: string
+          coins_used?: number | null
+          contact_info: Json
+          created_at?: string
+          id?: string
+          passenger_data: Json
+          payment_status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
+          total_amount: number
+          train_data: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_amount_paid?: number
+          booking_type?: string
+          coins_used?: number | null
+          contact_info?: Json
+          created_at?: string
+          id?: string
+          passenger_data?: Json
+          payment_status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
+          total_amount?: number
+          train_data?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_coins: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          total_earned: number
+          total_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_reviews: {
         Row: {

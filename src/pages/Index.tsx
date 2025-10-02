@@ -11,6 +11,7 @@ import FeaturesSection from '@/components/FeaturesSection';
 import AdvertisementBanner from '@/components/AdvertisementBanner';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
+import ChatBot from '@/components/ChatBot';
 
 
 
@@ -37,6 +38,11 @@ const Index = () => {
       <AdvertisementBanner />
       <Footer />
       <CookieConsent />
+      
+      {/* Chatbot - Fixed position */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <ChatBot />
+      </div>
     </div>
   );
 };

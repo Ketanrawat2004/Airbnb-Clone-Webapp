@@ -7,6 +7,8 @@ import DateInput from '@/components/search/DateInput';
 import GuestInput from '@/components/search/GuestInput';
 import SearchButton from '@/components/search/SearchButton';
 import FlightSearchHome from '@/components/flight/FlightSearchHome';
+import TrainSearchForm from '@/components/train/TrainSearchForm';
+import BusSearchForm from '@/components/bus/BusSearchForm';
 
 interface SearchBarClassicHeroProps {
   location: string;
@@ -32,13 +34,13 @@ const SearchBarClassicHero = ({
   onSubmit
 }: SearchBarClassicHeroProps) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'hotels' | 'flights'>('hotels');
+  const [activeTab, setActiveTab] = useState<'hotels' | 'flights' | 'trains' | 'buses'>('hotels');
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (activeTab === 'flights') {
-      // Don't navigate anywhere for flights, let FlightSearchHome handle it
+    if (activeTab === 'flights' || activeTab === 'trains' || activeTab === 'buses') {
+      // Let respective components handle navigation
       return;
     } else {
       // Handle hotel search
@@ -52,6 +54,10 @@ const SearchBarClassicHero = ({
 
       {activeTab === 'flights' ? (
         <FlightSearchHome />
+      ) : activeTab === 'trains' ? (
+        <TrainSearchForm />
+      ) : activeTab === 'buses' ? (
+        <BusSearchForm />
       ) : (
         <div className="flex flex-col sm:flex-row bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-gray-200">
           <LocationInput
