@@ -33,7 +33,9 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminAuth from "./pages/admin/AdminAuth";
 import WebsiteAnalysis from "./pages/WebsiteAnalysis";
 import TrainResults from "./pages/TrainResults";
+import TrainBooking from "./pages/TrainBooking";
 import BusResults from "./pages/BusResults";
+import BusBooking from "./pages/BusBooking";
 import Games from "./pages/Games";
 
 const queryClient = new QueryClient();
@@ -72,9 +74,11 @@ const App = () => (
             <Route path="/admin/settings" element={<AdminSettings />} />
             <Route path="/admin/auth" element={<AdminAuth />} />
             <Route path="/website-analysis" element={<WebsiteAnalysis />} />
-            <Route path="/train-results" element={<TrainResults />} />
-            <Route path="/bus-results" element={<BusResults />} />
-            <Route path="/games" element={<Games />} />
+          <Route path="/train-results" element={<TrainResults />} />
+          <Route path="/train-booking" element={<TrainBooking />} />
+          <Route path="/bus-results" element={<BusResults />} />
+          <Route path="/bus-booking" element={<BusBooking />} />
+          <Route path="/games" element={<Games />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

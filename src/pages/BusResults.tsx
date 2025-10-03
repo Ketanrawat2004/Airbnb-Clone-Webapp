@@ -89,8 +89,8 @@ const BusResults = () => {
                     </div>
                     
                     <Button
-                      onClick={() => navigate(`/bus-booking?busId=${bus.id}&from=${from}&to=${to}&date=${date}&price=${bus.price}&operator=${bus.operator}`)}
-                      className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
+                      onClick={() => navigate(`/bus-booking?busId=${bus.id}&operator=${bus.operator}&from=${from}&to=${to}&date=${date}&price=${bus.price}`)}
+                      className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
                     >
                       Book Now
                     </Button>

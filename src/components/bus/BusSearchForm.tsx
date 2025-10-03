@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Search, ArrowLeftRight } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowLeftRight, Calendar } from 'lucide-react';
 import { indianCities } from '@/data/indianCities';
 
 const BusSearchForm = () => {
@@ -11,16 +12,33 @@ const BusSearchForm = () => {
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [date, setDate] = useState('');
+  const [busType, setBusType] = useState('All Types');
   const [showFromSuggestions, setShowFromSuggestions] = useState(false);
   const [showToSuggestions, setShowToSuggestions] = useState(false);
+  const fromRef = useRef<HTMLDivElement>(null);
+  const toRef = useRef<HTMLDivElement>(null);
 
-  const filteredFromCities = indianCities.filter(city =>
+  const filteredFromCities = from.length >= 2 ? indianCities.filter(city =>
     city.name.toLowerCase().includes(from.toLowerCase())
-  );
+  ).slice(0, 8) : [];
 
-  const filteredToCities = indianCities.filter(city =>
+  const filteredToCities = to.length >= 2 ? indianCities.filter(city =>
     city.name.toLowerCase().includes(to.toLowerCase())
-  );
+  ).slice(0, 8) : [];
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (fromRef.current && !fromRef.current.contains(event.target as Node)) {
+        setShowFromSuggestions(false);
+      }
+      if (toRef.current && !toRef.current.contains(event.target as Node)) {
+        setShowToSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSwap = () => {
     const temp = from;
@@ -28,10 +46,20 @@ const BusSearchForm = () => {
     setTo(temp);
   };
 
+  const handleFromSelect = (city: typeof indianCities[0]) => {
+    setFrom(city.name);
+    setShowFromSuggestions(false);
+  };
+
+  const handleToSelect = (city: typeof indianCities[0]) => {
+    setTo(city.name);
+    setShowToSuggestions(false);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (from && to && date) {
-      navigate(`/bus-results?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${date}`);
+      navigate(`/bus-results?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${date}&type=${busType}`);
     }
   };
 
@@ -40,106 +68,137 @@ const BusSearchForm = () => {
   const minDate = tomorrow.toISOString().split('T')[0];
 
   return (
-    <form onSubmit={handleSearch} className="bg-white rounded-2xl shadow-xl p-6 space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="relative">
-          <Label htmlFor="from">From City</Label>
+    <form onSubmit={handleSearch} className="bg-white rounded-lg shadow-lg p-6 space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold text-primary mb-2">BOOK BUS TICKET</h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* From City */}
+        <div className="relative" ref={fromRef}>
+          <Label htmlFor="from" className="text-sm font-semibold text-gray-700 mb-2 block">
+            From City
+          </Label>
           <Input
             id="from"
             type="text"
-            placeholder="Enter city"
             value={from}
-            onChange={(e) => setFrom(e.target.value)}
-            onFocus={() => setShowFromSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowFromSuggestions(false), 200)}
-            required
+            onChange={(e) => {
+              setFrom(e.target.value);
+              setShowFromSuggestions(true);
+            }}
+            onFocus={() => from.length >= 2 && setShowFromSuggestions(true)}
+            placeholder="Enter city name"
+            className="w-full border-2 border-gray-300 focus:border-primary h-12 text-base"
           />
-          {showFromSuggestions && from && filteredFromCities.length > 0 && (
-            <div className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-48 overflow-auto">
+          {showFromSuggestions && filteredFromCities.length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-white border-2 border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
               {filteredFromCities.map((city) => (
                 <button
                   key={city.id}
                   type="button"
-                  onClick={() => {
-                    setFrom(city.name);
-                    setShowFromSuggestions(false);
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                  onClick={() => handleFromSelect(city)}
+                  className="w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0"
                 >
-                  {city.name}
+                  <div className="font-medium text-gray-900">{city.name}</div>
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        <div className="flex items-end justify-center">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={handleSwap}
-            className="mb-1"
-          >
-            <ArrowLeftRight className="h-4 w-4" />
-          </Button>
+        {/* Date */}
+        <div>
+          <Label htmlFor="date" className="text-sm font-semibold text-gray-700 mb-2 block">
+            Journey Date *
+          </Label>
+          <div className="relative">
+            <Input
+              id="date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              min={minDate}
+              className="w-full border-2 border-gray-300 focus:border-primary h-12 text-base"
+            />
+            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+          </div>
         </div>
+      </div>
 
-        <div className="relative">
-          <Label htmlFor="to">To City</Label>
+      <div className="flex items-center justify-center">
+        <button
+          type="button"
+          onClick={handleSwap}
+          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+          title="Swap cities"
+        >
+          <ArrowLeftRight className="h-5 w-5 text-primary" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* To City */}
+        <div className="relative" ref={toRef}>
+          <Label htmlFor="to" className="text-sm font-semibold text-gray-700 mb-2 block">
+            To City
+          </Label>
           <Input
             id="to"
             type="text"
-            placeholder="Enter city"
             value={to}
-            onChange={(e) => setTo(e.target.value)}
-            onFocus={() => setShowToSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowToSuggestions(false), 200)}
-            required
+            onChange={(e) => {
+              setTo(e.target.value);
+              setShowToSuggestions(true);
+            }}
+            onFocus={() => to.length >= 2 && setShowToSuggestions(true)}
+            placeholder="Enter city name"
+            className="w-full border-2 border-gray-300 focus:border-primary h-12 text-base"
           />
-          {showToSuggestions && to && filteredToCities.length > 0 && (
-            <div className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-48 overflow-auto">
+          {showToSuggestions && filteredToCities.length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-white border-2 border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
               {filteredToCities.map((city) => (
                 <button
                   key={city.id}
                   type="button"
-                  onClick={() => {
-                    setTo(city.name);
-                    setShowToSuggestions(false);
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                  onClick={() => handleToSelect(city)}
+                  className="w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0"
                 >
-                  {city.name}
+                  <div className="font-medium text-gray-900">{city.name}</div>
                 </button>
               ))}
             </div>
           )}
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Bus Type */}
         <div>
-          <Label htmlFor="date">Journey Date</Label>
-          <Input
-            id="date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            min={minDate}
-            required
-          />
-        </div>
-
-        <div className="flex items-end">
-          <Button
-            type="submit"
-            className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
-          >
-            <Search className="h-4 w-4 mr-2" />
-            Search Buses
-          </Button>
+          <Label htmlFor="busType" className="text-sm font-semibold text-gray-700 mb-2 block">
+            Bus Type
+          </Label>
+          <Select value={busType} onValueChange={setBusType}>
+            <SelectTrigger className="w-full border-2 border-gray-300 focus:border-primary h-12 text-base">
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All Types">All Types</SelectItem>
+              <SelectItem value="AC Sleeper">AC Sleeper</SelectItem>
+              <SelectItem value="Non-AC Sleeper">Non-AC Sleeper</SelectItem>
+              <SelectItem value="AC Seater">AC Seater</SelectItem>
+              <SelectItem value="Non-AC Seater">Non-AC Seater</SelectItem>
+              <SelectItem value="Volvo AC">Volvo AC</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
+
+      <Button 
+        type="submit" 
+        className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 h-12 text-lg font-semibold"
+        disabled={!from || !to || !date}
+      >
+        Search Buses
+      </Button>
     </form>
   );
 };
