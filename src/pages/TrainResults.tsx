@@ -18,7 +18,7 @@ const TrainResults = () => {
   const trainClass = searchParams.get('class') || 'All Classes';
   const quota = searchParams.get('quota') || 'GENERAL';
   
-  const trains = generateRandomTrains(from, to);
+  const trains = generateRandomTrains(from, to, date);
   
   const [selectedClasses, setSelectedClasses] = useState<string[]>(['1A', '2A', '3A', 'SL']);
 

@@ -63,8 +63,8 @@ const TrainSearchForm = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (from && to && date) {
-      const fromCity = from.split(' (')[0];
-      const toCity = to.split(' (')[0];
+      const fromCity = from.includes('(') ? from.split(' (')[0] : from;
+      const toCity = to.includes('(') ? to.split(' (')[0] : to;
       navigate(`/train-results?from=${encodeURIComponent(fromCity)}&to=${encodeURIComponent(toCity)}&date=${date}&class=${trainClass}&quota=${quota}`);
     }
   };
