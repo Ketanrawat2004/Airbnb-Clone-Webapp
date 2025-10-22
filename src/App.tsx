@@ -32,6 +32,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminAuth from "./pages/admin/AdminAuth";
 import WebsiteAnalysis from "./pages/WebsiteAnalysis";
+import TrainSearch from "./pages/TrainSearch";
 import TrainResults from "./pages/TrainResults";
 import TrainBooking from "./pages/TrainBooking";
 import BusResults from "./pages/BusResults";
@@ -73,7 +74,8 @@ const App = () => (
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
             <Route path="/admin/auth" element={<AdminAuth />} />
-            <Route path="/website-analysis" element={<WebsiteAnalysis />} />
+          <Route path="/website-analysis" element={<WebsiteAnalysis />} />
+          <Route path="/trains" element={<TrainSearch />} />
           <Route path="/train-results" element={<TrainResults />} />
           <Route path="/train-booking" element={<TrainBooking />} />
           <Route path="/bus-results" element={<BusResults />} />

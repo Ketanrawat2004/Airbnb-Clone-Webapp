@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeftRight, Calendar } from 'lucide-react';
+import { ArrowLeftRight, Calendar, Train } from 'lucide-react';
 import { indianCities } from '@/data/indianCities';
 
 const TrainSearchForm = () => {
@@ -74,9 +74,12 @@ const TrainSearchForm = () => {
   const minDate = tomorrow.toISOString().split('T')[0];
 
   return (
-    <form onSubmit={handleSearch} className="bg-white rounded-lg shadow-lg p-6 space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold text-primary mb-2">BOOK TICKET</h2>
+    <form onSubmit={handleSearch} className="bg-white rounded-xl md:rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 space-y-6 border border-gray-100">
+      <div className="text-center mb-4 md:mb-6">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          BOOK TRAIN TICKET
+        </h2>
+        <p className="text-sm md:text-base text-gray-600 mt-2">Search trains across India</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -250,9 +253,10 @@ const TrainSearchForm = () => {
 
       <Button 
         type="submit" 
-        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 h-12 text-lg font-semibold"
+        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-12 md:h-14 text-base md:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
         disabled={!from || !to || !date}
       >
+        <Train className="mr-2 h-5 w-5" />
         Search Trains
       </Button>
     </form>
