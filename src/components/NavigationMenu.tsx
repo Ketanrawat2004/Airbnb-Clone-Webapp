@@ -37,6 +37,12 @@ const NavigationMenu = () => {
       description: 'Book train tickets'
     },
     { 
+      name: 'Buses', 
+      path: '/buses', 
+      icon: Bus,
+      description: 'Book bus tickets'
+    },
+    { 
       name: 'About', 
       path: '/about', 
       icon: Info,

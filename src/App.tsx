@@ -33,10 +33,11 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminAuth from "./pages/admin/AdminAuth";
 import WebsiteAnalysis from "./pages/WebsiteAnalysis";
 import TrainSearch from "./pages/TrainSearch";
-import TrainResults from "./pages/TrainResults";
-import TrainBooking from "./pages/TrainBooking";
+import BusSearch from "./pages/BusSearch";
 import BusResults from "./pages/BusResults";
 import BusBooking from "./pages/BusBooking";
+import TrainResults from "./pages/TrainResults";
+import TrainBooking from "./pages/TrainBooking";
 import Games from "./pages/Games";
 
 const queryClient = new QueryClient();
@@ -76,10 +77,12 @@ const App = () => (
             <Route path="/admin/auth" element={<AdminAuth />} />
           <Route path="/website-analysis" element={<WebsiteAnalysis />} />
           <Route path="/trains" element={<TrainSearch />} />
-          <Route path="/train-results" element={<TrainResults />} />
-          <Route path="/train-booking" element={<TrainBooking />} />
+          <Route path="/buses" element={<BusSearch />} />
+          <Route path="/bus-search" element={<BusSearch />} />
           <Route path="/bus-results" element={<BusResults />} />
           <Route path="/bus-booking" element={<BusBooking />} />
+          <Route path="/train-results" element={<TrainResults />} />
+          <Route path="/train-booking" element={<TrainBooking />} />
           <Route path="/games" element={<Games />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
