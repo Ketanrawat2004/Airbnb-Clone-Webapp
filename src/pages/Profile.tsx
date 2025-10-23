@@ -11,11 +11,13 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
-import { User, Mail, Phone, Calendar, Download, Ticket, Plane, Building, CreditCard, MapPin, Clock, Users, Star, Eye } from 'lucide-react';
+import { User, Mail, Phone, Calendar, Download, Ticket, Plane, Building, CreditCard, MapPin, Clock, Users, Star, Eye, Train, Bus, CheckCircle, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import ModernHotelTicket from '@/components/tickets/ModernHotelTicket';
 import ModernFlightTicket from '@/components/tickets/ModernFlightTicket';
+import ModernTrainTicket from '@/components/tickets/ModernTrainTicket';
+import ModernBusTicket from '@/components/tickets/ModernBusTicket';
 
 const Profile = () => {
   const { user, loading } = useAuth();
@@ -24,6 +26,8 @@ const Profile = () => {
   const [profile, setProfile] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [flightBookings, setFlightBookings] = useState<any[]>([]);
+  const [trainBookings, setTrainBookings] = useState<any[]>([]);
+  const [busBookings, setBusBookings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -81,6 +85,28 @@ const Profile = () => {
 
       if (flightBookingsData) {
         setFlightBookings(flightBookingsData);
+      }
+
+      // Load train bookings
+      const { data: trainBookingsData } = await supabase
+        .from('train_bookings')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (trainBookingsData) {
+        setTrainBookings(trainBookingsData);
+      }
+
+      // Load bus bookings
+      const { data: busBookingsData } = await supabase
+        .from('bus_bookings')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (busBookingsData) {
+        setBusBookings(busBookingsData);
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -160,7 +186,7 @@ const Profile = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-25 to-pink-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 mt-6">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <motion.div
@@ -279,14 +305,22 @@ const Profile = () => {
                 </CardHeader>
                 <CardContent className="p-6">
                   <Tabs defaultValue="hotels" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-6">
+                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-6">
                       <TabsTrigger value="hotels" className="flex items-center space-x-2">
                         <Building className="h-4 w-4" />
-                        <span>Hotels ({bookings.length})</span>
+                        <span className="hidden sm:inline">Hotels</span> ({bookings.length})
                       </TabsTrigger>
                       <TabsTrigger value="flights" className="flex items-center space-x-2">
                         <Plane className="h-4 w-4" />
-                        <span>Flights ({flightBookings.length})</span>
+                        <span className="hidden sm:inline">Flights</span> ({flightBookings.length})
+                      </TabsTrigger>
+                      <TabsTrigger value="trains" className="flex items-center space-x-2">
+                        <Train className="h-4 w-4" />
+                        <span className="hidden sm:inline">Trains</span> ({trainBookings.length})
+                      </TabsTrigger>
+                      <TabsTrigger value="buses" className="flex items-center space-x-2">
+                        <Bus className="h-4 w-4" />
+                        <span className="hidden sm:inline">Buses</span> ({busBookings.length})
                       </TabsTrigger>
                     </TabsList>
 
@@ -353,6 +387,64 @@ const Profile = () => {
                           >
                             <Plane className="h-4 w-4 mr-2" />
                             Search Flights
+                          </Button>
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="trains" className="space-y-6">
+                      {trainBookings.length > 0 ? (
+                        <div className="space-y-6">
+                          {trainBookings.map((booking) => (
+                            <ModernTrainTicket
+                              key={booking.id}
+                              booking={booking}
+                              showActions={true}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-16">
+                          <Train className="h-20 w-20 text-gray-300 mx-auto mb-6" />
+                          <h3 className="text-xl font-semibold text-gray-900 mb-3">No train bookings yet</h3>
+                          <p className="text-gray-600 mb-8">
+                            Book your next train journey and travel comfortably!
+                          </p>
+                          <Button
+                            onClick={() => navigate('/trains')}
+                            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
+                          >
+                            <Train className="h-4 w-4 mr-2" />
+                            Search Trains
+                          </Button>
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="buses" className="space-y-6">
+                      {busBookings.length > 0 ? (
+                        <div className="space-y-6">
+                          {busBookings.map((booking) => (
+                            <ModernBusTicket
+                              key={booking.id}
+                              booking={booking}
+                              showActions={true}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-16">
+                          <Bus className="h-20 w-20 text-gray-300 mx-auto mb-6" />
+                          <h3 className="text-xl font-semibold text-gray-900 mb-3">No bus bookings yet</h3>
+                          <p className="text-gray-600 mb-8">
+                            Book your next bus journey at great prices!
+                          </p>
+                          <Button
+                            onClick={() => navigate('/buses')}
+                            className="bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600"
+                          >
+                            <Bus className="h-4 w-4 mr-2" />
+                            Search Buses
                           </Button>
                         </div>
                       )}

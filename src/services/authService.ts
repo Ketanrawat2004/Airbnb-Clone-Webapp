@@ -5,7 +5,7 @@ export const authService = {
     try {
       console.log('Generating email OTP for:', email);
       
-      // Generate OTP in database
+      // Generate OTP in database - works for ALL emails, new or existing
       const { data, error } = await supabase.rpc('generate_email_otp', {
         user_email: email,
         user_name: fullName
