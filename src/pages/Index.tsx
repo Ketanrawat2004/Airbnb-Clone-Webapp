@@ -5,6 +5,8 @@ import CheapRatesSection from '@/components/CheapRatesSection';
 import HotelsSection from '@/components/HotelsSection';
 import HostSubmissionsSection from '@/components/HostSubmissionsSection';
 import FlightSection from '@/components/FlightSection';
+import TrainSection from '@/components/TrainSection';
+import BusSection from '@/components/BusSection';
 import ReviewAndTestimonialsSection from '@/components/ReviewAndTestimonialsSection';
 import FeaturesSection from '@/components/FeaturesSection';
 
@@ -28,6 +30,8 @@ const Index = () => {
       <HotelsSection />
       <HostSubmissionsSection />
       <FlightSection />
+      <TrainSection />
+      <BusSection />
       
       <div className="animate-fade-up">
         <ReviewAndTestimonialsSection />
