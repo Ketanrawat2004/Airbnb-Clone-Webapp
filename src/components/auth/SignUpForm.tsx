@@ -52,7 +52,7 @@ const SignUpForm = ({ onSuccess, disabled = false }: SignUpFormProps) => {
         toast.error(error.message || 'Failed to create account');
       }
     } else {
-      toast.success('Account created successfully! Please check your email to confirm your account, then sign in.');
+      toast.success(`Welcome, ${formData.fullName}! Your account has been created successfully.`);
       onSuccess();
     }
 
@@ -112,7 +112,7 @@ const SignUpForm = ({ onSuccess, disabled = false }: SignUpFormProps) => {
       </Button>
 
       <p className="text-sm text-muted-foreground text-center px-2 leading-relaxed">
-        You'll receive a confirmation email. Please check your inbox to verify your account before signing in.
+        Create your account and start exploring amazing hotels and travel options.
       </p>
     </form>
   );
