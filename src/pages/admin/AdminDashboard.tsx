@@ -28,7 +28,7 @@ import AdminReportGenerator from '@/components/admin/AdminReportGenerator';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const [adminAuth, setAdminAuth] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalBookings: 0,
@@ -41,29 +41,47 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkAdminAuth = () => {
-      const authData = localStorage.getItem('adminAuth');
-      if (!authData) {
-        navigate('/admin/auth');
-        return;
-      }
+    const checkAdminAccess = async () => {
+      setIsLoading(true);
       
       try {
-        const parsedAuth = JSON.parse(authData);
-        setAdminAuth(parsedAuth);
-        loadDashboardData();
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          navigate('/admin/auth');
+          return;
+        }
+
+        // Check if user has admin role
+        const { data: roles, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .eq('role', 'admin')
+          .single();
+
+        if (error || !roles) {
+          await supabase.auth.signOut();
+          navigate('/admin/auth');
+          return;
+        }
+
+        setIsAdmin(true);
+        await loadDashboardData();
       } catch (error) {
+        console.error('Error checking admin access:', error);
         navigate('/admin/auth');
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    checkAdminAuth();
+    checkAdminAccess();
   }, [navigate]);
 
   const loadDashboardData = async () => {
     try {
-      setIsLoading(true);
-
       // Load real-time stats
       const [
         { count: usersCount },
@@ -98,12 +116,10 @@ const AdminDashboard = () => {
       });
     } catch (error) {
       console.error('Error loading dashboard data:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  if (isLoading || !adminAuth) {
+  if (isLoading || !isAdmin) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">

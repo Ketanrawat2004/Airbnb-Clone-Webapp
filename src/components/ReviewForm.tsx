@@ -69,12 +69,22 @@ const ReviewForm = ({ onReviewSubmitted }: ReviewFormProps) => {
     setIsSubmitting(true);
     
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to leave a review",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
       
       // First, insert into user_reviews table
       const userReviewData = {
         ...data,
-        user_id: session?.user?.id || null,
+        user_id: user.id,
         hotel_id: data.hotel_id || null,
         stay_date: data.stay_date || null,
         is_verified: false,

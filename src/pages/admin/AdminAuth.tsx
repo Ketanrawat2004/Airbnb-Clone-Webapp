@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Shield, Users, Key, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const AdminAuth = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,28 +34,43 @@ const AdminAuth = () => {
     setIsLoading(true);
     
     try {
-      // Simple admin authentication
-      if (signInData.email === 'admin@hotel.com' && signInData.password === 'admin123') {
-        // Store admin session
-        localStorage.setItem('adminAuth', JSON.stringify({
-          email: signInData.email,
-          isAdmin: true,
-          loginTime: new Date().toISOString()
-        }));
-        
-        toast({
-          title: "Admin Sign In Successful",
-          description: "Welcome back, Admin!",
-        });
-        
-        navigate('/admin');
-      } else {
-        throw new Error('Invalid credentials');
+      // Sign in with Supabase
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+        email: signInData.email,
+        password: signInData.password,
+      });
+
+      if (error) {
+        throw error;
       }
-    } catch (error) {
+
+      if (!user) {
+        throw new Error('Authentication failed');
+      }
+
+      // Check if user has admin role
+      const { data: roles, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .single();
+
+      if (roleError || !roles) {
+        await supabase.auth.signOut();
+        throw new Error('Unauthorized: Admin access required');
+      }
+
+      toast({
+        title: "Admin Sign In Successful",
+        description: "Welcome back, Admin!",
+      });
+      
+      navigate('/admin');
+    } catch (error: any) {
       toast({
         title: "Sign In Failed",
-        description: "Invalid credentials. Use admin@hotel.com / admin123",
+        description: error.message || 'Invalid credentials or insufficient permissions',
         variant: "destructive",
       });
     } finally {
@@ -76,36 +92,44 @@ const AdminAuth = () => {
       return;
     }
 
-    if (signUpData.adminCode !== 'HOTEL2025') {
-      toast({
-        title: "Invalid Admin Code",
-        description: "Use HOTEL2025 as verification code",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      // Store admin session
-      localStorage.setItem('adminAuth', JSON.stringify({
+      // Create user account with Supabase
+      const { data: { user }, error } = await supabase.auth.signUp({
         email: signUpData.email,
-        fullName: signUpData.fullName,
-        hotelName: signUpData.hotelName,
-        isAdmin: true,
-        loginTime: new Date().toISOString()
-      }));
-      
+        password: signUpData.password,
+        options: {
+          data: {
+            full_name: signUpData.fullName || signUpData.hotelName,
+          },
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!user) {
+        throw new Error('Account creation failed');
+      }
+
       toast({
-        title: "Admin Account Created",
-        description: "Your admin account has been created successfully!",
+        title: "Registration Successful",
+        description: "Your account has been created. Please contact the system administrator to grant admin access.",
       });
       
-      navigate('/admin');
-    } catch (error) {
+      // Clear form
+      setSignUpData({
+        email: '',
+        password: '',
+        confirmPassword: '',
+        adminCode: '',
+        hotelName: '',
+        fullName: ''
+      });
+    } catch (error: any) {
       toast({
         title: "Registration Failed",
-        description: "Please try again later.",
+        description: error.message || "Please try again later.",
         variant: "destructive",
       });
     } finally {
@@ -293,22 +317,6 @@ const AdminAuth = () => {
                         className="bg-white/80 backdrop-blur-sm"
                       />
                     </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-code">Admin Verification Code</Label>
-                    <Input
-                      id="signup-code"
-                      type="text"
-                      placeholder="Enter admin verification code"
-                      value={signUpData.adminCode}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, adminCode: e.target.value }))}
-                      required
-                      className="bg-white/80 backdrop-blur-sm"
-                    />
-                    <p className="text-sm text-gray-500">
-                      Contact support to get your verification code
-                    </p>
                   </div>
 
                   <Button
