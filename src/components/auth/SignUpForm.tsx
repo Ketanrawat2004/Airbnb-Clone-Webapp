@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import EmailOTPVerification from './EmailOTPVerification';
 
 interface SignUpFormProps {
   onSuccess: () => void;
@@ -13,9 +12,8 @@ interface SignUpFormProps {
 }
 
 const SignUpForm = ({ onSuccess, disabled = false }: SignUpFormProps) => {
-  const { generateEmailOTP } = useAuth();
+  const { signUp } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<'signup' | 'otp'>('signup');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -37,45 +35,29 @@ const SignUpForm = ({ onSuccess, disabled = false }: SignUpFormProps) => {
       return;
     }
 
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
+      return;
+    }
+
     setLoading(true);
 
-    try {
-      const { error } = await generateEmailOTP(formData.email, formData.fullName);
+    const { error } = await signUp(formData.email, formData.password, formData.fullName);
 
-      if (error) {
-        console.log('Generate OTP error:', error);
-        if (error.message?.includes('already registered') || error.message?.includes('already exists')) {
-          toast.error('An account with this email already exists. Please try signing in instead.');
-        } else {
-          toast.error(error.message || 'Failed to send verification code');
-        }
+    if (error) {
+      console.log('Sign up error:', error);
+      if (error.message?.includes('already registered') || error.message?.includes('already exists')) {
+        toast.error('An account with this email already exists. Please sign in instead.');
       } else {
-        toast.success('Verification code sent! Please check your email (including spam folder).');
-        setStep('otp');
+        toast.error(error.message || 'Failed to create account');
       }
-    } catch (error) {
-      console.error('Error generating OTP:', error);
-      toast.error('Failed to send verification code');
-    } finally {
-      setLoading(false);
+    } else {
+      toast.success('Account created successfully! Please check your email to confirm your account, then sign in.');
+      onSuccess();
     }
-  };
 
-  const handleBack = () => {
-    setStep('signup');
+    setLoading(false);
   };
-
-  if (step === 'otp') {
-    return (
-      <EmailOTPVerification
-        email={formData.email}
-        fullName={formData.fullName}
-        password={formData.password}
-        onSuccess={onSuccess}
-        onBack={handleBack}
-      />
-    );
-  }
 
   return (
     <form onSubmit={handleSignUp} className="space-y-4">
@@ -126,11 +108,11 @@ const SignUpForm = ({ onSuccess, disabled = false }: SignUpFormProps) => {
       </div>
 
       <Button type="submit" className="w-full" disabled={loading || disabled}>
-        {loading ? 'Sending code...' : 'Send Verification Code'}
+        {loading ? 'Creating account...' : 'Sign Up'}
       </Button>
 
       <p className="text-sm text-muted-foreground text-center px-2 leading-relaxed">
-        We'll send a 6-digit verification code to your email address. The code expires in 1 minute.
+        You'll receive a confirmation email. Please check your inbox to verify your account before signing in.
       </p>
     </form>
   );

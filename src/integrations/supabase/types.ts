@@ -899,10 +899,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      cleanup_expired_otps: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_expired_otps: { Args: never; Returns: undefined }
       generate_email_otp: {
         Args: { user_email: string; user_name: string }
         Returns: {
@@ -933,7 +930,7 @@ export type Database = {
         }[]
       }
       get_public_host_submissions: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address: string
           amenities: string[]
@@ -954,7 +951,7 @@ export type Database = {
         }[]
       }
       increment_visitor_count: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           visit_count: number
         }[]
