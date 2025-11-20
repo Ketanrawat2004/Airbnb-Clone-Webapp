@@ -56,7 +56,6 @@ export const authService = {
           data: {
             full_name: fullName,
           },
-          emailRedirectTo: `${window.location.origin}/`,
         },
       });
       
@@ -66,7 +65,7 @@ export const authService = {
       }
       
       console.log('Sign up successful:', data);
-      return { error: null };
+      return { data, error: null };
     } catch (error) {
       console.error('Error in signUp:', error);
       return { error };
