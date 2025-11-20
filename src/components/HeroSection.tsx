@@ -43,7 +43,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
               <div className="absolute -inset-1 bg-gradient-to-r from-pink-600 via-red-500 to-rose-600 rounded-full blur-lg opacity-25 group-hover:opacity-40 transition-opacity duration-500"></div>
               <span className="relative glass-morphism text-white px-8 sm:px-10 lg:px-14 py-4 sm:py-5 lg:py-6 rounded-full text-sm sm:text-base lg:text-lg font-medium tracking-wide shadow-2xl flex items-center gap-3 border border-white/20">
                 <Sparkles className="w-5 h-5 text-pink-300 animate-pulse" />
-                <span className="text-shimmer">Discover Your Perfect Stay</span>
+                <span className="text-shimmer">Secure & Trusted Travel Booking</span>
                 <Zap className="w-5 h-5 text-rose-300 animate-pulse" style={{ animationDelay: '0.5s' }} />
               </span>
             </div>
@@ -51,7 +51,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           
           {/* Revolutionary Typography */}
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-[0.9] mb-8 sm:mb-10 lg:mb-12 tracking-tight">
-            <span className="block text-white mb-4 sm:mb-6 text-glow">Find your</span>
+            <span className="block text-white mb-4 sm:mb-6 text-glow">Secure your</span>
             <span className="block relative">
               <span className="bg-gradient-to-r from-pink-300 via-red-300 to-rose-300 text-transparent bg-clip-text relative z-10 text-glow">
                 perfect stay
@@ -64,14 +64,14 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           <div className="max-w-6xl mx-auto mb-12 sm:mb-16">
             <p className="font-sans text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-relaxed font-light">
               <span className="bg-gradient-to-r from-pink-300 via-red-300 to-rose-300 text-transparent bg-clip-text font-semibold text-glow">
-                Discover extraordinary places to stay
+                Book with confidence
               </span>
-              <span className="text-white/90 block sm:inline"> around the world, </span>
+              <span className="text-white/90 block sm:inline"> on our secure platform, </span>
               <br className="hidden md:block" />
               <span className="bg-gradient-to-r from-rose-300 via-pink-300 to-red-300 text-transparent bg-clip-text font-semibold text-glow">
-                curated for unforgettable experiences
+                protected by enterprise-grade security
               </span>
-              <span className="text-white/90"> and lasting memories.</span>
+              <span className="text-white/90"> and authenticated payments.</span>
             </p>
           </div>
         </div>

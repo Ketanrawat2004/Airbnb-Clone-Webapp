@@ -1,13 +1,29 @@
 
 import { motion } from 'framer-motion';
-import { Globe, Zap, Database, Users } from 'lucide-react';
+import { Shield, Lock, Database, UserCheck } from 'lucide-react';
 
 const KeyFeatures = () => {
   const features = [
-    { title: 'Hotel Booking', description: 'Browse and book from thousands of hotels worldwide', icon: Globe },
-    { title: 'Flight Search', description: 'Find and compare flights from major airlines', icon: Zap },
-    { title: 'Secure Payments', description: 'Multiple payment options with bank-level security', icon: Database },
-    { title: 'Real-time Updates', description: 'Live availability and pricing information', icon: Users }
+    { 
+      title: 'Secure Authentication', 
+      description: 'Enterprise-grade role-based access control with Supabase Auth', 
+      icon: Lock 
+    },
+    { 
+      title: 'Row-Level Security', 
+      description: 'Database-level protection ensuring user data isolation', 
+      icon: Database 
+    },
+    { 
+      title: 'Protected Payments', 
+      description: 'Razorpay integration with signature verification', 
+      icon: Shield 
+    },
+    { 
+      title: 'User Management', 
+      description: 'Authenticated bookings, reviews, and profile management', 
+      icon: UserCheck 
+    }
   ];
 
   return (
@@ -21,10 +37,10 @@ const KeyFeatures = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Key Features
+            Security Features
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive travel booking solution with advanced features and seamless integration
+            Built with enterprise-grade security architecture protecting your data and transactions
           </p>
         </motion.div>
 
