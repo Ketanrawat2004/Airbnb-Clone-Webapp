@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube, User } from 'lucide-react';
 import VisitorCounter from './VisitorCounter';
+import founderPhoto from '@/assets/founder-photo.jpg';
 
 const Footer = () => {
   const currentYear = 2025;
@@ -159,26 +160,26 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Developer Info Section */}
+        {/* Founder Info Section */}
         <div className="border-t border-rose-300/30 mt-6 md:mt-8 pt-6">
-          <div className="bg-gradient-to-r from-rose-600/30 to-pink-600/30 rounded-xl p-4 mb-4 md:mb-6 border border-rose-400/30">
+          <div className="bg-gradient-to-r from-rose-600/30 to-pink-600/30 rounded-2xl p-6 mb-4 md:mb-6 border border-rose-400/30">
             <div className="flex items-center space-x-4 mb-3">
-              <div className="w-12 h-12 md:w-16 md:h-16 rounded-full overflow-hidden bg-gradient-to-r from-rose-400 to-pink-400 flex-shrink-0 border-2 border-white">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden bg-gradient-to-r from-rose-400 to-pink-400 flex-shrink-0 border-4 border-white shadow-lg">
                 <img 
-                  src="/lovable-uploads/2b5371a2-33f0-4ff1-90ac-f53e40ab5e75.png" 
-                  alt="Ketan Rawat - Developer"
+                  src={founderPhoto}
+                  alt="Founder"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div>
-                <h4 className="text-base md:text-lg font-semibold text-white">Lead Developer</h4>
-                <p className="font-medium text-rose-100 text-sm md:text-base">Ketan Rawat</p>
+                <h4 className="text-base md:text-lg font-semibold text-white">Founder & CEO</h4>
+                <p className="font-medium text-rose-100 text-sm md:text-base">Airbnb Clone+</p>
               </div>
             </div>
-            <div className="text-sm text-rose-100 ml-16 md:ml-20">
+            <div className="text-sm text-rose-100 ml-20 md:ml-24">
               <p className="text-rose-200">B.Tech ECE 3rd Year</p>
               <p className="text-rose-200">NIT Jamshedpur</p>
-              <p className="text-white mt-2">Architect of Airbnb Clone+ Experience</p>
+              <p className="text-white mt-2">Building the future of secure travel booking technology</p>
             </div>
           </div>
         </div>

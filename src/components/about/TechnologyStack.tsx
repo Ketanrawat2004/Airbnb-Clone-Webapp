@@ -4,12 +4,12 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const TechnologyStack = () => {
   const technologies = [
-    { name: 'React 18', description: 'Modern UI library with hooks and concurrent features', icon: '⚛️' },
-    { name: 'TypeScript', description: 'Type-safe JavaScript for better development experience', icon: '📘' },
-    { name: 'Tailwind CSS', description: 'Utility-first CSS framework for rapid styling', icon: '🎨' },
-    { name: 'Supabase', description: 'Backend-as-a-Service with PostgreSQL database', icon: '🗄️' },
-    { name: 'Vite', description: 'Lightning-fast build tool and development server', icon: '⚡' },
-    { name: 'Framer Motion', description: 'Smooth animations and transitions', icon: '🎭' }
+    { name: 'React 18', description: 'Modern UI library with concurrent features and hooks', icon: '⚛️' },
+    { name: 'TypeScript', description: 'Type-safe JavaScript for reliable code', icon: '📘' },
+    { name: 'Supabase', description: 'Secure backend with PostgreSQL and Row-Level Security', icon: '🗄️' },
+    { name: 'Tailwind CSS', description: 'Utility-first CSS framework for rapid development', icon: '🎨' },
+    { name: 'Razorpay', description: 'Secure payment gateway with signature verification', icon: '💳' },
+    { name: 'Auth & RLS', description: 'Role-based access control with database security', icon: '🔐' }
   ];
 
   return (
@@ -26,8 +26,7 @@ const TechnologyStack = () => {
             Technology Stack
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Built with modern, industry-standard technologies for optimal performance, 
-            scalability, and user experience
+            Built with modern technologies prioritizing security, performance, and user experience
           </p>
         </motion.div>
 
