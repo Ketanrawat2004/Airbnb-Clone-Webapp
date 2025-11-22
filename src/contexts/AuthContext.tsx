@@ -30,12 +30,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   const authActions = useAuthActions({ setLoading, setUser, setSession });
 
-  const value = {
+  const value = React.useMemo(() => ({
     user,
     session,
     loading,
     ...authActions,
-  };
+  }), [user, session, loading, authActions]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

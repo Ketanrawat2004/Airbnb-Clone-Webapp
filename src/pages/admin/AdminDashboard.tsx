@@ -25,6 +25,9 @@ import AdminBookingsTable from '@/components/admin/AdminBookingsTable';
 import AdminUsersTable from '@/components/admin/AdminUsersTable';
 import AdminHotelsTable from '@/components/admin/AdminHotelsTable';
 import AdminReportGenerator from '@/components/admin/AdminReportGenerator';
+import AdminActivityFeed from '@/components/admin/AdminActivityFeed';
+import AdminRevenueChart from '@/components/admin/AdminRevenueChart';
+import AdminQuickStats from '@/components/admin/AdminQuickStats';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -36,7 +39,11 @@ const AdminDashboard = () => {
     totalHotels: 0,
     flightBookings: 0,
     hotelBookings: 0,
-    visitorCount: 0
+    trainBookings: 0,
+    busBookings: 0,
+    visitorCount: 0,
+    totalReviews: 0,
+    totalTestimonials: 0
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -82,37 +89,55 @@ const AdminDashboard = () => {
 
   const loadDashboardData = async () => {
     try {
-      // Load real-time stats
+      // Load real-time stats including train and bus bookings
       const [
         { count: usersCount },
         { count: bookingsCount },
         { count: flightBookingsCount },
+        { count: trainBookingsCount },
+        { count: busBookingsCount },
         { count: hotelsCount },
+        { count: reviewsCount },
+        { count: testimonialsCount },
         { data: bookingAmounts },
         { data: flightAmounts },
+        { data: trainAmounts },
+        { data: busAmounts },
         { data: visitorData }
       ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }),
         supabase.from('bookings').select('*', { count: 'exact', head: true }),
         supabase.from('flight_bookings').select('*', { count: 'exact', head: true }),
+        supabase.from('train_bookings').select('*', { count: 'exact', head: true }),
+        supabase.from('bus_bookings').select('*', { count: 'exact', head: true }),
         supabase.from('hotels').select('*', { count: 'exact', head: true }),
+        supabase.from('user_reviews').select('*', { count: 'exact', head: true }),
+        supabase.from('testimonials').select('*', { count: 'exact', head: true }),
         supabase.from('bookings').select('total_amount'),
         supabase.from('flight_bookings').select('total_amount'),
+        supabase.from('train_bookings').select('total_amount'),
+        supabase.from('bus_bookings').select('total_amount'),
         supabase.from('visitor_counter').select('visit_count').eq('id', 1).single()
       ]);
 
       const hotelRevenue = bookingAmounts?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
       const flightRevenue = flightAmounts?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
-      const totalRevenue = hotelRevenue + flightRevenue;
+      const trainRevenue = trainAmounts?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
+      const busRevenue = busAmounts?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
+      const totalRevenue = hotelRevenue + flightRevenue + trainRevenue + busRevenue;
 
       setStats({
         totalUsers: usersCount || 0,
-        totalBookings: (bookingsCount || 0) + (flightBookingsCount || 0),
+        totalBookings: (bookingsCount || 0) + (flightBookingsCount || 0) + (trainBookingsCount || 0) + (busBookingsCount || 0),
         totalRevenue,
         totalHotels: hotelsCount || 0,
         flightBookings: flightBookingsCount || 0,
         hotelBookings: bookingsCount || 0,
-        visitorCount: visitorData?.visit_count || 0
+        trainBookings: trainBookingsCount || 0,
+        busBookings: busBookingsCount || 0,
+        visitorCount: visitorData?.visit_count || 0,
+        totalReviews: reviewsCount || 0,
+        totalTestimonials: testimonialsCount || 0
       });
     } catch (error) {
       console.error('Error loading dashboard data:', error);
@@ -169,6 +194,16 @@ const AdminDashboard = () => {
             {/* Stats Cards */}
             <AdminStatsCards stats={stats} />
 
+            {/* Quick Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="mt-8"
+            >
+              <AdminQuickStats />
+            </motion.div>
+
             {/* Main Content */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -201,6 +236,15 @@ const AdminDashboard = () => {
                 </TabsList>
 
                 <TabsContent value="overview" className="space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2">
+                      <AdminRevenueChart />
+                    </div>
+                    <div>
+                      <AdminActivityFeed />
+                    </div>
+                  </div>
+                  
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                       <CardHeader className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-t-lg">
@@ -225,6 +269,14 @@ const AdminDashboard = () => {
                             <span className="text-gray-600">Flight Bookings</span>
                             <span className="font-semibold">{stats.flightBookings}</span>
                           </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Train Bookings</span>
+                            <span className="font-semibold">{stats.trainBookings}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Bus Bookings</span>
+                            <span className="font-semibold">{stats.busBookings}</span>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -233,7 +285,7 @@ const AdminDashboard = () => {
                       <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-t-lg">
                         <CardTitle className="flex items-center space-x-2">
                           <Users className="h-5 w-5" />
-                          <span>User Metrics</span>
+                          <span>Platform Metrics</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="p-6">
@@ -245,12 +297,20 @@ const AdminDashboard = () => {
                             </span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-600">Active Bookings</span>
-                            <span className="font-semibold">{stats.totalBookings}</span>
-                          </div>
-                          <div className="flex justify-between items-center">
                             <span className="text-gray-600">Total Hotels</span>
                             <span className="font-semibold">{stats.totalHotels}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">User Reviews</span>
+                            <span className="font-semibold">{stats.totalReviews}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Testimonials</span>
+                            <span className="font-semibold">{stats.totalTestimonials}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Site Visitors</span>
+                            <span className="font-semibold">{stats.visitorCount.toLocaleString()}</span>
                           </div>
                         </div>
                       </CardContent>
