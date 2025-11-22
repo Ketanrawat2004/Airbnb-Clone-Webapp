@@ -24,6 +24,11 @@ export const useAuthState = () => {
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
+          
+          // Clean up OAuth callback URL hash if present
+          if (window.location.hash && window.location.hash.includes('access_token')) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
@@ -44,6 +49,11 @@ export const useAuthState = () => {
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
+          
+          // Clean up OAuth callback URL hash after successful sign in
+          if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && window.location.hash) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
         }
       }
     );
