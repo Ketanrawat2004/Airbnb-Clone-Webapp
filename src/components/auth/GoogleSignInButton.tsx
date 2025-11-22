@@ -13,6 +13,11 @@ const GoogleSignInButton = ({ disabled = false }: GoogleSignInButtonProps) => {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
+    if (!signInWithGoogle) {
+      toast.error('Authentication service is not available. Please refresh the page.');
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -22,6 +27,8 @@ const GoogleSignInButton = ({ disabled = false }: GoogleSignInButtonProps) => {
         console.error('Google sign in error:', error);
         if (error.message?.includes('refused to connect') || error.message?.includes('OAuth')) {
           toast.error('Google OAuth is not properly configured. Please contact the administrator to set up Google authentication in Supabase settings.');
+        } else if (error.message?.includes('Auth not initialized')) {
+          toast.error('Authentication is loading. Please try again in a moment.');
         } else {
           toast.error('Failed to sign in with Google. Please try again or use email/password.');
         }

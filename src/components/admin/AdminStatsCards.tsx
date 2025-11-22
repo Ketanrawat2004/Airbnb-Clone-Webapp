@@ -10,7 +10,11 @@ interface AdminStatsCardsProps {
     totalHotels: number;
     flightBookings: number;
     hotelBookings: number;
+    trainBookings: number;
+    busBookings: number;
     visitorCount: number;
+    totalReviews: number;
+    totalTestimonials: number;
   };
 }
 
@@ -34,7 +38,7 @@ const AdminStatsCards = ({ stats }: AdminStatsCardsProps) => {
     },
     {
       title: 'Total Revenue',
-      value: `₹${stats.totalRevenue.toLocaleString('en-IN')}`,
+      value: `₹${(stats.totalRevenue / 1000).toFixed(1)}k`,
       icon: CreditCard,
       color: 'from-purple-500 to-purple-600',
       bgColor: 'bg-purple-50',

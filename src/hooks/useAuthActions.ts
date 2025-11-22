@@ -15,6 +15,9 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
     try {
       const result = await authService.signUp(email, password, fullName);
       return result;
+    } catch (error) {
+      console.error('SignUp error in hook:', error);
+      return { error };
     } finally {
       setLoading(false);
     }
@@ -25,6 +28,9 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
     try {
       const result = await authService.signIn(email, password);
       return result;
+    } catch (error) {
+      console.error('SignIn error in hook:', error);
+      return { error };
     } finally {
       setLoading(false);
     }
@@ -35,6 +41,9 @@ export const useAuthActions = ({ setLoading, setUser, setSession }: UseAuthActio
     try {
       const result = await authService.signInWithGoogle();
       return result;
+    } catch (error) {
+      console.error('Google SignIn error in hook:', error);
+      return { error };
     } finally {
       setLoading(false);
     }
