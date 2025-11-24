@@ -9,10 +9,11 @@ import TrainSection from '@/components/TrainSection';
 import BusSection from '@/components/BusSection';
 import ReviewAndTestimonialsSection from '@/components/ReviewAndTestimonialsSection';
 import FeaturesSection from '@/components/FeaturesSection';
-
 import AdvertisementBanner from '@/components/AdvertisementBanner';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
+import ScrollToTop from '@/components/ScrollToTop';
+import QuickAccessFAB from '@/components/QuickAccessFAB';
 
 
 
@@ -41,6 +42,8 @@ const Index = () => {
       <AdvertisementBanner />
       <Footer />
       <CookieConsent />
+      <ScrollToTop />
+      <QuickAccessFAB />
     </div>
   );
 };
