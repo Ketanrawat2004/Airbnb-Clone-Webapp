@@ -9,6 +9,7 @@ import Logo from './Logo';
 import AuthModal from './AuthModal';
 import HotelAutocomplete from './hotel/HotelAutocomplete';
 import CoinsDisplay from './CoinsDisplay';
+import LanguageSwitcher from './LanguageSwitcher';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
@@ -115,6 +116,9 @@ const Header = () => {
               >
                 <Search className="h-5 w-5" />
               </Button>
+
+              {/* Language Switcher */}
+              <LanguageSwitcher />
 
               {/* Coins Display */}
               {user && <CoinsDisplay />}

@@ -1,0 +1,132 @@
+{
+  "common": {
+    "search": "खोजें",
+    "book": "अभी बुक करें",
+    "bookNow": "अभी बुक करें",
+    "viewDetails": "विवरण देखें",
+    "learnMore": "और जानें",
+    "cancel": "रद्द करें",
+    "confirm": "पुष्टि करें",
+    "save": "सहेजें",
+    "close": "बंद करें",
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफलता",
+    "welcome": "स्वागत है",
+    "signIn": "साइन इन करें",
+    "signUp": "साइन अप करें",
+    "signOut": "साइन आउट करें",
+    "home": "होम",
+    "about": "हमारे बारे में",
+    "contact": "संपर्क",
+    "language": "भाषा"
+  },
+  "header": {
+    "flights": "फ्लाइट्स",
+    "hotels": "होटल",
+    "trains": "ट्रेनें",
+    "buses": "बसें",
+    "profile": "प्रोफाइल",
+    "admin": "एडमिन",
+    "becomeHost": "होस्ट बनें",
+    "language": "भाषा"
+  },
+  "hero": {
+    "title": "सुरक्षित और विश्वसनीय यात्रा बुकिंग",
+    "subtitle": "विश्वास के साथ होटल, फ्लाइट, ट्रेन और बस बुक करें। एंटरप्राइज़-ग्रेड सुरक्षा और प्रमाणित भुगतान।",
+    "searchPlaceholder": "आप कहाँ जाना चाहते हैं?",
+    "checkIn": "चेक इन",
+    "checkOut": "चेक आउट",
+    "guests": "मेहमान",
+    "searchButton": "होटल खोजें"
+  },
+  "hotels": {
+    "title": "फीचर्ड होटल",
+    "subtitle": "ठहरने के लिए अद्भुत जगहों की खोज करें",
+    "perNight": "प्रति रात",
+    "rating": "रेटिंग",
+    "reviews": "समीक्षाएं",
+    "viewAll": "सभी होटल देखें"
+  },
+  "flights": {
+    "title": "अपनी फ्लाइट बुक करें",
+    "subtitle": "सर्वोत्तम फ्लाइट डील खोजें",
+    "from": "से",
+    "to": "तक",
+    "departure": "प्रस्थान",
+    "return": "वापसी",
+    "passengers": "यात्री",
+    "class": "क्लास",
+    "economy": "इकोनॉमी",
+    "business": "बिजनेस",
+    "firstClass": "फर्स्ट क्लास",
+    "searchFlights": "फ्लाइट खोजें"
+  },
+  "trains": {
+    "title": "ट्रेन बुकिंग",
+    "subtitle": "आराम से ट्रेन से यात्रा करें",
+    "searchTrains": "ट्रेनें खोजें"
+  },
+  "buses": {
+    "title": "बस सेवाएं",
+    "subtitle": "किफायती बस यात्रा विकल्प",
+    "searchBuses": "बसें खोजें"
+  },
+  "booking": {
+    "details": "बुकिंग विवरण",
+    "summary": "बुकिंग सारांश",
+    "guestInfo": "मेहमान जानकारी",
+    "paymentMethod": "भुगतान विधि",
+    "totalAmount": "कुल राशि",
+    "confirmBooking": "बुकिंग की पुष्टि करें",
+    "bookingConfirmed": "बुकिंग कन्फर्म हो गई!",
+    "bookingFailed": "बुकिंग विफल"
+  },
+  "auth": {
+    "signIn": "साइन इन करें",
+    "signUp": "साइन अप करें",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "confirmPassword": "पासवर्ड की पुष्टि करें",
+    "fullName": "पूरा नाम",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "noAccount": "खाता नहीं है?",
+    "haveAccount": "पहले से खाता है?",
+    "continueWithGoogle": "Google के साथ जारी रखें",
+    "emailRequired": "ईमेल आवश्यक है",
+    "passwordRequired": "पासवर्ड आवश्यक है",
+    "invalidEmail": "अमान्य ईमेल पता"
+  },
+  "footer": {
+    "aboutUs": "हमारे बारे में",
+    "contactUs": "हमसे संपर्क करें",
+    "termsOfService": "सेवा की शर्तें",
+    "privacyPolicy": "गोपनीयता नीति",
+    "followUs": "हमें फॉलो करें",
+    "newsletter": "हमारे न्यूज़लेटर की सदस्यता लें",
+    "enterEmail": "अपना ईमेल दर्ज करें",
+    "subscribe": "सब्सक्राइब करें",
+    "allRightsReserved": "सर्वाधिकार सुरक्षित"
+  },
+  "profile": {
+    "myProfile": "मेरी प्रोफ़ाइल",
+    "myBookings": "मेरी बुकिंग",
+    "wishlist": "इच्छा सूची",
+    "settings": "सेटिंग्स",
+    "logout": "लॉगआउट"
+  },
+  "features": {
+    "securePayments": "सुरक्षित भुगतान",
+    "securePaymentsDesc": "उद्योग-अग्रणी सुरक्षा के साथ संरक्षित लेनदेन",
+    "instantConfirmation": "तुरंत पुष्टि",
+    "instantConfirmationDesc": "तुरंत बुकिंग कन्फर्मेशन प्राप्त करें",
+    "support": "24/7 सहायता",
+    "supportDesc": "चौबीसों घंटे ग्राहक सहायता",
+    "bestPrices": "सर्वोत्तम मूल्य",
+    "bestPricesDesc": "प्रतिस्पर्धी दरें और विशेष सौदे"
+  },
+  "testimonials": {
+    "title": "हमारे यात्री क्या कहते हैं",
+    "subtitle": "वास्तविक यात्रियों के वास्तविक अनुभव"
+  }
+}

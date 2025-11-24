@@ -1,0 +1,132 @@
+{
+  "common": {
+    "search": "検索",
+    "book": "今すぐ予約",
+    "bookNow": "今すぐ予約",
+    "viewDetails": "詳細を見る",
+    "learnMore": "詳しく見る",
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "save": "保存",
+    "close": "閉じる",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功",
+    "welcome": "ようこそ",
+    "signIn": "サインイン",
+    "signUp": "サインアップ",
+    "signOut": "サインアウト",
+    "home": "ホーム",
+    "about": "会社概要",
+    "contact": "お問い合わせ",
+    "language": "言語"
+  },
+  "header": {
+    "flights": "フライト",
+    "hotels": "ホテル",
+    "trains": "列車",
+    "buses": "バス",
+    "profile": "プロフィール",
+    "admin": "管理者",
+    "becomeHost": "ホストになる",
+    "language": "言語"
+  },
+  "hero": {
+    "title": "安全で信頼できる旅行予約",
+    "subtitle": "ホテル、フライト、列車、バスを安心して予約。エンタープライズグレードのセキュリティと認証済み決済。",
+    "searchPlaceholder": "どこに行きたいですか？",
+    "checkIn": "チェックイン",
+    "checkOut": "チェックアウト",
+    "guests": "ゲスト",
+    "searchButton": "ホテルを検索"
+  },
+  "hotels": {
+    "title": "おすすめのホテル",
+    "subtitle": "素晴らしい滞在先を見つける",
+    "perNight": "1泊あたり",
+    "rating": "評価",
+    "reviews": "レビュー",
+    "viewAll": "すべてのホテルを見る"
+  },
+  "flights": {
+    "title": "フライトを予約",
+    "subtitle": "最高のフライト情報を見つける",
+    "from": "出発地",
+    "to": "目的地",
+    "departure": "出発",
+    "return": "帰り",
+    "passengers": "乗客",
+    "class": "クラス",
+    "economy": "エコノミー",
+    "business": "ビジネス",
+    "firstClass": "ファーストクラス",
+    "searchFlights": "フライトを検索"
+  },
+  "trains": {
+    "title": "列車の予約",
+    "subtitle": "快適な列車の旅",
+    "searchTrains": "列車を検索"
+  },
+  "buses": {
+    "title": "バスサービス",
+    "subtitle": "手頃なバス旅行オプション",
+    "searchBuses": "バスを検索"
+  },
+  "booking": {
+    "details": "予約詳細",
+    "summary": "予約概要",
+    "guestInfo": "ゲスト情報",
+    "paymentMethod": "支払い方法",
+    "totalAmount": "合計金額",
+    "confirmBooking": "予約を確認",
+    "bookingConfirmed": "予約が確認されました！",
+    "bookingFailed": "予約に失敗しました"
+  },
+  "auth": {
+    "signIn": "サインイン",
+    "signUp": "サインアップ",
+    "email": "メール",
+    "password": "パスワード",
+    "confirmPassword": "パスワードを確認",
+    "fullName": "フルネーム",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "haveAccount": "すでにアカウントをお持ちですか？",
+    "continueWithGoogle": "Googleで続ける",
+    "emailRequired": "メールは必須です",
+    "passwordRequired": "パスワードは必須です",
+    "invalidEmail": "無効なメールアドレス"
+  },
+  "footer": {
+    "aboutUs": "会社概要",
+    "contactUs": "お問い合わせ",
+    "termsOfService": "利用規約",
+    "privacyPolicy": "プライバシーポリシー",
+    "followUs": "フォローする",
+    "newsletter": "ニュースレターを購読",
+    "enterEmail": "メールアドレスを入力",
+    "subscribe": "購読する",
+    "allRightsReserved": "全著作権所有"
+  },
+  "profile": {
+    "myProfile": "マイプロフィール",
+    "myBookings": "予約履歴",
+    "wishlist": "ウィッシュリスト",
+    "settings": "設定",
+    "logout": "ログアウト"
+  },
+  "features": {
+    "securePayments": "安全な支払い",
+    "securePaymentsDesc": "業界をリードするセキュリティで保護された取引",
+    "instantConfirmation": "即時確認",
+    "instantConfirmationDesc": "予約確認をすぐに取得",
+    "support": "24時間365日サポート",
+    "supportDesc": "24時間体制のカスタマーサポート",
+    "bestPrices": "最高の価格",
+    "bestPricesDesc": "競争力のある料金と限定オファー"
+  },
+  "testimonials": {
+    "title": "お客様の声",
+    "subtitle": "実際の旅行者からの本物の体験"
+  }
+}

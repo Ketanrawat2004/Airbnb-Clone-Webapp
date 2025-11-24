@@ -1,0 +1,132 @@
+{
+  "common": {
+    "search": "Search",
+    "book": "Book Now",
+    "bookNow": "Book Now",
+    "viewDetails": "View Details",
+    "learnMore": "Learn More",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "welcome": "Welcome",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "header": {
+    "flights": "Flights",
+    "hotels": "Hotels",
+    "trains": "Trains",
+    "buses": "Buses",
+    "profile": "Profile",
+    "admin": "Admin",
+    "becomeHost": "Become a Host",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "Secure & Trusted Travel Booking",
+    "subtitle": "Book hotels, flights, trains, and buses with confidence. Enterprise-grade security and authenticated payments.",
+    "searchPlaceholder": "Where do you want to go?",
+    "checkIn": "Check In",
+    "checkOut": "Check Out",
+    "guests": "Guests",
+    "searchButton": "Search Hotels"
+  },
+  "hotels": {
+    "title": "Featured Hotels",
+    "subtitle": "Discover amazing places to stay",
+    "perNight": "per night",
+    "rating": "Rating",
+    "reviews": "reviews",
+    "viewAll": "View All Hotels"
+  },
+  "flights": {
+    "title": "Book Your Flight",
+    "subtitle": "Find the best flight deals",
+    "from": "From",
+    "to": "To",
+    "departure": "Departure",
+    "return": "Return",
+    "passengers": "Passengers",
+    "class": "Class",
+    "economy": "Economy",
+    "business": "Business",
+    "firstClass": "First Class",
+    "searchFlights": "Search Flights"
+  },
+  "trains": {
+    "title": "Train Bookings",
+    "subtitle": "Travel by train with comfort",
+    "searchTrains": "Search Trains"
+  },
+  "buses": {
+    "title": "Bus Services",
+    "subtitle": "Affordable bus travel options",
+    "searchBuses": "Search Buses"
+  },
+  "booking": {
+    "details": "Booking Details",
+    "summary": "Booking Summary",
+    "guestInfo": "Guest Information",
+    "paymentMethod": "Payment Method",
+    "totalAmount": "Total Amount",
+    "confirmBooking": "Confirm Booking",
+    "bookingConfirmed": "Booking Confirmed!",
+    "bookingFailed": "Booking Failed"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "continueWithGoogle": "Continue with Google",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "invalidEmail": "Invalid email address"
+  },
+  "footer": {
+    "aboutUs": "About Us",
+    "contactUs": "Contact Us",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "followUs": "Follow Us",
+    "newsletter": "Subscribe to our newsletter",
+    "enterEmail": "Enter your email",
+    "subscribe": "Subscribe",
+    "allRightsReserved": "All rights reserved"
+  },
+  "profile": {
+    "myProfile": "My Profile",
+    "myBookings": "My Bookings",
+    "wishlist": "Wishlist",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "features": {
+    "securePayments": "Secure Payments",
+    "securePaymentsDesc": "Protected transactions with industry-leading security",
+    "instantConfirmation": "Instant Confirmation",
+    "instantConfirmationDesc": "Get booking confirmations immediately",
+    "support": "24/7 Support",
+    "supportDesc": "Round-the-clock customer assistance",
+    "bestPrices": "Best Prices",
+    "bestPricesDesc": "Competitive rates and exclusive deals"
+  },
+  "testimonials": {
+    "title": "What Our Travelers Say",
+    "subtitle": "Real experiences from real travelers"
+  }
+}

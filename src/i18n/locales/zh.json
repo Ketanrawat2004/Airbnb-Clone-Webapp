@@ -1,0 +1,132 @@
+{
+  "common": {
+    "search": "搜索",
+    "book": "立即预订",
+    "bookNow": "立即预订",
+    "viewDetails": "查看详情",
+    "learnMore": "了解更多",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "close": "关闭",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "welcome": "欢迎",
+    "signIn": "登录",
+    "signUp": "注册",
+    "signOut": "退出",
+    "home": "首页",
+    "about": "关于",
+    "contact": "联系",
+    "language": "语言"
+  },
+  "header": {
+    "flights": "航班",
+    "hotels": "酒店",
+    "trains": "火车",
+    "buses": "巴士",
+    "profile": "个人资料",
+    "admin": "管理员",
+    "becomeHost": "成为房东",
+    "language": "语言"
+  },
+  "hero": {
+    "title": "安全可信的旅行预订",
+    "subtitle": "放心预订酒店、航班、火车和巴士。企业级安全和认证支付。",
+    "searchPlaceholder": "您想去哪里？",
+    "checkIn": "入住",
+    "checkOut": "退房",
+    "guests": "客人",
+    "searchButton": "搜索酒店"
+  },
+  "hotels": {
+    "title": "精选酒店",
+    "subtitle": "发现绝佳的住宿地点",
+    "perNight": "每晚",
+    "rating": "评分",
+    "reviews": "评论",
+    "viewAll": "查看所有酒店"
+  },
+  "flights": {
+    "title": "预订您的航班",
+    "subtitle": "找到最优惠的航班",
+    "from": "从",
+    "to": "到",
+    "departure": "出发",
+    "return": "返回",
+    "passengers": "乘客",
+    "class": "舱位",
+    "economy": "经济舱",
+    "business": "商务舱",
+    "firstClass": "头等舱",
+    "searchFlights": "搜索航班"
+  },
+  "trains": {
+    "title": "火车预订",
+    "subtitle": "舒适地乘坐火车旅行",
+    "searchTrains": "搜索火车"
+  },
+  "buses": {
+    "title": "巴士服务",
+    "subtitle": "实惠的巴士旅行选择",
+    "searchBuses": "搜索巴士"
+  },
+  "booking": {
+    "details": "预订详情",
+    "summary": "预订摘要",
+    "guestInfo": "客人信息",
+    "paymentMethod": "支付方式",
+    "totalAmount": "总金额",
+    "confirmBooking": "确认预订",
+    "bookingConfirmed": "预订已确认！",
+    "bookingFailed": "预订失败"
+  },
+  "auth": {
+    "signIn": "登录",
+    "signUp": "注册",
+    "email": "电子邮件",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "fullName": "全名",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "没有账户？",
+    "haveAccount": "已有账户？",
+    "continueWithGoogle": "使用 Google 继续",
+    "emailRequired": "电子邮件是必需的",
+    "passwordRequired": "密码是必需的",
+    "invalidEmail": "无效的电子邮件地址"
+  },
+  "footer": {
+    "aboutUs": "关于我们",
+    "contactUs": "联系我们",
+    "termsOfService": "服务条款",
+    "privacyPolicy": "隐私政策",
+    "followUs": "关注我们",
+    "newsletter": "订阅我们的新闻通讯",
+    "enterEmail": "输入您的电子邮件",
+    "subscribe": "订阅",
+    "allRightsReserved": "版权所有"
+  },
+  "profile": {
+    "myProfile": "我的个人资料",
+    "myBookings": "我的预订",
+    "wishlist": "愿望清单",
+    "settings": "设置",
+    "logout": "退出"
+  },
+  "features": {
+    "securePayments": "安全支付",
+    "securePaymentsDesc": "采用行业领先安全技术保护交易",
+    "instantConfirmation": "即时确认",
+    "instantConfirmationDesc": "立即获得预订确认",
+    "support": "24/7 支持",
+    "supportDesc": "全天候客户支持",
+    "bestPrices": "最优价格",
+    "bestPricesDesc": "具有竞争力的价格和独家优惠"
+  },
+  "testimonials": {
+    "title": "旅客评价",
+    "subtitle": "真实旅客的真实体验"
+  }
+}

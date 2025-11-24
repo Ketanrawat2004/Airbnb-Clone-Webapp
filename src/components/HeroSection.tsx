@@ -1,12 +1,15 @@
 
 import SearchBar from '@/components/SearchBar';
 import { Sparkles, Zap, Globe, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface HeroSectionProps {
   onSearch: (location: string) => void;
 }
 
 const HeroSection = ({ onSearch }: HeroSectionProps) => {
+  const { t } = useTranslation();
+  
   return (
     <section className="relative min-h-[100vh] flex flex-col items-center justify-center overflow-hidden font-display">
       {/* Airbnb Pink Background Layers */}
@@ -43,7 +46,7 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
               <div className="absolute -inset-1 bg-gradient-to-r from-pink-600 via-red-500 to-rose-600 rounded-full blur-lg opacity-25 group-hover:opacity-40 transition-opacity duration-500"></div>
               <span className="relative glass-morphism text-white px-8 sm:px-10 lg:px-14 py-4 sm:py-5 lg:py-6 rounded-full text-sm sm:text-base lg:text-lg font-medium tracking-wide shadow-2xl flex items-center gap-3 border border-white/20">
                 <Sparkles className="w-5 h-5 text-pink-300 animate-pulse" />
-                <span className="text-shimmer">Secure & Trusted Travel Booking</span>
+                <span className="text-shimmer">{t('hero.title')}</span>
                 <Zap className="w-5 h-5 text-rose-300 animate-pulse" style={{ animationDelay: '0.5s' }} />
               </span>
             </div>
@@ -62,16 +65,8 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           
           {/* Premium Tagline */}
           <div className="max-w-6xl mx-auto mb-12 sm:mb-16">
-            <p className="font-sans text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-relaxed font-light">
-              <span className="bg-gradient-to-r from-pink-300 via-red-300 to-rose-300 text-transparent bg-clip-text font-semibold text-glow">
-                Book with confidence
-              </span>
-              <span className="text-white/90 block sm:inline"> on our secure platform, </span>
-              <br className="hidden md:block" />
-              <span className="bg-gradient-to-r from-rose-300 via-pink-300 to-red-300 text-transparent bg-clip-text font-semibold text-glow">
-                protected by enterprise-grade security
-              </span>
-              <span className="text-white/90"> and authenticated payments.</span>
+            <p className="font-sans text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-relaxed font-light text-white/90">
+              {t('hero.subtitle')}
             </p>
           </div>
         </div>
