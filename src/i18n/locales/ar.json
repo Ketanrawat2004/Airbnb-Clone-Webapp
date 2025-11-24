@@ -1,0 +1,132 @@
+{
+  "common": {
+    "search": "بحث",
+    "book": "احجز الآن",
+    "bookNow": "احجز الآن",
+    "viewDetails": "عرض التفاصيل",
+    "learnMore": "تعرف على المزيد",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "save": "حفظ",
+    "close": "إغلاق",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "welcome": "مرحبا",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "signOut": "تسجيل الخروج",
+    "home": "الرئيسية",
+    "about": "عن",
+    "contact": "اتصل",
+    "language": "اللغة"
+  },
+  "header": {
+    "flights": "الرحلات",
+    "hotels": "الفنادق",
+    "trains": "القطارات",
+    "buses": "الحافلات",
+    "profile": "الملف الشخصي",
+    "admin": "المسؤول",
+    "becomeHost": "كن مضيفًا",
+    "language": "اللغة"
+  },
+  "hero": {
+    "title": "حجز سفر آمن وموثوق",
+    "subtitle": "احجز الفنادق والرحلات الجوية والقطارات والحافلات بثقة. أمان على مستوى المؤسسات ومدفوعات موثقة.",
+    "searchPlaceholder": "أين تريد أن تذهب؟",
+    "checkIn": "تسجيل الوصول",
+    "checkOut": "تسجيل المغادرة",
+    "guests": "الضيوف",
+    "searchButton": "بحث الفنادق"
+  },
+  "hotels": {
+    "title": "الفنادق المميزة",
+    "subtitle": "اكتشف أماكن رائعة للإقامة",
+    "perNight": "لكل ليلة",
+    "rating": "التقييم",
+    "reviews": "المراجعات",
+    "viewAll": "عرض جميع الفنادق"
+  },
+  "flights": {
+    "title": "احجز رحلتك",
+    "subtitle": "ابحث عن أفضل عروض الرحلات",
+    "from": "من",
+    "to": "إلى",
+    "departure": "المغادرة",
+    "return": "العودة",
+    "passengers": "الركاب",
+    "class": "الدرجة",
+    "economy": "اقتصادية",
+    "business": "رجال الأعمال",
+    "firstClass": "الدرجة الأولى",
+    "searchFlights": "بحث الرحلات"
+  },
+  "trains": {
+    "title": "حجوزات القطار",
+    "subtitle": "السفر بالقطار براحة",
+    "searchTrains": "بحث القطارات"
+  },
+  "buses": {
+    "title": "خدمات الحافلات",
+    "subtitle": "خيارات سفر بأسعار معقولة بالحافلة",
+    "searchBuses": "بحث الحافلات"
+  },
+  "booking": {
+    "details": "تفاصيل الحجز",
+    "summary": "ملخص الحجز",
+    "guestInfo": "معلومات الضيف",
+    "paymentMethod": "طريقة الدفع",
+    "totalAmount": "المبلغ الإجمالي",
+    "confirmBooking": "تأكيد الحجز",
+    "bookingConfirmed": "تم تأكيد الحجز!",
+    "bookingFailed": "فشل الحجز"
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "fullName": "الاسم الكامل",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "noAccount": "ليس لديك حساب؟",
+    "haveAccount": "هل لديك حساب بالفعل؟",
+    "continueWithGoogle": "المتابعة مع Google",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "invalidEmail": "عنوان بريد إلكتروني غير صالح"
+  },
+  "footer": {
+    "aboutUs": "معلومات عنا",
+    "contactUs": "اتصل بنا",
+    "termsOfService": "شروط الخدمة",
+    "privacyPolicy": "سياسة الخصوصية",
+    "followUs": "تابعنا",
+    "newsletter": "اشترك في نشرتنا الإخبارية",
+    "enterEmail": "أدخل بريدك الإلكتروني",
+    "subscribe": "اشتراك",
+    "allRightsReserved": "جميع الحقوق محفوظة"
+  },
+  "profile": {
+    "myProfile": "ملفي الشخصي",
+    "myBookings": "حجوزاتي",
+    "wishlist": "قائمة الأمنيات",
+    "settings": "الإعدادات",
+    "logout": "تسجيل خروج"
+  },
+  "features": {
+    "securePayments": "مدفوعات آمنة",
+    "securePaymentsDesc": "معاملات محمية بأمان رائد في الصناعة",
+    "instantConfirmation": "تأكيد فوري",
+    "instantConfirmationDesc": "احصل على تأكيدات الحجز على الفور",
+    "support": "دعم على مدار الساعة",
+    "supportDesc": "مساعدة العملاء على مدار الساعة",
+    "bestPrices": "أفضل الأسعار",
+    "bestPricesDesc": "أسعار تنافسية وعروض حصرية"
+  },
+  "testimonials": {
+    "title": "ماذا يقول مسافرونا",
+    "subtitle": "تجارب حقيقية من مسافرين حقيقيين"
+  }
+}

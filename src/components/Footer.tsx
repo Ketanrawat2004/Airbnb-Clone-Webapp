@@ -1,10 +1,12 @@
 
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Youtube, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import VisitorCounter from './VisitorCounter';
 import founderPhoto from '@/assets/founder-photo.jpg';
 
 const Footer = () => {
+  const { t } = useTranslation();
   const currentYear = 2025;
 
   return (
@@ -55,17 +57,17 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/about" className="text-rose-100 hover:text-white transition-colors">
-                  About Us
+                  {t('footer.aboutUs')}
                 </Link>
               </li>
               <li>
                 <Link to="/profile" className="text-rose-100 hover:text-white transition-colors">
-                  My Profile
+                  {t('profile.myProfile')}
                 </Link>
               </li>
               <li>
                 <Link to="/become-host" className="text-rose-100 hover:text-white transition-colors">
-                  Become a Host
+                  {t('header.becomeHost')}
                 </Link>
               </li>
             </ul>

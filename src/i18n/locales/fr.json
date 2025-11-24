@@ -1,0 +1,132 @@
+{
+  "common": {
+    "search": "Rechercher",
+    "book": "Réserver Maintenant",
+    "bookNow": "Réserver Maintenant",
+    "viewDetails": "Voir les Détails",
+    "learnMore": "En Savoir Plus",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "close": "Fermer",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "welcome": "Bienvenue",
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "signOut": "Se Déconnecter",
+    "home": "Accueil",
+    "about": "À Propos",
+    "contact": "Contact",
+    "language": "Langue"
+  },
+  "header": {
+    "flights": "Vols",
+    "hotels": "Hôtels",
+    "trains": "Trains",
+    "buses": "Bus",
+    "profile": "Profil",
+    "admin": "Administrateur",
+    "becomeHost": "Devenir Hôte",
+    "language": "Langue"
+  },
+  "hero": {
+    "title": "Réservations de Voyage Sécurisées",
+    "subtitle": "Réservez des hôtels, vols, trains et bus en toute confiance. Sécurité de niveau entreprise et paiements authentifiés.",
+    "searchPlaceholder": "Où voulez-vous aller?",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ",
+    "guests": "Invités",
+    "searchButton": "Rechercher des Hôtels"
+  },
+  "hotels": {
+    "title": "Hôtels en Vedette",
+    "subtitle": "Découvrez des endroits incroyables pour séjourner",
+    "perNight": "par nuit",
+    "rating": "Note",
+    "reviews": "avis",
+    "viewAll": "Voir Tous les Hôtels"
+  },
+  "flights": {
+    "title": "Réservez Votre Vol",
+    "subtitle": "Trouvez les meilleures offres de vol",
+    "from": "De",
+    "to": "À",
+    "departure": "Départ",
+    "return": "Retour",
+    "passengers": "Passagers",
+    "class": "Classe",
+    "economy": "Économique",
+    "business": "Affaires",
+    "firstClass": "Première Classe",
+    "searchFlights": "Rechercher des Vols"
+  },
+  "trains": {
+    "title": "Réservations de Train",
+    "subtitle": "Voyagez en train confortablement",
+    "searchTrains": "Rechercher des Trains"
+  },
+  "buses": {
+    "title": "Services de Bus",
+    "subtitle": "Options de voyage en bus abordables",
+    "searchBuses": "Rechercher des Bus"
+  },
+  "booking": {
+    "details": "Détails de Réservation",
+    "summary": "Résumé de Réservation",
+    "guestInfo": "Informations sur l'Invité",
+    "paymentMethod": "Méthode de Paiement",
+    "totalAmount": "Montant Total",
+    "confirmBooking": "Confirmer la Réservation",
+    "bookingConfirmed": "Réservation Confirmée!",
+    "bookingFailed": "Réservation Échouée"
+  },
+  "auth": {
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "email": "Email",
+    "password": "Mot de Passe",
+    "confirmPassword": "Confirmer le Mot de Passe",
+    "fullName": "Nom Complet",
+    "forgotPassword": "Mot de passe oublié?",
+    "noAccount": "Pas de compte?",
+    "haveAccount": "Vous avez déjà un compte?",
+    "continueWithGoogle": "Continuer avec Google",
+    "emailRequired": "L'email est requis",
+    "passwordRequired": "Le mot de passe est requis",
+    "invalidEmail": "Adresse email invalide"
+  },
+  "footer": {
+    "aboutUs": "À Propos de Nous",
+    "contactUs": "Contactez-Nous",
+    "termsOfService": "Conditions d'Utilisation",
+    "privacyPolicy": "Politique de Confidentialité",
+    "followUs": "Suivez-Nous",
+    "newsletter": "Abonnez-vous à notre newsletter",
+    "enterEmail": "Entrez votre email",
+    "subscribe": "S'abonner",
+    "allRightsReserved": "Tous droits réservés"
+  },
+  "profile": {
+    "myProfile": "Mon Profil",
+    "myBookings": "Mes Réservations",
+    "wishlist": "Liste de Souhaits",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "features": {
+    "securePayments": "Paiements Sécurisés",
+    "securePaymentsDesc": "Transactions protégées avec une sécurité de pointe",
+    "instantConfirmation": "Confirmation Instantanée",
+    "instantConfirmationDesc": "Obtenez des confirmations de réservation immédiatement",
+    "support": "Support 24/7",
+    "supportDesc": "Assistance client 24h/24 et 7j/7",
+    "bestPrices": "Meilleurs Prix",
+    "bestPricesDesc": "Tarifs compétitifs et offres exclusives"
+  },
+  "testimonials": {
+    "title": "Ce Que Disent Nos Voyageurs",
+    "subtitle": "Expériences réelles de vrais voyageurs"
+  }
+}

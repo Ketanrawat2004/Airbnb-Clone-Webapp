@@ -14,6 +14,7 @@ import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
 import ScrollToTop from '@/components/ScrollToTop';
 import QuickAccessFAB from '@/components/QuickAccessFAB';
+import LanguageBanner from '@/components/LanguageBanner';
 
 
 
@@ -25,6 +26,7 @@ const Index = () => {
 
   return (
     <div className="page-container">
+      <LanguageBanner />
       <Header />
       <HeroSection onSearch={handleSearch} />
       <CheapRatesSection />

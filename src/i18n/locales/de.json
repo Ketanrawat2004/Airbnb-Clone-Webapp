@@ -1,0 +1,132 @@
+{
+  "common": {
+    "search": "Suchen",
+    "book": "Jetzt Buchen",
+    "bookNow": "Jetzt Buchen",
+    "viewDetails": "Details Anzeigen",
+    "learnMore": "Mehr Erfahren",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "save": "Speichern",
+    "close": "Schließen",
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "welcome": "Willkommen",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "home": "Startseite",
+    "about": "Über Uns",
+    "contact": "Kontakt",
+    "language": "Sprache"
+  },
+  "header": {
+    "flights": "Flüge",
+    "hotels": "Hotels",
+    "trains": "Züge",
+    "buses": "Busse",
+    "profile": "Profil",
+    "admin": "Administrator",
+    "becomeHost": "Gastgeber Werden",
+    "language": "Sprache"
+  },
+  "hero": {
+    "title": "Sichere & Vertrauenswürdige Reisebuchung",
+    "subtitle": "Buchen Sie Hotels, Flüge, Züge und Busse mit Vertrauen. Unternehmenssicherheit und authentifizierte Zahlungen.",
+    "searchPlaceholder": "Wohin möchten Sie reisen?",
+    "checkIn": "Anreise",
+    "checkOut": "Abreise",
+    "guests": "Gäste",
+    "searchButton": "Hotels Suchen"
+  },
+  "hotels": {
+    "title": "Empfohlene Hotels",
+    "subtitle": "Entdecken Sie tolle Unterkünfte",
+    "perNight": "pro Nacht",
+    "rating": "Bewertung",
+    "reviews": "Bewertungen",
+    "viewAll": "Alle Hotels Anzeigen"
+  },
+  "flights": {
+    "title": "Buchen Sie Ihren Flug",
+    "subtitle": "Finden Sie die besten Flugangebote",
+    "from": "Von",
+    "to": "Nach",
+    "departure": "Abflug",
+    "return": "Rückflug",
+    "passengers": "Passagiere",
+    "class": "Klasse",
+    "economy": "Economy",
+    "business": "Business",
+    "firstClass": "Erste Klasse",
+    "searchFlights": "Flüge Suchen"
+  },
+  "trains": {
+    "title": "Zugbuchungen",
+    "subtitle": "Reisen Sie bequem mit dem Zug",
+    "searchTrains": "Züge Suchen"
+  },
+  "buses": {
+    "title": "Busservice",
+    "subtitle": "Erschwingliche Busreiseoptionen",
+    "searchBuses": "Busse Suchen"
+  },
+  "booking": {
+    "details": "Buchungsdetails",
+    "summary": "Buchungszusammenfassung",
+    "guestInfo": "Gästeinformationen",
+    "paymentMethod": "Zahlungsmethode",
+    "totalAmount": "Gesamtbetrag",
+    "confirmBooking": "Buchung Bestätigen",
+    "bookingConfirmed": "Buchung Bestätigt!",
+    "bookingFailed": "Buchung Fehlgeschlagen"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort Bestätigen",
+    "fullName": "Vollständiger Name",
+    "forgotPassword": "Passwort Vergessen?",
+    "noAccount": "Kein Konto?",
+    "haveAccount": "Haben Sie bereits ein Konto?",
+    "continueWithGoogle": "Mit Google Fortfahren",
+    "emailRequired": "E-Mail ist erforderlich",
+    "passwordRequired": "Passwort ist erforderlich",
+    "invalidEmail": "Ungültige E-Mail-Adresse"
+  },
+  "footer": {
+    "aboutUs": "Über Uns",
+    "contactUs": "Kontaktieren Sie Uns",
+    "termsOfService": "Nutzungsbedingungen",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "followUs": "Folgen Sie Uns",
+    "newsletter": "Abonnieren Sie unseren Newsletter",
+    "enterEmail": "Geben Sie Ihre E-Mail ein",
+    "subscribe": "Abonnieren",
+    "allRightsReserved": "Alle Rechte vorbehalten"
+  },
+  "profile": {
+    "myProfile": "Mein Profil",
+    "myBookings": "Meine Buchungen",
+    "wishlist": "Wunschliste",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "features": {
+    "securePayments": "Sichere Zahlungen",
+    "securePaymentsDesc": "Geschützte Transaktionen mit branchenführender Sicherheit",
+    "instantConfirmation": "Sofortbestätigung",
+    "instantConfirmationDesc": "Erhalten Sie sofort Buchungsbestätigungen",
+    "support": "24/7 Support",
+    "supportDesc": "Rund-um-die-Uhr-Kundendienst",
+    "bestPrices": "Beste Preise",
+    "bestPricesDesc": "Wettbewerbsfähige Tarife und exklusive Angebote"
+  },
+  "testimonials": {
+    "title": "Was Unsere Reisenden Sagen",
+    "subtitle": "Echte Erfahrungen von echten Reisenden"
+  }
+}

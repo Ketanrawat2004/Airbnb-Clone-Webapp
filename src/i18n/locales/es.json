@@ -1,0 +1,132 @@
+{
+  "common": {
+    "search": "Buscar",
+    "book": "Reservar Ahora",
+    "bookNow": "Reservar Ahora",
+    "viewDetails": "Ver Detalles",
+    "learnMore": "Saber Más",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "welcome": "Bienvenido",
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar Sesión",
+    "home": "Inicio",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "language": "Idioma"
+  },
+  "header": {
+    "flights": "Vuelos",
+    "hotels": "Hoteles",
+    "trains": "Trenes",
+    "buses": "Autobuses",
+    "profile": "Perfil",
+    "admin": "Administrador",
+    "becomeHost": "Ser Anfitrión",
+    "language": "Idioma"
+  },
+  "hero": {
+    "title": "Reservas de Viajes Seguras y Confiables",
+    "subtitle": "Reserve hoteles, vuelos, trenes y autobuses con confianza. Seguridad empresarial y pagos autenticados.",
+    "searchPlaceholder": "¿A dónde quieres ir?",
+    "checkIn": "Entrada",
+    "checkOut": "Salida",
+    "guests": "Huéspedes",
+    "searchButton": "Buscar Hoteles"
+  },
+  "hotels": {
+    "title": "Hoteles Destacados",
+    "subtitle": "Descubre lugares increíbles para hospedarte",
+    "perNight": "por noche",
+    "rating": "Calificación",
+    "reviews": "reseñas",
+    "viewAll": "Ver Todos los Hoteles"
+  },
+  "flights": {
+    "title": "Reserva tu Vuelo",
+    "subtitle": "Encuentra las mejores ofertas de vuelos",
+    "from": "Desde",
+    "to": "Hasta",
+    "departure": "Salida",
+    "return": "Regreso",
+    "passengers": "Pasajeros",
+    "class": "Clase",
+    "economy": "Económica",
+    "business": "Ejecutiva",
+    "firstClass": "Primera Clase",
+    "searchFlights": "Buscar Vuelos"
+  },
+  "trains": {
+    "title": "Reservas de Tren",
+    "subtitle": "Viaja en tren con comodidad",
+    "searchTrains": "Buscar Trenes"
+  },
+  "buses": {
+    "title": "Servicios de Autobús",
+    "subtitle": "Opciones de viaje en autobús asequibles",
+    "searchBuses": "Buscar Autobuses"
+  },
+  "booking": {
+    "details": "Detalles de Reserva",
+    "summary": "Resumen de Reserva",
+    "guestInfo": "Información del Huésped",
+    "paymentMethod": "Método de Pago",
+    "totalAmount": "Monto Total",
+    "confirmBooking": "Confirmar Reserva",
+    "bookingConfirmed": "¡Reserva Confirmada!",
+    "bookingFailed": "Reserva Fallida"
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "fullName": "Nombre Completo",
+    "forgotPassword": "¿Olvidaste tu Contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "continueWithGoogle": "Continuar con Google",
+    "emailRequired": "El correo es requerido",
+    "passwordRequired": "La contraseña es requerida",
+    "invalidEmail": "Correo electrónico inválido"
+  },
+  "footer": {
+    "aboutUs": "Sobre Nosotros",
+    "contactUs": "Contáctanos",
+    "termsOfService": "Términos de Servicio",
+    "privacyPolicy": "Política de Privacidad",
+    "followUs": "Síguenos",
+    "newsletter": "Suscríbete a nuestro boletín",
+    "enterEmail": "Ingresa tu correo",
+    "subscribe": "Suscribirse",
+    "allRightsReserved": "Todos los derechos reservados"
+  },
+  "profile": {
+    "myProfile": "Mi Perfil",
+    "myBookings": "Mis Reservas",
+    "wishlist": "Lista de Deseos",
+    "settings": "Configuración",
+    "logout": "Cerrar Sesión"
+  },
+  "features": {
+    "securePayments": "Pagos Seguros",
+    "securePaymentsDesc": "Transacciones protegidas con seguridad líder en la industria",
+    "instantConfirmation": "Confirmación Instantánea",
+    "instantConfirmationDesc": "Obtén confirmaciones de reserva al instante",
+    "support": "Soporte 24/7",
+    "supportDesc": "Asistencia al cliente las 24 horas",
+    "bestPrices": "Mejores Precios",
+    "bestPricesDesc": "Tarifas competitivas y ofertas exclusivas"
+  },
+  "testimonials": {
+    "title": "Lo Que Dicen Nuestros Viajeros",
+    "subtitle": "Experiencias reales de viajeros reales"
+  }
+}
